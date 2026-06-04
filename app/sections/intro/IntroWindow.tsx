@@ -114,12 +114,17 @@ export function IntroWindow({ onComplete }: IntroWindowProps) {
   useEffect(() => {
     if (!showWaiting) return;
 
-    setWaitingDots(1);
+    const resetTimer = window.setTimeout(() => {
+      setWaitingDots(1);
+    }, 0);
     const interval = window.setInterval(() => {
       setWaitingDots((count) => (count % 3) + 1);
     }, 500);
 
-    return () => window.clearInterval(interval);
+    return () => {
+      window.clearTimeout(resetTimer);
+      window.clearInterval(interval);
+    };
   }, [showWaiting]);
 
   return (

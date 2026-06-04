@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import {
   createContext,
   useContext,
@@ -7,6 +8,10 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import {
+  hasIntroCompletedThisLoad,
+  markIntroCompletedThisLoad,
+} from "./introSession";
 import { IntroWindow } from "./IntroWindow";
 
 type IntroContextValue = {
@@ -19,20 +24,26 @@ export function useIntroReady() {
   return useContext(IntroContext).introReady;
 }
 
+function shouldPlayIntro(pathname: string) {
+  if (typeof window === "undefined") {
+    return pathname === "/";
+  }
+
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  return (
+    pathname === "/" && !hasIntroCompletedThisLoad() && !reducedMotion
+  );
+}
+
 export function IntroProvider({ children }: { children: ReactNode }) {
-  const [introReady, setIntroReady] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(true);
-
-  useEffect(() => {
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    if (reducedMotion) {
-      setIntroReady(true);
-      setShowOverlay(false);
-    }
-  }, []);
+  const pathname = usePathname();
+  const [introReady, setIntroReady] = useState(() => !shouldPlayIntro(pathname));
+  const [showOverlay, setShowOverlay] = useState(() =>
+    shouldPlayIntro(pathname),
+  );
 
   useEffect(() => {
     if (!showOverlay) return;
@@ -43,6 +54,7 @@ export function IntroProvider({ children }: { children: ReactNode }) {
   }, [showOverlay]);
 
   const handleIntroComplete = () => {
+    markIntroCompletedThisLoad();
     setShowOverlay(false);
     setIntroReady(true);
   };

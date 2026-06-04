@@ -12,18 +12,21 @@ export function HeaderLogo({ introReady }: HeaderLogoProps) {
   return (
     <Link
       href="/"
-      className={`group shrink-0 ${introReady ? "animate-pop-in" : "opacity-0"}`}
+      className={`logo-mark-header group flex shrink-0 items-center ${
+        introReady ? "animate-pop-in" : "opacity-0"
+      }`}
       aria-label="Code Baxh home"
-      style={{ animationDelay: introReady ? "240ms" : undefined }}
+      style={{ animationDelay: introReady ? "180ms" : undefined }}
     >
-      <span className="relative flex shrink-0 items-center">
-        <span
-          className="absolute -left-2 top-1/2 size-1.5 -translate-y-1/2 rounded-full bg-accent"
-          aria-hidden
+      <span className="relative block h-9 w-[6.5rem] max-w-[26vw] shrink-0 transition-transform duration-200 group-hover:scale-[1.02] sm:h-12 sm:w-[12rem] sm:max-w-none">
+        <Image
+          src={LOGO_SRC}
+          alt="Code Baxh"
+          fill
+          priority
+          sizes="(max-width: 640px) 26vw, 192px"
+          className="object-contain object-left"
         />
-        <span className="logo-mark block transition-transform duration-300 group-hover:scale-[1.03]">
-          <Image src={LOGO_SRC} alt="Code Baxh" fill priority />
-        </span>
       </span>
     </Link>
   );
