@@ -5,7 +5,7 @@ export const COMPANY = {
   name: "Code Baxh",
   tagline:
     "Tech recruitment and software studio — finding talent and shipping products with teams worldwide.",
-  addressLines: ["306, Ghouri Town, 46000", "Islamabad", "Pakistan"],
+  addressLines: ["Ghouri Town , Islamabad,"],
   email: "code.baxh@gmail.com",
   phone: "+923435527709",
   phoneDisplay: "+92 343 552 7709",
@@ -20,11 +20,11 @@ export const FOOTER_CTA = {
 } as const;
 
 export const MENU_LINKS = [
-  { href: "/contact", label: "Contact" },
+  { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
   { href: "/careers", label: "Careers" },
-  { href: "/", label: "Home" },
+  { href: "/contact", label: "Contact" },
 ] as const;
 
 export const LEGAL_LINKS = [

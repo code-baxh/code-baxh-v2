@@ -25,9 +25,7 @@ export function ContactCard() {
           labelClassName="text-xs font-semibold uppercase tracking-[0.12em] text-text-muted"
         >
           <p className="font-medium leading-relaxed text-text-primary">
-            306, Ghouri Town, 46000
-            <br />
-            Islamabad, Pakistan
+            Ghouri Town , Islamabad,
           </p>
         </ContactInfoItem>
 

@@ -15,7 +15,7 @@ type SequenceCallbacks = {
   onComplete: () => void;
 };
 
-const LOADING_MS = 3200;
+const LOADING_MS = 1200;
 const SAFETY_MS = 18000;
 
 function sleep(ms: number) {

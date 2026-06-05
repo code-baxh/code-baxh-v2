@@ -15,22 +15,27 @@ const ORBIT_NODES: OrbitNode[] = [
   {
     src: "/images/FigmaIcons.png",
     alt: "Figma",
-    glow: "radial-gradient(circle, rgba(242,78,30,0.4) 0%, rgba(162,89,255,0.2) 40%, transparent 70%)",
+    glow: "radial-gradient(circle, rgba(100,200,255,0.5) 0%, rgba(100,200,255,0.2) 40%, transparent 70%)",
   },
   {
     src: "/images/JiraIcon.png",
     alt: "Jira",
-    glow: "radial-gradient(circle, rgba(38,132,255,0.45) 0%, rgba(59,130,246,0.15) 45%, transparent 72%)",
+    glow: "radial-gradient(circle, rgba(100,200,255,0.5) 0%, rgba(100,200,255,0.2) 45%, transparent 72%)",
   },
   {
     src: "/images/VSCodeIcon.png",
     alt: "VS Code",
-    glow: "radial-gradient(circle, rgba(56,189,248,0.5) 0%, rgba(56,189,248,0.1) 45%, transparent 72%)",
+    glow: "radial-gradient(circle, rgba(100,200,255,0.5) 0%, rgba(100,200,255,0.2) 45%, transparent 72%)",
   },
   {
     src: "/images/Xcode Icon.png",
     alt: "Xcode",
-    glow: "radial-gradient(circle, rgba(37,99,235,0.4) 0%, rgba(15,23,42,0.2) 50%, transparent 75%)",
+    glow: "radial-gradient(circle, rgba(100,200,255,0.5) 0%, rgba(100,200,255,0.2) 50%, transparent 75%)",
+  },
+  {
+    src: "/images/AndroidStudioIcon.png",
+    alt: "Android Studio",
+    glow: "radial-gradient(circle, rgba(100,200,255,0.5) 0%, rgba(100,200,255,0.2) 45%, transparent 72%)",
   },
 ];
 
@@ -38,30 +43,34 @@ const ORBIT_NODES: OrbitNode[] = [
 // with no teleport. The ellipse center is anchored to the right of
 // the container; only the left-facing arc is visible on screen.
 function buildOrbitPath(width: number, height: number): string {
-  const rx = height * 0.52;   // horizontal radius — controls how far left the arc bows
-  const ry = height * 0.48;   // vertical radius
-  const cx = width + rx * 0.3; // center pushed right so only the left arc is visible
-  const cy = height / 2;
+  const rx = height * 0.62;   // horizontal radius — controls how far left the arc bows
+  const ry = height * 0.62;   // vertical radius
+  const isDesktop = width > 1024;
+  const cxMultiplier = isDesktop ? 0.2 : 0.5;
+  const cx = width + rx * cxMultiplier; // center pushed right so only the left arc is visible
+  const cy = height / 2 - height * 0.02; // moved up slightly
 
   // Full ellipse via two arc commands (SVG can't do a full ellipse in one arc)
   const top    = { x: cx,      y: cy - ry };
   const bottom = { x: cx,      y: cy + ry };
 
-  // sweep-flag=1 → clockwise
+  // sweep-flag=0 → counter-clockwise
   return [
     `M ${top.x.toFixed(2)} ${top.y.toFixed(2)}`,
-    `A ${rx.toFixed(2)} ${ry.toFixed(2)} 0 1 1 ${bottom.x.toFixed(2)} ${bottom.y.toFixed(2)}`,
-    `A ${rx.toFixed(2)} ${ry.toFixed(2)} 0 1 1 ${top.x.toFixed(2)} ${top.y.toFixed(2)}`,
+    `A ${rx.toFixed(2)} ${ry.toFixed(2)} 0 1 0 ${bottom.x.toFixed(2)} ${bottom.y.toFixed(2)}`,
+    `A ${rx.toFixed(2)} ${ry.toFixed(2)} 0 1 0 ${top.x.toFixed(2)} ${top.y.toFixed(2)}`,
     "Z",
   ].join(" ");
 }
 
 // Visible arc only — drawn in the SVG for the track stripe
 function buildVisibleArc(width: number, height: number): string {
-  const rx = height * 0.52;
-  const ry = height * 0.48;
-  const cx = width + rx * 0.3;
-  const cy = height / 2;
+  const rx = height * 0.62;
+  const ry = height * 0.62;
+  const isDesktop = width > 1024;
+  const cxMultiplier = isDesktop ? 0.2 : 0.5;
+  const cx = width + rx * cxMultiplier;
+  const cy = height / 2 - height * 0.02;
 
   // Left-most point and the visible chord from top to bottom
   const startAngle = -75 * (Math.PI / 180);
@@ -72,7 +81,7 @@ function buildVisibleArc(width: number, height: number): string {
   const ex = cx + rx * Math.cos(endAngle);
   const ey = cy + ry * Math.sin(endAngle);
 
-  return `M ${sx.toFixed(2)} ${sy.toFixed(2)} A ${rx.toFixed(2)} ${ry.toFixed(2)} 0 0 1 ${ex.toFixed(2)} ${ey.toFixed(2)}`;
+  return `M ${sx.toFixed(2)} ${sy.toFixed(2)} A ${rx.toFixed(2)} ${ry.toFixed(2)} 0 0 0 ${ex.toFixed(2)} ${ey.toFixed(2)}`;
 }
 
 const ORBIT_DURATION = 16; // seconds for one full loop — all icons share this
@@ -120,8 +129,8 @@ export function HeroOrbitVisual() {
         position: "absolute",
         inset: 0,
         overflow: "visible",
-        opacity: 1,
-        transition: "opacity 0.5s ease",
+        opacity: introReady ? 1 : 0,
+        transition: "opacity 0.5s ease 0.2s",
         // CSS custom prop consumed by the orbit node style below
         ["--hero-orbit-path" as string]: orbitPath ? `path("${orbitPath}")` : undefined,
       }}
@@ -151,31 +160,12 @@ export function HeroOrbitVisual() {
             </filter>
           </defs>
 
-          {/* Outer soft halo — gives the 3-D depth */}
+          {/* Main track body — single color */}
           <path
-            d={visibleArc}
+            d={orbitPath}
             fill="none"
-            stroke="rgba(255,255,255,0.04)"
-            strokeWidth={72}
-            strokeLinecap="round"
-            filter="url(#track-glow)"
-          />
-
-          {/* Main track body */}
-          <path
-            d={visibleArc}
-            fill="none"
-            stroke="rgba(255,255,255,0.11)"
-            strokeWidth={44}
-            strokeLinecap="round"
-          />
-
-          {/* Inner highlight edge */}
-          <path
-            d={visibleArc}
-            fill="none"
-            stroke="rgba(255,255,255,0.055)"
-            strokeWidth={22}
+            stroke="rgba(255, 255, 255, 0.12)"
+            strokeWidth={56}
             strokeLinecap="round"
           />
         </svg>
@@ -206,15 +196,15 @@ export function HeroOrbitVisual() {
               } as CSSProperties}
             >
               {/* Centering wrapper */}
-              <div style={{ position: "relative", transform: "translate(-50%, -50%)" }}>
+              <div style={{ position: "relative" }}>
                 {/* Glow halo */}
                 <div
                   style={{
                     position: "absolute",
                     top: "50%",
                     left: "50%",
-                    width: 112,
-                    height: 112,
+                    width: 148,
+                    height: 148,
                     transform: "translate(-50%, -50%)",
                     borderRadius: "9999px",
                     background: node.glow,
@@ -232,8 +222,8 @@ export function HeroOrbitVisual() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    width: 56,
-                    height: 56,
+                    width: 72,
+                    height: 72,
                     borderRadius: "9999px",
                     background: "transparent",
                   }}
@@ -241,9 +231,9 @@ export function HeroOrbitVisual() {
                   <Image
                     src={node.src}
                     alt=""
-                    width={36}
-                    height={36}
-                    style={{ objectFit: "contain", width: 36, height: 36 }}
+                    width={44}
+                    height={44}
+                    style={{ objectFit: "contain", width: 44, height: 44 }}
                   />
                 </div>
               </div>
