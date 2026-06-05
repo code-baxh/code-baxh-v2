@@ -4,7 +4,7 @@ import { HeroOrbitVisual } from "./HeroOrbitVisual";
 
 export function HeroVisual() {
   return (
-    <div className="relative h-full min-h-[600px] w-full">
+    <div className="absolute inset-0 w-full h-full">
       <HeroOrbitVisual />
     </div>
   );

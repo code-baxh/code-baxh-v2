@@ -8,108 +8,142 @@ import { useIntroReady } from "../intro";
 type OrbitNode = {
   src: string;
   alt: string;
-  glowClass: string;
+  glow: string;
 };
 
 const ORBIT_NODES: OrbitNode[] = [
   {
-    src: "/images/VSCodeIcon.png",
-    alt: "VS Code",
-    glowClass:
-      "bg-[radial-gradient(circle,rgba(56,189,248,0.5)_0%,rgba(56,189,248,0.1)_45%,transparent_72%)]",
-  },
-  {
     src: "/images/FigmaIcons.png",
     alt: "Figma",
-    glowClass:
-      "bg-[radial-gradient(circle,rgba(242,78,30,0.32)_0%,rgba(162,89,255,0.22)_35%,rgba(26,188,254,0.15)_60%,transparent_75%)]",
-  },
-  {
-    src: "/images/Xcode Icon.png",
-    alt: "Xcode",
-    glowClass:
-      "bg-[radial-gradient(circle,rgba(30,41,59,0.55)_0%,rgba(15,23,42,0.35)_40%,rgba(37,99,235,0.2)_65%,transparent_78%)]",
+    glow: "radial-gradient(circle, rgba(242,78,30,0.4) 0%, rgba(162,89,255,0.2) 40%, transparent 70%)",
   },
   {
     src: "/images/JiraIcon.png",
     alt: "Jira",
-    glowClass:
-      "bg-[radial-gradient(circle,rgba(38,132,255,0.45)_0%,rgba(59,130,246,0.15)_45%,transparent_72%)]",
+    glow: "radial-gradient(circle, rgba(38,132,255,0.45) 0%, rgba(59,130,246,0.15) 45%, transparent 72%)",
+  },
+  {
+    src: "/images/VSCodeIcon.png",
+    alt: "VS Code",
+    glow: "radial-gradient(circle, rgba(56,189,248,0.5) 0%, rgba(56,189,248,0.1) 45%, transparent 72%)",
+  },
+  {
+    src: "/images/Xcode Icon.png",
+    alt: "Xcode",
+    glow: "radial-gradient(circle, rgba(37,99,235,0.4) 0%, rgba(15,23,42,0.2) 50%, transparent 75%)",
   },
 ];
 
-/**
- * Circular orbit path from top-right arcing around to bottom-right.
- * Creates a smooth curved path that bows leftward into the content area.
- */
-function buildHeroArcPath(width: number, height: number): string {
-  const centerX = width * 0.65;
-  const centerY = height / 2;
-  const radius = height * 0.75;
-  
-  // Start at top-right, arc down and around to bottom-right
-  const startAngle = -50; // degrees, top-right
-  const endAngle = 50;    // degrees, bottom-right
-  
-  const startX = centerX + radius * Math.cos((startAngle * Math.PI) / 180);
-  const startY = centerY + radius * Math.sin((startAngle * Math.PI) / 180);
-  const endX = centerX + radius * Math.cos((endAngle * Math.PI) / 180);
-  const endY = centerY + radius * Math.sin((endAngle * Math.PI) / 180);
-  
-  // Use large-arc-flag=0 for small arc (less than 180°)
-  return `M ${startX.toFixed(2)} ${startY.toFixed(2)} A ${radius.toFixed(2)} ${radius.toFixed(2)} 0 0 1 ${endX.toFixed(2)} ${endY.toFixed(2)}`;
+// Full ellipse as a closed SVG path so icons orbit continuously
+// with no teleport. The ellipse center is anchored to the right of
+// the container; only the left-facing arc is visible on screen.
+function buildOrbitPath(width: number, height: number): string {
+  const rx = height * 0.52;   // horizontal radius — controls how far left the arc bows
+  const ry = height * 0.48;   // vertical radius
+  const cx = width + rx * 0.3; // center pushed right so only the left arc is visible
+  const cy = height / 2;
+
+  // Full ellipse via two arc commands (SVG can't do a full ellipse in one arc)
+  const top    = { x: cx,      y: cy - ry };
+  const bottom = { x: cx,      y: cy + ry };
+
+  // sweep-flag=1 → clockwise
+  return [
+    `M ${top.x.toFixed(2)} ${top.y.toFixed(2)}`,
+    `A ${rx.toFixed(2)} ${ry.toFixed(2)} 0 1 1 ${bottom.x.toFixed(2)} ${bottom.y.toFixed(2)}`,
+    `A ${rx.toFixed(2)} ${ry.toFixed(2)} 0 1 1 ${top.x.toFixed(2)} ${top.y.toFixed(2)}`,
+    "Z",
+  ].join(" ");
 }
+
+// Visible arc only — drawn in the SVG for the track stripe
+function buildVisibleArc(width: number, height: number): string {
+  const rx = height * 0.52;
+  const ry = height * 0.48;
+  const cx = width + rx * 0.3;
+  const cy = height / 2;
+
+  // Left-most point and the visible chord from top to bottom
+  const startAngle = -75 * (Math.PI / 180);
+  const endAngle   =  75 * (Math.PI / 180);
+
+  const sx = cx + rx * Math.cos(startAngle);
+  const sy = cy + ry * Math.sin(startAngle);
+  const ex = cx + rx * Math.cos(endAngle);
+  const ey = cy + ry * Math.sin(endAngle);
+
+  return `M ${sx.toFixed(2)} ${sy.toFixed(2)} A ${rx.toFixed(2)} ${ry.toFixed(2)} 0 0 1 ${ex.toFixed(2)} ${ey.toFixed(2)}`;
+}
+
+const ORBIT_DURATION = 16; // seconds for one full loop — all icons share this
+const NODE_COUNT = ORBIT_NODES.length;
 
 export function HeroOrbitVisual() {
   const introReady = useIntroReady();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [path, setPath] = useState("");
+  const [orbitPath, setOrbitPath]   = useState("");
+  const [visibleArc, setVisibleArc] = useState("");
   const [size, setSize] = useState({ width: 0, height: 0 });
 
   useLayoutEffect(() => {
     const node = containerRef.current;
     if (!node) return;
 
-    const updatePath = () => {
+    const update = () => {
       const { width, height } = node.getBoundingClientRect();
       if (width <= 0 || height <= 0) return;
       setSize({ width, height });
-      setPath(buildHeroArcPath(width, height));
+      setOrbitPath(buildOrbitPath(width, height));
+      setVisibleArc(buildVisibleArc(width, height));
     };
 
-    updatePath();
-
-    const observer = new ResizeObserver(updatePath);
-    observer.observe(node);
-
-    return () => observer.disconnect();
+    // Initial update
+    update();
+    
+    // ResizeObserver for responsive sizing
+    const ro = new ResizeObserver(update);
+    ro.observe(node);
+    
+    // Window resize handler as backup
+    window.addEventListener("resize", update);
+    
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
   }, [introReady]);
 
   return (
     <div
       ref={containerRef}
-      className={`absolute inset-0 overflow-visible transition-opacity duration-500 ${
-        introReady ? "animate-hero-reveal opacity-100" : "opacity-0"
-      }`}
-      style={
-        path
-          ? ({
-              "--hero-orbit-path": `path("${path}")`,
-              animationDelay: introReady ? "320ms" : undefined,
-            } as CSSProperties)
-          : undefined
-      }
+      style={{
+        position: "absolute",
+        inset: 0,
+        overflow: "visible",
+        opacity: 1,
+        transition: "opacity 0.5s ease",
+        // CSS custom prop consumed by the orbit node style below
+        ["--hero-orbit-path" as string]: orbitPath ? `path("${orbitPath}")` : undefined,
+      }}
       aria-hidden
     >
-      {path && size.width > 0 ? (
+      {/* ── Track SVG ── */}
+      {visibleArc && size.width > 0 && (
         <svg
-          className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+          style={{
+            pointerEvents: "none",
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            overflow: "visible",
+          }}
           viewBox={`0 0 ${size.width} ${size.height}`}
           aria-hidden
         >
           <defs>
-            <filter id="hero-orbit-track-blur" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="blur" />
+            <filter id="track-glow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="10" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
@@ -117,63 +151,118 @@ export function HeroOrbitVisual() {
             </filter>
           </defs>
 
-          {/* Track depth — outer shadow */}
+          {/* Outer soft halo — gives the 3-D depth */}
           <path
-            d={path}
+            d={visibleArc}
             fill="none"
-            className="hero-orbit-track-shadow"
-            strokeLinecap="butt"
-            strokeLinejoin="miter"
-            strokeWidth={2}
+            stroke="rgba(255,255,255,0.04)"
+            strokeWidth={72}
+            strokeLinecap="round"
+            filter="url(#track-glow)"
           />
 
-          {/* Main thick track body */}
+          {/* Main track body */}
           <path
-            d={path}
+            d={visibleArc}
             fill="none"
-            className="hero-orbit-track-body"
-            strokeLinecap="butt"
-            strokeLinejoin="miter"
-            strokeWidth={1.5}
-            filter="url(#hero-orbit-track-blur)"
+            stroke="rgba(255,255,255,0.11)"
+            strokeWidth={44}
+            strokeLinecap="round"
           />
 
           {/* Inner highlight edge */}
           <path
-            d={path}
+            d={visibleArc}
             fill="none"
-            className="hero-orbit-track-highlight"
-            strokeLinecap="butt"
-            strokeLinejoin="miter"
-            strokeWidth={0.8}
+            stroke="rgba(255,255,255,0.055)"
+            strokeWidth={22}
+            strokeLinecap="round"
           />
         </svg>
-      ) : null}
+      )}
 
-      {path
-        ? ORBIT_NODES.map((node, index) => (
+      {/* ── Orbiting icons ── */}
+      {orbitPath &&
+        ORBIT_NODES.map((node, i) => {
+          // Each icon is offset by an equal fraction of the duration.
+          // All share the same duration → permanently equal spacing.
+          // Negative delay = "already N seconds into the animation".
+          const delay = -(ORBIT_DURATION / NODE_COUNT) * i;
+
+          return (
             <div
               key={node.src}
-              className={`hero-orbit-node hero-orbit-node-${index} pointer-events-none absolute left-0 top-0`}
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                pointerEvents: "none",
+                // CSS motion path
+                offsetPath: `path("${orbitPath}")`,
+                offsetRotate: "0deg",
+                offsetAnchor: "center",
+                animation: `hero-orbit-travel ${ORBIT_DURATION}s linear ${delay}s infinite`,
+                willChange: "offset-distance",
+              } as CSSProperties}
             >
-              <div className="relative -translate-x-1/2 -translate-y-1/2">
+              {/* Centering wrapper */}
+              <div style={{ position: "relative", transform: "translate(-50%, -50%)" }}>
+                {/* Glow halo */}
                 <div
-                  className={`absolute top-1/2 left-1/2 size-28 -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl ${node.glowClass}`}
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    width: 112,
+                    height: 112,
+                    transform: "translate(-50%, -50%)",
+                    borderRadius: "9999px",
+                    background: node.glow,
+                    filter: "blur(18px)",
+                    opacity: 0.75,
+                  }}
                   aria-hidden
                 />
-                <div className="relative z-10 flex size-[3.75rem] items-center justify-center rounded-full bg-transparent sm:size-16">
+
+                {/* Icon — transparent background, no border */}
+                <div
+                  style={{
+                    position: "relative",
+                    zIndex: 10,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 56,
+                    height: 56,
+                    borderRadius: "9999px",
+                    background: "transparent",
+                  }}
+                >
                   <Image
                     src={node.src}
                     alt=""
-                    width={32}
-                    height={32}
-                    className="size-8 object-contain"
+                    width={36}
+                    height={36}
+                    style={{ objectFit: "contain", width: 36, height: 36 }}
                   />
                 </div>
               </div>
             </div>
-          ))
-        : null}
+          );
+        })}
+
+      {/* Keyframe injected at runtime — avoids global CSS dependency */}
+      <style>{`
+        @keyframes hero-orbit-travel {
+          from { offset-distance: 0%; }
+          to   { offset-distance: 100%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [style*="hero-orbit-travel"] {
+            animation: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
