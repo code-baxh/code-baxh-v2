@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 
 export function useInView<T extends HTMLElement = HTMLElement>(
   threshold = 0.15,
+  rootMargin = "0px",
 ): { ref: RefObject<T | null>; inView: boolean } {
   const ref = useRef<T>(null);
   const [inView, setInView] = useState(false);
@@ -31,12 +32,12 @@ export function useInView<T extends HTMLElement = HTMLElement>(
           observer.disconnect();
         }
       },
-      { threshold },
+      { threshold, rootMargin },
     );
 
     observer.observe(element);
     return () => observer.disconnect();
-  }, [threshold]);
+  }, [threshold, rootMargin]);
 
   return { ref, inView };
 }

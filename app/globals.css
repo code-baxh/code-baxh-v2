@@ -176,159 +176,320 @@
 }
 
 .stack-section {
-  position: relative;
-  top: auto;
+  position: sticky;
+  top: 0;
   display: flex;
   width: 100%;
-  height: auto;
-  min-height: 100vh;
-  min-height: 100dvh;
-  align-items: flex-start;
-  padding: 2.5rem 1.25rem;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  align-items: center;
+}
+
+.section-services {
+  z-index: 1;
+}
+
+.section-process {
+  z-index: 2;
+}
+
+.section-about {
+  z-index: 3;
 }
 
 .stack-section-inner {
   width: 100%;
+  padding-top: 5rem;
+  padding-bottom: 3rem;
 }
 
-.stack-contact-track {
-  position: relative;
-}
-
-.contact-entrance-item {
+/* ── Reveal group (staggered scroll-in, one-shot) ── */
+.reveal-item {
   opacity: 0;
-  transform: translateY(2rem);
+  transform: translateY(1.25rem);
   transition:
-    opacity 0.85s var(--ease-out-expo),
-    transform 0.85s var(--ease-out-expo);
+    opacity 0.65s var(--ease-out-expo),
+    transform 0.65s var(--ease-out-expo);
 }
 
-.contact-section--visible .contact-entrance-item {
+.reveal-group--visible .reveal-item {
   opacity: 1;
   transform: translateY(0);
 }
 
-.contact-section--visible .contact-entrance-item--1 {
+.reveal-group--visible .reveal-item--1 {
   transition-delay: 0ms;
 }
 
-.contact-section--visible .contact-entrance-item--2 {
+.reveal-group--visible .reveal-item--2 {
+  transition-delay: 90ms;
+}
+
+.reveal-group--visible .reveal-item--3 {
+  transition-delay: 180ms;
+}
+
+.reveal-group--visible .reveal-item--4 {
+  transition-delay: 270ms;
+}
+
+.reveal-group--visible .reveal-item--5 {
+  transition-delay: 360ms;
+}
+
+.reveal-group--visible .reveal-item--6 {
+  transition-delay: 450ms;
+}
+
+.reveal-group--visible .reveal-item--7 {
+  transition-delay: 540ms;
+}
+
+.reveal-group--visible .reveal-item--8 {
+  transition-delay: 630ms;
+}
+
+/* ── Contact section ── */
+.contact-section-bg {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.03) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+}
+
+.contact-section-glow {
+  background: radial-gradient(
+    ellipse 55% 45% at 85% 15%,
+    var(--accent-soft),
+    transparent 72%
+  );
+}
+
+.contact-path-card {
+  backdrop-filter: blur(8px);
+}
+
+/* ── Hero orbit arc (CSS motion path) ── */
+@keyframes orbit-node-0 {
+  from {
+    offset-distance: 0%;
+  }
+
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@keyframes orbit-node-1 {
+  from {
+    offset-distance: -75%;
+  }
+
+  to {
+    offset-distance: 25%;
+  }
+}
+
+@keyframes orbit-node-2 {
+  from {
+    offset-distance: -50%;
+  }
+
+  to {
+    offset-distance: 50%;
+  }
+}
+
+@keyframes orbit-node-3 {
+  from {
+    offset-distance: -25%;
+  }
+
+  to {
+    offset-distance: 75%;
+  }
+}
+
+.hero-orbit-node {
+  offset-path: var(--hero-orbit-path);
+  offset-rotate: 0deg;
+  offset-anchor: center;
+  animation-duration: 20s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-delay: 0s;
+  will-change: offset-distance;
+}
+
+.hero-orbit-node-0 {
+  animation-name: orbit-node-0;
+  animation-delay: 0s;
+}
+
+.hero-orbit-node-1 {
+  animation-name: orbit-node-1;
+  animation-delay: -5s;
+}
+
+.hero-orbit-node-2 {
+  animation-name: orbit-node-2;
+  animation-delay: -10s;
+}
+
+.hero-orbit-node-3 {
+  animation-name: orbit-node-3;
+  animation-delay: -15s;
+}
+
+.hero-orbit-track-shadow {
+  stroke: rgb(0 0 0 / 0.35);
+  opacity: 0.6;
+  stroke-width: 2;
+  stroke-linejoin: miter;
+  stroke-linecap: butt;
+  stroke-miterlimit: 1;
+}
+
+.hero-orbit-track-body {
+  stroke: rgb(255 255 255 / 0.09);
+  stroke-width: 1.5;
+  stroke-linejoin: miter;
+  stroke-linecap: butt;
+  stroke-miterlimit: 1;
+}
+
+.hero-orbit-track-highlight {
+  stroke: rgb(255 255 255 / 0.04);
+  stroke-width: 0.8;
+  stroke-linejoin: miter;
+  stroke-linecap: butt;
+  stroke-miterlimit: 1;
+}
+
+.theme-paper .hero-orbit-track-shadow {
+  stroke: rgb(20 20 20 / 0.08);
+  opacity: 0.7;
+  stroke-linejoin: miter;
+  stroke-linecap: butt;
+  stroke-miterlimit: 1;
+}
+
+.theme-paper .hero-orbit-track-body {
+  stroke: rgb(20 20 20 / 0.1);
+  stroke-linejoin: miter;
+  stroke-linecap: butt;
+  stroke-miterlimit: 1;
+}
+
+.theme-paper .hero-orbit-track-highlight {
+  stroke: rgb(255 255 255 / 0.55);
+  stroke-linejoin: miter;
+  stroke-linecap: butt;
+  stroke-miterlimit: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-orbit-node {
+    animation: none;
+  }
+
+  .hero-orbit-node-0 {
+    offset-distance: 0%;
+  }
+
+  .hero-orbit-node-1 {
+    offset-distance: 25%;
+  }
+
+  .hero-orbit-node-2 {
+    offset-distance: 50%;
+  }
+
+  .hero-orbit-node-3 {
+    offset-distance: 75%;
+  }
+}
+
+/* Section entrance animations - weighted stagger with cubic easing */
+.section-entrance-item {
+  opacity: 0;
+  transform: translateY(2rem);
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.section-visible .section-entrance-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-visible .section-entrance-item--1 {
+  transition-delay: 0ms;
+}
+
+.section-visible .section-entrance-item--2 {
   transition-delay: 140ms;
 }
 
-.contact-section--visible .contact-entrance-item--3 {
+.section-visible .section-entrance-item--3 {
   transition-delay: 280ms;
 }
 
-.contact-section--visible .contact-entrance-item--4 {
+.section-visible .section-entrance-item--4 {
   transition-delay: 420ms;
 }
 
-.contact-section--visible .contact-entrance-item--5 {
+.section-visible .section-entrance-item--5 {
   transition-delay: 560ms;
 }
 
-@media (min-width: 769px) {
-  .home-stack-container {
-    position: relative;
-  }
-
+@media (max-width: 768px) {
   .stack-section {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    height: 100dvh;
-    min-height: 0;
-    overflow: hidden;
-    align-items: center;
-    padding: 0;
+    align-items: flex-start;
   }
 
   .stack-section-inner {
-    padding-top: 5rem;
-    padding-bottom: 3rem;
+    max-height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-top: 4.5rem;
+    padding-bottom: 2.5rem;
+    -webkit-overflow-scrolling: touch;
   }
+}
 
-  .section-services {
-    z-index: 1;
-  }
-
-  .section-process {
-    z-index: 2;
-  }
-
-  .section-about {
-    z-index: 3;
-  }
-
-  .section-contact {
-    z-index: 4;
-    transition: transform 0.5s ease-out;
-    background:
-      radial-gradient(
-        ellipse 80% 60% at 50% 100%,
-        color-mix(in srgb, var(--accent) 8%, transparent),
-        transparent 70%
-      ),
-      var(--surface);
-    box-shadow: 0 -48px 96px rgb(0 0 0 / 0.35);
-  }
-
-  .stack-contact-track {
-    height: 165vh;
-    height: 165dvh;
-  }
-
+@media (min-width: 769px) {
   .stack-section-inner {
     padding-top: 6rem;
     padding-bottom: 4rem;
   }
 }
 
-@media (max-width: 768px) {
-  .stack-section {
-    position: relative !important;
-    top: auto !important;
-    height: auto !important;
-    min-height: 100dvh;
-    overflow: visible;
-    padding: 2.5rem 1.25rem;
-  }
-
-  .stack-section-inner {
-    padding-inline: 0;
-  }
-
-  .stack-contact-track {
-    height: auto;
-  }
-
-  .contact-entrance-item {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
-
-@media (min-width: 769px) and (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) {
   .stack-section {
     position: relative;
     top: auto;
     height: auto;
     min-height: 100dvh;
     overflow: visible;
+    align-items: flex-start;
+    padding: 2.5rem 1.25rem;
   }
 
-  .stack-contact-track {
-    height: auto;
+  .stack-section-inner {
+    max-height: none;
+    overflow: visible;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-inline: 0;
   }
+}
 
-  .section-contact {
-    transition: none;
-    box-shadow: none;
-  }
-
-  .contact-entrance-item {
+@media (prefers-reduced-motion: reduce) {
+  .reveal-item {
     opacity: 1;
     transform: none;
     transition: none;
@@ -652,6 +813,44 @@
   }
 }
 
+/* Spinner loader — From Uiverse.io by mrhyddenn */
+.intro-spinner-wrap {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-spinner {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  cursor: not-allowed;
+  border-radius: 50%;
+  border: 2px solid #444;
+  box-shadow: -10px -10px 10px #6359f8, 0px -10px 10px 0px #9c32e2, 10px -10px 10px #f36896, 10px 0 10px #ff0b0b, 10px 10px 10px 0px #ff5500, 0 10px 10px 0px #ff9500, -10px 10px 10px 0px #ffb700;
+  animation: intro-rot 0.3s linear infinite;
+}
+
+.intro-spinnerin {
+  border: 2px solid #444;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes intro-rot {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Stagger helpers */
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
@@ -663,55 +862,47 @@
 .delay-800 { animation-delay: 800ms; }
 
 /* ── CTA section ── */
-@keyframes cta-logo-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-.cta-section-card {
-  border: 1px solid rgb(255 255 255 / 0.08);
-  box-shadow: 0 16px 48px rgb(0 0 0 / 0.35);
-}
-
 .cta-band {
   background: var(--brand-cta-surface);
 }
 
-.cta-section-card-inner {
-  background: var(--brand-cta-elevated);
+.cta-section-bg {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgb(255 255 255 / 0.035) 1px,
+    transparent 0
+  );
+  background-size: 28px 28px;
+  opacity: 0.85;
 }
 
-.footer-band {
-  background: var(--brand-footer-surface);
+.cta-section-glow {
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 50% 100%,
+      color-mix(in srgb, var(--accent) 9%, transparent),
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse 45% 35% at 50% 0%,
+      rgb(255 255 255 / 0.04),
+      transparent 72%
+    );
 }
 
-.cta-section-card--visible {
-  animation: hero-reveal 0.9s var(--ease-out-expo) both;
+.cta-primary-button {
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
-.cta-logo-float {
-  animation: cta-logo-float 4.5s ease-in-out infinite;
-}
-
-.cta-section-button {
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.cta-section-button:hover {
+.cta-primary-button:hover {
   transform: translateY(-2px);
   opacity: 0.92;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .cta-logo-float,
-  .cta-section-card--visible {
-    animation: none;
-  }
+.footer-band {
+  background: var(--brand-footer-surface);
 }
 
 /* ── Header ── */

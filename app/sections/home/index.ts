@@ -1,4 +1,5 @@
 export { HomeStackedSections } from "./HomeStackedSections";
+export { ContactSectionContent } from "./ContactSection";
 export { HomeAboutSection } from "./HomeAboutSection";
 export { HomeCareersSection } from "./HomeCareersSection";
 export { HomeContactSection } from "./HomeContactSection";

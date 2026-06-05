@@ -12,11 +12,11 @@ export const COMPANY = {
 } as const;
 
 export const FOOTER_CTA = {
-  title: "Ready to find talent or ship your next build?",
+  title: "Let's build what's next.",
   description:
-    "Reach out for recruitment, contractor packages, or a project to build together.",
+    "Recruitment, contractor packages, or a product to ship — one conversation to start.",
   href: "/contact",
-  label: "Contact Us",
+  label: "Start a conversation",
 } as const;
 
 export const MENU_LINKS = [

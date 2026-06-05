@@ -6,9 +6,18 @@ export function HeroSection() {
     <section className="theme-obsidian relative overflow-hidden bg-surface">
       <div className="section-orb -left-28 top-24 h-80 w-80 opacity-40" />
       <div className="section-orb -right-20 bottom-0 h-72 w-72 opacity-25" />
-      <div className="relative mx-auto grid min-h-[calc(100vh-4rem)] max-w-6xl grid-cols-1 items-center gap-16 px-5 py-20 sm:min-h-[calc(100vh-5.25rem)] sm:px-8 sm:py-24 lg:grid-cols-2 lg:gap-20 lg:px-12 lg:py-28">
-        <HeroContent />
-        <HeroVisual />
+      <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-32 lg:px-12 lg:py-40">
+        <div className="relative min-h-[calc(100vh-4rem)] sm:min-h-[calc(100vh-5.25rem)]">
+          {/* Content - Left side */}
+          <div className="flex items-center lg:max-w-2xl">
+            <HeroContent />
+          </div>
+          
+          {/* Orbit Visual - Right side overlay */}
+          <div className="pointer-events-none absolute -top-12 -bottom-12 right-0 w-1/2 hidden lg:block">
+            <HeroVisual />
+          </div>
+        </div>
       </div>
     </section>
   );
