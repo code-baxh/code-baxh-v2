@@ -21,16 +21,16 @@ export const SITE = {
   url: SITE_URL,
   // One-line elevator pitch — keep IDENTICAL across site, Clutch, Upwork,
   // LinkedIn, GitHub for strong entity recognition (helps AI citation).
-  tagline: "Full-stack web, SaaS & AI development agency",
+  tagline: "Web, Mobile, SaaS & AI development agency",
   description:
-    "CodeBaxh is a senior full-stack software development agency building production-grade web apps, multi-tenant SaaS, and AI/LLM products with Next.js, React, Node.js, and AWS — trusted by teams shipping to the US and EU.",
+    "CodeBaxh is a software development agency. Our team delivers web and mobile apps, multi-tenant SaaS, and AI products with Next.js, React, React Native, Node.js, Python, and more — for startups and companies worldwide.",
   email: "code.baxh@gmail.com",
   phone: "+923435527709",
   phoneDisplay: "+92 343 552 7709",
-  // Founder / timezone — communication clarity is a key offshore trust lever.
+  // Founder / timezone — communication clarity is a key trust lever.
   foundingLocation: "Islamabad, Pakistan",
   addressLines: ["Ghouri Town, Islamabad, Pakistan"],
-  timezoneNote: "Daily overlap with US & EU working hours · async-first · fluent English",
+  timezoneNote: "Flexible timezone overlap · async-first · fluent English",
   logo: "/logo/complete-logo.png",
   logoMark: "/logo/shortLogo.png",
   ogImage: "/og.png", // TODO: add a 1200×630 OG image at public/og.png
@@ -95,8 +95,8 @@ export const CLIENT_LOGOS: readonly string[] = [];
 
 /** Headline proof stats reused across pages. */
 export const STATS = [
-  { value: "6+ yrs", label: "Building production software" },
+  { value: "6+ yrs", label: "Shipping software for clients" },
   { value: "11 wks", label: "Multi-tenant SaaS MVP delivered" },
   { value: "Top Rated Plus", label: "Upwork — sustained track record" },
-  { value: "US / EU", label: "Timezone overlap, async-first" },
+  { value: "Global", label: "Clients worldwide, async-first" },
 ] as const;

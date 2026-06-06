@@ -59,7 +59,7 @@ export default function ServicesPage() {
         <PageHero
           eyebrow="Services"
           title="Software development services that ship."
-          description="Dedicated, senior teams for web, SaaS, and AI — each engineered to take you from idea to launched, production-grade product."
+          description="Dedicated teams for web, mobile, SaaS, and AI — each engineered to take you from idea to launched, robust product."
           primaryHref="/contact"
           primaryLabel="Book a free discovery call"
           secondaryHref="/work"

@@ -12,7 +12,7 @@ import { SITE } from "../lib/site";
 export const metadata: Metadata = {
   title: "Contact — Book a Free Discovery Call",
   description:
-    "Book a free, no-obligation discovery call with CodeBaxh, or reach us by email. We build production web, SaaS, and AI products for US and EU teams.",
+    "Book a free, no-obligation discovery call with CodeBaxh, or reach us by email. We build web, SaaS, and AI products for startups and companies worldwide.",
   alternates: { canonical: "/contact" },
 };
 

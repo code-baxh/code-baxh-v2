@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 const PROCESS_FAQS = [
   {
     q: "How often will we hear from you?",
-    a: "Weekly, at minimum — a demo of working software plus a shared board you can check anytime, and async updates throughout the week across US/EU hours.",
+    a: "Weekly, at minimum — a demo of working software plus a shared board you can check anytime, and async updates throughout the week across your working hours.",
   },
   {
     q: "What do you need from us to start?",

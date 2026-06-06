@@ -37,9 +37,9 @@ export const CASE_STUDIES: CaseStudy[] = [
     category: "SaaS MVP",
     metaTitle: "11-Week SaaS MVP Case Study | Multi-Tenant SaaS | CodeBaxh",
     metaDescription:
-      "How CodeBaxh delivered a production-ready multi-tenant SaaS MVP — auth, billing, and dashboards — in 11 weeks, on architecture built to scale.",
+      "How CodeBaxh delivered a launch-ready multi-tenant SaaS MVP — auth, billing, and dashboards — in 11 weeks, on architecture built to scale.",
     summary:
-      "A production-ready multi-tenant SaaS MVP — auth, billing, and dashboards — delivered in 11 weeks.",
+      "A launch-ready multi-tenant SaaS MVP — auth, billing, and dashboards — delivered in 11 weeks.",
     problem:
       "A founder needed to validate a SaaS idea with real, paying users quickly — but couldn't afford the throwaway code that forces a rewrite the moment the product gets traction.",
     approach: [
@@ -61,11 +61,11 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "legal-contract-ai",
     client: "Legal-tech",
-    title: "Legal contract analysis with a production RAG pipeline",
+    title: "Legal contract analysis with a RAG pipeline",
     category: "AI / RAG",
     metaTitle: "Legal Contract AI Case Study | RAG Pipeline | CodeBaxh",
     metaDescription:
-      "How CodeBaxh built a production RAG pipeline for legal contract analysis — grounded, accurate, and source-cited answers over complex documents.",
+      "How CodeBaxh built a RAG pipeline for legal contract analysis — grounded, accurate, and source-cited answers over complex documents.",
     summary:
       "A retrieval-augmented (RAG) system that analyzes legal contracts and answers questions grounded in the source documents.",
     problem:

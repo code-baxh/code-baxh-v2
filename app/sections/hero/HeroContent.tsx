@@ -36,7 +36,7 @@ export function HeroContent() {
         }`}
         style={{ animationDelay: introReady ? "420ms" : undefined }}
       >
-        Full-stack web, SaaS &amp; AI development
+        Software development agency
       </p>
 
       <h1
@@ -45,7 +45,7 @@ export function HeroContent() {
         }`}
         style={{ animationDelay: introReady ? "500ms" : undefined }}
       >
-        We build production-grade web, SaaS, and AI products — fast.
+        We build web, mobile, SaaS &amp; AI products that ship.
       </h1>
 
       <p
@@ -54,9 +54,9 @@ export function HeroContent() {
         }`}
         style={{ animationDelay: introReady ? "580ms" : undefined }}
       >
-        CodeBaxh is a senior full-stack software studio. We turn ideas into
-        shipped products — multi-tenant SaaS, production AI, and the web and
-        mobile apps around them.
+        CodeBaxh is a software development agency. Our team turns your idea into
+        a real, working product — web and mobile apps, SaaS platforms, and AI
+        features — and ships it fast. Tell us what you&apos;re building.
       </p>
 
       <div

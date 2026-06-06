@@ -8,7 +8,7 @@ export const LOGO_COMPACT_SRC = "/logo/shortLogo.png";
 export const COMPANY = {
   name: SITE.name,
   tagline:
-    "A senior full-stack software studio building production web, SaaS, and AI products for teams shipping to the US and EU.",
+    "A software development agency. Our team delivers web and mobile apps, SaaS, and AI products for startups and companies worldwide.",
   addressLines: SITE.addressLines,
   email: SITE.email,
   phone: SITE.phone,

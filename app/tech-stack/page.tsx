@@ -21,11 +21,15 @@ const STACK_GROUPS = [
   },
   {
     group: "Backend",
-    items: ["Node.js", "NestJS", "REST & GraphQL APIs"],
+    items: ["Node.js", "NestJS", "Python", "FastAPI", "PHP", "Laravel", "REST & GraphQL"],
+  },
+  {
+    group: "CMS",
+    items: ["Strapi (headless)", "Headless / API-first CMS"],
   },
   {
     group: "Data",
-    items: ["PostgreSQL", "MongoDB", "Supabase", "pgvector"],
+    items: ["PostgreSQL", "MySQL", "MongoDB", "Redis", "Supabase", "pgvector"],
   },
   {
     group: "Cloud & DevOps",

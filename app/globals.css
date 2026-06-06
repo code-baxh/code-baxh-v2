@@ -790,6 +790,75 @@
   background: var(--brand-footer-surface);
 }
 
+/* ── Home showcase (sticky stacking cards) ── */
+.showcase-card {
+  /* Opaque so stacked cards cleanly cover the one beneath. */
+  background:
+    radial-gradient(
+      130% 130% at 0% 0%,
+      color-mix(in srgb, var(--accent) 9%, transparent),
+      transparent 52%
+    ),
+    var(--brand-obsidian-elevated);
+  box-shadow: 0 24px 70px rgb(0 0 0 / 0.5);
+}
+
+.showcase-card-glow {
+  background: radial-gradient(
+    ellipse 55% 50% at 92% 8%,
+    var(--accent-soft),
+    transparent 70%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase-card {
+    box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
+  }
+}
+
+/* ── Marquee (tech strip) ── */
+.tech-marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+.tech-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 0.75rem;
+  animation: marquee-scroll 38s linear infinite;
+}
+
+.tech-marquee:hover .tech-marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tech-marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    width: auto;
+  }
+  .tech-marquee {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
 /* ── Header ── */
 .header-pill {
   font-family: var(--font-header), "Nunito", system-ui, sans-serif;

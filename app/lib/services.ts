@@ -45,7 +45,7 @@ export const PROCESS_STEPS = [
   },
   {
     title: "Build in short loops",
-    body: "Weekly demos, a shared board, and async updates across US/EU hours. You always see working software, not status decks.",
+    body: "Weekly demos, a shared board, and async updates across your working hours. You always see working software, not status decks.",
   },
   {
     title: "Deploy & support",
@@ -61,11 +61,19 @@ export const TECH_STACK = [
   "TypeScript",
   "Node.js",
   "NestJS",
+  "Python",
+  "FastAPI",
+  "PHP",
+  "Laravel",
+  "Strapi (headless CMS)",
   "PostgreSQL",
+  "MySQL",
   "MongoDB",
+  "Redis",
   "Supabase",
   "AWS",
   "Azure",
+  "Docker",
   "Stripe",
   "OpenAI",
   "Anthropic",
@@ -79,10 +87,10 @@ export const SERVICES: Service[] = [
     keyword: "saas development company",
     metaTitle: "SaaS Development Company | Multi-Tenant SaaS Built Fast | CodeBaxh",
     metaDescription:
-      "CodeBaxh builds production-grade, multi-tenant SaaS platforms with Next.js, Node.js, and AWS. We shipped a multi-tenant SaaS MVP in 11 weeks. Book a free discovery call.",
+      "CodeBaxh builds robust, multi-tenant SaaS platforms with Next.js, Node.js, and AWS. We shipped a multi-tenant SaaS MVP in 11 weeks. Book a free discovery call.",
     eyebrow: "SaaS Development",
     summary:
-      "Production-grade multi-tenant SaaS — from MVP to scale, built to launch fast and grow.",
+      "Robust multi-tenant SaaS — from MVP to scale, built to launch fast and grow.",
     heroSubhead:
       "We build secure, multi-tenant SaaS platforms that are ready for real customers — billing, auth, dashboards, and the architecture to scale.",
     problem:
@@ -99,14 +107,14 @@ export const SERVICES: Service[] = [
     differentiators: [
       {
         title: "We've shipped real SaaS",
-        body: "A production multi-tenant SaaS MVP delivered in 11 weeks — auth, billing, and a customer dashboard, on architecture that scaled past launch.",
+        body: "A multi-tenant SaaS MVP delivered in 11 weeks — auth, billing, and a customer dashboard, on architecture that scaled past launch.",
       },
       {
         title: "Architecture that scales",
         body: "We design for multi-tenancy, billing, and growth from day one so you don't re-platform at your first 100 customers.",
       },
       {
-        title: "Senior-only delivery",
+        title: "Experienced engineers only",
         body: "No hand-offs to juniors. The people scoping your build are the people writing the code.",
       },
     ],
@@ -118,7 +126,7 @@ export const SERVICES: Service[] = [
       },
       {
         q: "How much does it cost to build a SaaS product?",
-        a: "A production-ready SaaS MVP usually starts in the low five figures (USD), depending on scope. We give a fixed estimate after a free discovery call so there are no surprises.",
+        a: "A launch-ready SaaS MVP usually starts in the low five figures (USD), depending on scope. We give a fixed estimate after a free discovery call so there are no surprises.",
       },
       {
         q: "Can you build multi-tenant architecture?",
@@ -137,7 +145,7 @@ export const SERVICES: Service[] = [
     keyword: "ai integration services",
     metaTitle: "AI Integration Services | OpenAI, Anthropic & RAG | CodeBaxh",
     metaDescription:
-      "Add real AI to your product: RAG pipelines, LLM features, and AI agents with OpenAI and Anthropic. CodeBaxh ships production AI — including a legal-contract RAG system. Book a call.",
+      "Add real AI to your product: RAG pipelines, LLM features, and AI agents with OpenAI and Anthropic. CodeBaxh ships real-world AI — including a legal-contract RAG system. Book a call.",
     eyebrow: "AI Integration",
     summary:
       "Real, production AI features — RAG pipelines, LLM apps, and agents built with OpenAI and Anthropic.",
@@ -195,7 +203,7 @@ export const SERVICES: Service[] = [
     keyword: "custom web development company",
     metaTitle: "Full-Stack Web Development Company | Next.js & React | CodeBaxh",
     metaDescription:
-      "Custom full-stack web development with Next.js, React, TypeScript, and Node.js. CodeBaxh builds fast, scalable web apps for US/EU teams. Book a free discovery call.",
+      "Custom full-stack web development with Next.js, React, TypeScript, Node.js, and Python. CodeBaxh builds fast, scalable web apps for clients worldwide. Book a free discovery call.",
     eyebrow: "Web Development",
     summary:
       "Custom, full-stack web applications built with Next.js, React, TypeScript, and Node.js.",
@@ -215,7 +223,7 @@ export const SERVICES: Service[] = [
     differentiators: [
       {
         title: "Full-stack, end to end",
-        body: "Frontend, backend, infrastructure, and deployment from one senior team — no integration gaps.",
+        body: "Frontend, backend, infrastructure, and deployment from one experienced team — no integration gaps.",
       },
       {
         title: "Performance-first",
@@ -254,7 +262,7 @@ export const SERVICES: Service[] = [
     summary:
       "Specialist Next.js development — App Router, Server Components, and SEO-ready rendering.",
     heroSubhead:
-      "We build Next.js apps that are fast, crawlable, and production-ready — using the App Router, Server Components, and the right rendering strategy per route.",
+      "We build Next.js apps that are fast, crawlable, and launch-ready — using the App Router, Server Components, and the right rendering strategy per route.",
     problem:
       "Next.js is powerful but easy to misuse: client-only rendering kills SEO, waterfalls hurt performance, and the App Router has real learning curve. You want a team that knows the framework deeply.",
     deliverables: [
@@ -502,7 +510,7 @@ export const SERVICES: Service[] = [
       },
       {
         q: "Will my MVP be throwaway code?",
-        a: "No. We scope tightly but build on production-grade architecture, so the MVP becomes the foundation for v2 instead of a rewrite.",
+        a: "No. We scope tightly but build on robust architecture, so the MVP becomes the foundation for v2 instead of a rewrite.",
       },
       {
         q: "How much does an MVP cost?",
@@ -515,25 +523,25 @@ export const SERVICES: Service[] = [
     navLabel: "API & Backend",
     title: "API & Backend Development Services",
     keyword: "api and backend development services",
-    metaTitle: "API & Backend Development | Node.js, NestJS, PostgreSQL | CodeBaxh",
+    metaTitle: "API & Backend Development | Node.js, Python, PHP | CodeBaxh",
     metaDescription:
-      "Scalable APIs and backends with Node.js, NestJS, PostgreSQL, MongoDB, and Supabase. CodeBaxh builds secure, well-documented backends. Book a free discovery call.",
+      "Scalable APIs and backends with Node.js, NestJS, Python/FastAPI, PHP/Laravel, and Strapi — across PostgreSQL, MySQL, MongoDB, and Supabase. CodeBaxh builds secure, well-documented backends. Book a free discovery call.",
     eyebrow: "API & Backend",
     summary:
-      "Secure, scalable APIs and backends with Node.js, NestJS, and PostgreSQL.",
+      "Secure, scalable APIs and backends in Node.js, Python, or PHP — your stack, your database.",
     heroSubhead:
-      "We build the APIs, data models, and backend services your product runs on — secure, documented, and ready to scale.",
+      "We build the APIs, data models, and backend services your product runs on — in Node.js, Python/FastAPI, or PHP/Laravel — secure, documented, and ready to scale.",
     problem:
-      "A shaky backend caps everything above it: slow APIs, fragile data models, and no documentation slow every team that touches them. You need a backend built to last.",
+      "A shaky backend caps everything above it: slow APIs, fragile data models, and no documentation slow every team that touches them. You need a backend built to last, in the language and database that fit your project.",
     deliverables: [
-      "REST and GraphQL APIs",
-      "Database design (PostgreSQL, MongoDB, Supabase)",
+      "REST and GraphQL APIs (Node.js, Python/FastAPI, PHP/Laravel)",
+      "Headless CMS setup and integration (Strapi)",
+      "Database design (PostgreSQL, MySQL, MongoDB, Supabase, Redis)",
       "Authentication, authorization, and security",
       "Third-party and internal integrations",
-      "Background jobs, queues, and webhooks",
-      "API documentation and testing",
+      "Background jobs, queues, webhooks, and API docs",
     ],
-    techStack: ["Node.js", "NestJS", "PostgreSQL", "MongoDB", "Supabase", "AWS"],
+    techStack: ["Node.js", "NestJS", "Python", "FastAPI", "PHP", "Laravel", "Strapi", "PostgreSQL", "MySQL", "MongoDB", "Redis", "Docker"],
     differentiators: [
       {
         title: "Designed to scale",
@@ -554,8 +562,12 @@ export const SERVICES: Service[] = [
         a: "Both. We pick based on your clients and data needs: REST for simple, cacheable APIs; GraphQL when clients need flexible, typed queries. We can also build hybrid setups.",
       },
       {
+        q: "Do you only work in Node.js, or also Python and PHP?",
+        a: "All three. We build backends in Node.js/NestJS, Python/FastAPI, and PHP/Laravel, and set up headless CMS with Strapi — we pick the stack that fits your project and team, not a one-size-fits-all.",
+      },
+      {
         q: "Which database should I use?",
-        a: "PostgreSQL is our default for relational data and reliability; MongoDB for flexible documents; Supabase when you want Postgres plus auth and realtime out of the box. We advise based on your data.",
+        a: "PostgreSQL or MySQL for relational data; MongoDB for flexible documents; Redis for caching and queues; Supabase when you want Postgres plus auth and realtime out of the box. We advise based on your data.",
       },
       {
         q: "Can you build an API for our existing frontend or mobile app?",
@@ -570,10 +582,10 @@ export const SERVICES: Service[] = [
     keyword: "ai chatbot development services",
     metaTitle: "AI Chatbot Development | Custom RAG Chatbots | CodeBaxh",
     metaDescription:
-      "Custom AI chatbots grounded in your data with RAG — support, sales, and internal assistants using OpenAI and Anthropic. CodeBaxh ships production chatbots. Book a call.",
+      "Custom AI chatbots grounded in your data with RAG — support, sales, and internal assistants using OpenAI and Anthropic. CodeBaxh ships chatbots. Book a call.",
     eyebrow: "AI Chatbots",
     summary:
-      "Custom AI chatbots grounded in your data — accurate, on-brand, and production-ready.",
+      "Custom AI chatbots grounded in your data — accurate, on-brand, and launch-ready.",
     heroSubhead:
       "We build AI chatbots that actually know your business — grounded in your content with RAG, not generic and hallucinating.",
     problem:
@@ -622,3 +634,25 @@ export const SERVICES: Service[] = [
 export function getService(slug: string): Service | undefined {
   return SERVICES.find((s) => s.slug === slug);
 }
+
+/**
+ * Curated display order for the services grid + hub. Leads with the broadest,
+ * most representative services (SaaS, AI, web, mobile, backend, cloud); the
+ * Next.js page stays for SEO but sits lower so it isn't over-emphasized.
+ */
+const SERVICE_ORDER = [
+  "saas-development",
+  "ai-integration",
+  "web-development",
+  "mobile-app-development",
+  "api-backend-development",
+  "cloud-devops",
+  "nextjs-development",
+  "stripe-integration",
+  "mvp-development",
+  "ai-chatbot-development",
+];
+
+export const ORDERED_SERVICES: Service[] = SERVICE_ORDER.map((slug) =>
+  SERVICES.find((s) => s.slug === slug),
+).filter((s): s is Service => Boolean(s));

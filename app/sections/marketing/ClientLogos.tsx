@@ -11,7 +11,7 @@ export function ClientLogos() {
   return (
     <div className="flex flex-col items-center gap-4 text-center">
       <p className="text-xs font-medium uppercase tracking-[0.2em] text-text-muted">
-        {hasLogos ? "Recent work for" : "Trusted by US & EU clients"}
+        {hasLogos ? "Recent work for" : "Trusted by clients worldwide"}
       </p>
       {hasLogos && (
         <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-lg font-semibold tracking-tight text-text-primary/80 md:text-xl">

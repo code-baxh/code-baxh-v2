@@ -1,4 +1,5 @@
 export { ClientLogos } from "./ClientLogos";
+export { HomeShowcase } from "./HomeShowcase";
 export { StatStrip } from "./StatStrip";
 export { Breadcrumbs } from "./Breadcrumbs";
 export { FaqSection } from "./FaqSection";

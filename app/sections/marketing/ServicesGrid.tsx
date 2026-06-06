@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { SERVICES } from "../../lib/services";
+import { ORDERED_SERVICES } from "../../lib/services";
 import { Reveal } from "../shared";
 
 /** Grid of service cards linking to each service landing page. */
 export function ServicesGrid({ limit }: { limit?: number }) {
-  const services = limit ? SERVICES.slice(0, limit) : SERVICES;
+  const services = limit ? ORDERED_SERVICES.slice(0, limit) : ORDERED_SERVICES;
 
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

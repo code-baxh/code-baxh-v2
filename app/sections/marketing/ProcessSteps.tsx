@@ -17,7 +17,7 @@ export function ProcessSteps({
           <SectionHeading
             eyebrow="How we work"
             title="A calm, visible operating rhythm."
-            description="Same process from discovery to launch — short loops, weekly demos, and clear async updates across US and EU hours."
+            description="Same process from discovery to launch — short loops, weekly demos, and clear async updates that flex to your timezone."
           />
         )}
         <div className="mt-12 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

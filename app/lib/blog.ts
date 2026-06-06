@@ -88,7 +88,7 @@ export const BLOG_POSTS: BlogPost[] = [
     title: "Building a RAG pipeline with OpenAI and Anthropic",
     metaTitle: "Building a RAG Pipeline with OpenAI & Anthropic (2026)",
     metaDescription:
-      "How to build a production RAG pipeline: chunking, embeddings, vector search, grounding, and evaluation — from a team shipping production AI.",
+      "How to build a RAG pipeline: chunking, embeddings, vector search, grounding, and evaluation — from a team shipping production AI.",
     excerpt:
       "RAG is how you make an LLM answer from your data instead of hallucinating. Here's the production pipeline we build, step by step.",
     datePublished: "2026-04-28",
@@ -151,7 +151,7 @@ export const BLOG_POSTS: BlogPost[] = [
     sections: [
       {
         paragraphs: [
-          "A focused, production-ready SaaS MVP typically starts in the low five figures (USD) and rises with scope. The price is driven less by 'how many features' and more by complexity: integrations, compliance, real-time data, and how polished the UX needs to be.",
+          "A focused, launch-ready SaaS MVP typically starts in the low five figures (USD) and rises with scope. The price is driven less by 'how many features' and more by complexity: integrations, compliance, real-time data, and how polished the UX needs to be.",
         ],
       },
       {
@@ -168,7 +168,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: "How to spend less (without regret)",
         paragraphs: [
-          "The cheapest SaaS is the one you don't have to rebuild. The biggest savings come from scoping tightly to what proves the idea, then building that small scope on production-grade architecture so it becomes the foundation for v2 rather than throwaway code. We delivered a multi-tenant SaaS MVP in 11 weeks this way.",
+          "The cheapest SaaS is the one you don't have to rebuild. The biggest savings come from scoping tightly to what proves the idea, then building that small scope on robust architecture so it becomes the foundation for v2 rather than throwaway code. We delivered a multi-tenant SaaS MVP in 11 weeks this way.",
         ],
       },
     ],
@@ -252,7 +252,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: "A common path",
         paragraphs: [
-          "Many founders start with an agency to ship the first production version fast, then hire in-house once the product has traction — taking over a clean, documented codebase rather than a prototype. We build for exactly this handoff: production-grade architecture your future team can own.",
+          "Many founders start with an agency to ship the first production version fast, then hire in-house once the product has traction — taking over a clean, documented codebase rather than a prototype. We build for exactly this handoff: robust architecture your future team can own.",
         ],
       },
     ],

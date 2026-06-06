@@ -31,11 +31,11 @@ export function organizationSchema() {
       contactType: "sales",
       email: SITE.email,
       telephone: SITE.phone,
-      areaServed: ["US", "EU", "Worldwide"],
+      areaServed: "Worldwide",
       availableLanguage: ["English"],
     },
     priceRange: "$$",
-    areaServed: ["US", "EU", "GB", "CA", "AU", "Worldwide"],
+    areaServed: "Worldwide",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Islamabad",
@@ -97,7 +97,7 @@ export function serviceSchema(opts: {
     serviceType: opts.serviceType ?? opts.name,
     url: `${SITE_URL}/services/${opts.slug}`,
     provider: { "@id": ORG_ID },
-    areaServed: ["US", "EU", "Worldwide"],
+    areaServed: "Worldwide",
   } as const;
 }
 

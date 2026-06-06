@@ -14,24 +14,24 @@ import { breadcrumbSchema } from "../lib/schema";
 import { SITE } from "../lib/site";
 
 export const metadata: Metadata = {
-  title: "About CodeBaxh — Senior Full-Stack Software Studio",
+  title: "About CodeBaxh — Software Development Agency",
   description:
-    "CodeBaxh is a senior full-stack software studio led by Bilal Khursheed, building production web, SaaS, and AI products for US and EU clients. Upwork Top Rated Plus.",
+    "CodeBaxh is a software development agency led by Bilal Khursheed. Our team delivers web and mobile apps, SaaS, and AI products for startups and companies worldwide. Upwork Top Rated Plus.",
   alternates: { canonical: "/about" },
 };
 
 const VALUES = [
   {
-    title: "Senior, hands-on delivery",
-    body: "No hand-offs to juniors. The people who scope your build are the people who write the production code.",
+    title: "Experienced, hands-on delivery",
+    body: "No hand-offs to juniors. The people who scope your build are the people who write the code.",
   },
   {
     title: "Clear, async communication",
-    body: "Weekly demos, a shared board, and direct updates across US and EU hours. You always know where things stand.",
+    body: "Weekly demos, a shared board, and direct updates that flex to your timezone. You always know where things stand.",
   },
   {
     title: "Built to last",
-    body: "We ship fast, but on production-grade architecture — so your MVP becomes the foundation for v2, not a rewrite.",
+    body: "We ship fast, but on solid architecture — so your MVP becomes the foundation for v2, not a rewrite.",
   },
   {
     title: "Low-risk engagements",
@@ -52,8 +52,8 @@ export default function AboutPage() {
       <main>
         <PageHero
           eyebrow="About CodeBaxh"
-          title="A senior software studio that ships."
-          description="We're a small, full-stack team that builds production web, SaaS, and AI products for companies in the US and EU — with the proof to back it."
+          title="A software development agency that ships."
+          description="We're a focused, full-stack team that designs, builds, and launches web and mobile apps, SaaS platforms, and AI products for clients worldwide — with the proof to back it."
           primaryHref="/contact"
           primaryLabel="Book a free discovery call"
           secondaryHref="/work"
@@ -74,24 +74,25 @@ export default function AboutPage() {
                   Who we are
                 </p>
                 <h2 className="mt-4 text-3xl font-semibold tracking-tight text-text-primary md:text-4xl">
-                  Production experience, not promises.
+                  Real experience, not promises.
                 </h2>
               </Reveal>
               <div className="space-y-6">
                 <Reveal delay={100}>
                   <p className="text-lg leading-relaxed text-text-secondary">
-                    CodeBaxh builds software that runs in production for real
-                    customers — multi-tenant SaaS platforms, production AI
-                    systems, and the web and mobile apps around them. Our founder
-                    also works as a full-stack developer on Zoneomics, a
-                    production geospatial SaaS, bringing that real-world product
-                    experience to every engagement.
+                    CodeBaxh builds software that real customers use every day —
+                    multi-tenant SaaS platforms, AI systems, and the web and
+                    mobile apps around them. Our founder also works as a
+                    full-stack developer on Zoneomics, a live geospatial SaaS,
+                    bringing that real-world product experience to every
+                    engagement.
                   </p>
                 </Reveal>
                 <Reveal delay={200}>
                   <p className="text-lg leading-relaxed text-text-secondary">
-                    We&apos;re based in Islamabad and work with teams across the US
-                    and EU. {SITE.timezoneNote}.
+                    We&apos;re based in Islamabad and work with clients worldwide
+                    — across North America, Europe, the Middle East, and beyond.
+                    {" "}{SITE.timezoneNote}.
                   </p>
                 </Reveal>
               </div>
