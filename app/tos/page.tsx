@@ -6,9 +6,10 @@ import { LegalPageHeading } from "../sections/shared/LegalPageHeading";
 import { TermsOfServiceContent } from "./TermsOfServiceContent";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — Code Baxh",
+  title: "Terms of Service",
   description:
-    "Terms and conditions for using the Code Baxh website and recruitment services.",
+    "Terms and conditions for using the CodeBaxh website and services.",
+  alternates: { canonical: "/tos" },
 };
 
 export default function TermsPage() {

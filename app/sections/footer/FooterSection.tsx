@@ -5,20 +5,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ContactInfoItem } from "../shared/ContactInfoItem";
 import { useInView } from "../shared/useInView";
-import { COMPANY, LEGAL_LINKS, MENU_LINKS } from "./constants";
+import { COMPANY, FOOTER_NAV, LEGAL_LINKS } from "./constants";
 import { FooterLinkedIn } from "./FooterLinkedIn";
 import { FooterLogo } from "./FooterLogo";
 
-function MenuLink({ href, label }: { href: string; label: string }) {
+function FooterLink({ href, label }: { href: string; label: string }) {
   const pathname = usePathname();
   const isActive = pathname === href;
 
   return (
     <Link
       href={href}
-      className={`text-base transition-colors hover:text-text-primary ${
+      className={`text-sm transition-colors hover:text-text-primary ${
         isActive
-          ? "font-medium text-text-primary underline underline-offset-4"
+          ? "font-medium text-text-primary"
           : "text-text-secondary"
       }`}
     >
@@ -43,12 +43,12 @@ export function FooterSection() {
     <footer className="footer-band theme-obsidian border-t border-white/[0.08] pt-20 sm:pt-24 lg:pt-28">
       <div
         ref={ref}
-        className="mx-auto max-w-5xl px-5 pb-14 sm:px-8 sm:pb-16 lg:pb-20"
+        className="mx-auto max-w-6xl px-5 pb-14 sm:px-8 sm:pb-16 lg:pb-20"
       >
-        <div className="grid gap-12 md:grid-cols-3 md:gap-14 lg:gap-20 lg:gap-y-16">
+        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-10 lg:gap-14">
           <div className={revealClass(inView, 0)}>
             <FooterLogo />
-            <p className="mt-6 max-w-sm text-base leading-relaxed text-text-secondary">
+            <p className="mt-6 max-w-xs text-sm leading-relaxed text-text-secondary">
               {COMPANY.tagline}
             </p>
             <div className="mt-6">
@@ -56,58 +56,58 @@ export function FooterSection() {
             </div>
           </div>
 
-          <div className={revealClass(inView, 100)}>
-            <p className="text-base font-semibold text-text-primary">Menu</p>
-            <ul className="mt-5 space-y-4">
-              {MENU_LINKS.map((link) => (
-                <li key={link.href}>
-                  <MenuLink href={link.href} label={link.label} />
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className={revealClass(inView, 200)}>
-            <p className="text-base font-semibold text-text-primary">
-              Contact Us
-            </p>
-            <div className="mt-5 space-y-6 text-base text-text-secondary">
-              <ContactInfoItem icon={MapPin} label="Official Address">
-                <address className="not-italic leading-relaxed text-text-primary">
-                  {COMPANY.addressLines.map((line) => (
-                    <span key={line} className="block">
-                      {line}
-                    </span>
-                  ))}
-                </address>
-              </ContactInfoItem>
-
-              <ContactInfoItem icon={Mail} label="Email Us">
-                <a
-                  href={`mailto:${COMPANY.email}`}
-                  className="text-text-primary transition-colors hover:text-accent"
-                >
-                  {COMPANY.email}
-                </a>
-              </ContactInfoItem>
-
-              <ContactInfoItem icon={Phone} label="Phone">
-                <a
-                  href={`tel:${COMPANY.phone}`}
-                  className="text-text-primary transition-colors hover:text-accent"
-                >
-                  {COMPANY.phoneDisplay}
-                </a>
-              </ContactInfoItem>
+          {FOOTER_NAV.map((group, groupIndex) => (
+            <div
+              key={group.heading}
+              className={revealClass(inView, (100 + groupIndex * 100) as 100 | 200 | 300)}
+            >
+              <p className="text-sm font-semibold text-text-primary">
+                {group.heading}
+              </p>
+              <ul className="mt-5 space-y-3.5">
+                {group.links.map((link) => (
+                  <li key={link.href}>
+                    <FooterLink href={link.href} label={link.label} />
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
+          ))}
+        </div>
+
+        <div className={`mt-14 grid gap-6 border-t border-white/[0.08] pt-10 sm:grid-cols-3 ${revealClass(inView, 300)}`}>
+          <ContactInfoItem icon={MapPin} label="Address">
+            <address className="not-italic text-sm leading-relaxed text-text-primary">
+              {COMPANY.addressLines.map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
+            </address>
+          </ContactInfoItem>
+          <ContactInfoItem icon={Mail} label="Email">
+            <a
+              href={`mailto:${COMPANY.email}`}
+              className="text-sm text-text-primary transition-colors hover:text-accent"
+            >
+              {COMPANY.email}
+            </a>
+          </ContactInfoItem>
+          <ContactInfoItem icon={Phone} label="Phone">
+            <a
+              href={`tel:${COMPANY.phone}`}
+              className="text-sm text-text-primary transition-colors hover:text-accent"
+            >
+              {COMPANY.phoneDisplay}
+            </a>
+          </ContactInfoItem>
         </div>
 
         <div
-          className={`mt-14 flex flex-col gap-6 border-t border-white/[0.08] pt-8 sm:mt-16 sm:flex-row sm:items-center sm:justify-between sm:pt-10 ${revealClass(inView, 300)}`}
+          className={`mt-12 flex flex-col gap-6 border-t border-white/[0.08] pt-8 sm:flex-row sm:items-center sm:justify-between ${revealClass(inView, 300)}`}
         >
-          <p className="text-sm text-text-muted sm:text-base">
-            © {new Date().getFullYear()}, {COMPANY.name}
+          <p className="text-sm text-text-muted">
+            © {new Date().getFullYear()} {COMPANY.name}. All rights reserved.
           </p>
 
           <nav
@@ -118,7 +118,7 @@ export function FooterSection() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-text-secondary transition-colors hover:text-text-primary sm:text-base"
+                className="text-sm text-text-secondary transition-colors hover:text-text-primary"
               >
                 {link.label}
               </Link>

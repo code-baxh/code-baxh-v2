@@ -1,22 +1,23 @@
 "use client";
 
+import Link from "next/link";
 import { useIntroReady } from "../intro";
 
 export function HeroActions() {
   return (
     <>
-      <a
-        href="/services"
+      <Link
+        href="/contact"
         className="rounded-full bg-accent px-7 py-3.5 text-sm font-semibold text-[#0d0d0d] transition-[transform,opacity] hover:-translate-y-px hover:opacity-90 md:text-base"
       >
-        Find talent
-      </a>
-      <a
-        href="/contact"
+        Book a free discovery call
+      </Link>
+      <Link
+        href="/work"
         className="rounded-full border border-text-primary/25 bg-transparent px-7 py-3.5 text-sm font-medium text-text-primary transition-colors hover:border-text-primary/50 hover:bg-text-primary/5 md:text-base"
       >
-        Start a project
-      </a>
+        See our work
+      </Link>
     </>
   );
 }
@@ -35,7 +36,7 @@ export function HeroContent() {
         }`}
         style={{ animationDelay: introReady ? "420ms" : undefined }}
       >
-        Tech recruitment &amp; software studio
+        Full-stack web, SaaS &amp; AI development
       </p>
 
       <h1
@@ -44,7 +45,7 @@ export function HeroContent() {
         }`}
         style={{ animationDelay: introReady ? "500ms" : undefined }}
       >
-        Build the team. Ship the thing. Keep momentum visible.
+        We build production-grade web, SaaS, and AI products — fast.
       </h1>
 
       <p
@@ -53,8 +54,9 @@ export function HeroContent() {
         }`}
         style={{ animationDelay: introReady ? "580ms" : undefined }}
       >
-        Code Baxh helps companies hire technical talent and launch polished
-        digital products with the same calm, focused operating rhythm.
+        CodeBaxh is a senior full-stack software studio. We turn ideas into
+        shipped products — the team behind a geospatial SaaS used by Redfin,
+        CBRE, and Moody&apos;s.
       </p>
 
       <div
@@ -73,9 +75,9 @@ export function HeroContent() {
         style={{ animationDelay: introReady ? "740ms" : undefined }}
       >
         {[
-          { term: "01 Talent", detail: "Specialist tech search" },
-          { term: "02 Build", detail: "Websites and software" },
-          { term: "03 Motion", detail: "Short loops, clear progress" },
+          { term: "SaaS", detail: "MVP to scale, multi-tenant" },
+          { term: "AI / LLM", detail: "RAG & agents in production" },
+          { term: "Web & Mobile", detail: "Next.js, React, React Native" },
         ].map((item) => (
           <div key={item.term}>
             <dt className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-text-primary">

@@ -1,0 +1,97 @@
+/**
+ * Central site configuration — single source of truth for SEO, schema (entity
+ * signals / sameAs), navigation, and reusable proof points.
+ *
+ * ⚠️ CONFIRM THESE VALUES with the owner before going live:
+ *   - SITE_URL (production domain — used for metadataBase, canonicals, sitemap, OG)
+ *   - SOCIAL profile URLs (Facebook, Instagram, Upwork — used for `sameAs`)
+ *   - BOOKING_URL (Cal.com / Calendly link for the discovery-call embed)
+ * Everything else (company, founder, clients, stats) is approved real proof.
+ */
+
+// Prefer an env override so the domain can change without a code edit.
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.codebaxh.com"
+).replace(/\/$/, "");
+
+export const SITE = {
+  name: "CodeBaxh",
+  legalName: "CodeBaxh",
+  shortName: "CodeBaxh",
+  url: SITE_URL,
+  // One-line elevator pitch — keep IDENTICAL across site, Clutch, Upwork,
+  // LinkedIn, GitHub for strong entity recognition (helps AI citation).
+  tagline: "Full-stack web, SaaS & AI development agency",
+  description:
+    "CodeBaxh is a senior full-stack software development agency building production-grade web apps, multi-tenant SaaS, and AI/LLM products with Next.js, React, Node.js, and AWS — trusted by teams shipping to the US and EU.",
+  email: "code.baxh@gmail.com",
+  phone: "+923435527709",
+  phoneDisplay: "+92 343 552 7709",
+  // Founder / timezone — communication clarity is a key offshore trust lever.
+  foundingLocation: "Islamabad, Pakistan",
+  addressLines: ["Ghouri Town, Islamabad, Pakistan"],
+  timezoneNote: "Daily overlap with US & EU working hours · async-first · fluent English",
+  logo: "/logo/complete-logo.png",
+  logoMark: "/logo/shortLogo.png",
+  ogImage: "/og.png", // TODO: add a 1200×630 OG image at public/og.png
+} as const;
+
+export const FOUNDER = {
+  name: "Bilal Khursheed",
+  role: "Founder & Principal Engineer",
+  url: "https://bilalkhursheed.com",
+  upworkBadge: "Top Rated Plus",
+  bio: "Bilal Khursheed is the founder of CodeBaxh and an Upwork Top Rated Plus full-stack engineer. He led the build of Zoneomics, a production geospatial SaaS used by Redfin, CBRE, Moody's, and Cushman & Wakefield, and has shipped multi-tenant SaaS platforms and production AI/RAG systems for international clients.",
+} as const;
+
+/**
+ * Social / third-party profiles. These power the Organization `sameAs` array —
+ * the entity signal AI engines and Google use to confirm who you are.
+ * ⚠️ Replace the TODO placeholders with the real company-account URLs.
+ */
+export const SOCIALS = {
+  linkedin: "https://www.linkedin.com/company/code-baxh/",
+  upwork: "", // TODO: company/freelancer Upwork profile URL
+  facebook: "", // TODO: Facebook page URL
+  instagram: "", // TODO: Instagram profile URL
+  github: "", // optional: GitHub org URL
+} as const;
+
+// Used for Organization.sameAs — only include non-empty profiles.
+export const SAME_AS: string[] = [
+  SOCIALS.linkedin,
+  SOCIALS.upwork,
+  SOCIALS.facebook,
+  SOCIALS.instagram,
+  SOCIALS.github,
+  FOUNDER.url,
+].filter(Boolean);
+
+// Discovery-call booking link (Cal.com / Calendly). Falls back to email/contact.
+export const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL ?? ""; // TODO
+
+export const PRIMARY_CTA = {
+  label: "Book a free discovery call",
+  href: "/contact",
+} as const;
+
+export const SECONDARY_CTA = {
+  label: "See our work",
+  href: "/work",
+} as const;
+
+/** Enterprise clients reached via the Zoneomics platform (approved proof). */
+export const CLIENT_LOGOS = [
+  "Redfin",
+  "CBRE",
+  "Moody's",
+  "Cushman & Wakefield",
+] as const;
+
+/** Headline proof stats reused across pages. */
+export const STATS = [
+  { value: "11 wks", label: "Multi-tenant SaaS MVP delivered" },
+  { value: "4", label: "Enterprise clients via Zoneomics" },
+  { value: "Top Rated Plus", label: "Upwork — sustained track record" },
+  { value: "US / EU", label: "Timezone overlap, async-first" },
+] as const;
