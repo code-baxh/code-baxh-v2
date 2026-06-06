@@ -99,7 +99,7 @@ export const SERVICES: Service[] = [
     differentiators: [
       {
         title: "We've shipped real SaaS",
-        body: "A multi-tenant SaaS MVP delivered in 11 weeks, and Zoneomics — a production geospatial SaaS used by Redfin, CBRE, and Moody's.",
+        body: "A production multi-tenant SaaS MVP delivered in 11 weeks — auth, billing, and a customer dashboard, on architecture that scaled past launch.",
       },
       {
         title: "Architecture that scales",
@@ -226,7 +226,7 @@ export const SERVICES: Service[] = [
         body: "Type-safe, tested, documented code your team can own after launch.",
       },
     ],
-    caseStudySlug: "zoneomics",
+    caseStudySlug: "saas-mvp-11-weeks",
     faqs: [
       {
         q: "What tech stack do you use for web development?",
@@ -280,7 +280,7 @@ export const SERVICES: Service[] = [
         body: "SSG/ISR for marketing, SSR for dynamic data — never indexable content stranded client-side.",
       },
     ],
-    caseStudySlug: "zoneomics",
+    caseStudySlug: "saas-mvp-11-weeks",
     faqs: [
       {
         q: "Should I use SSR, SSG, or ISR in Next.js?",

@@ -41,7 +41,10 @@ export const FOUNDER = {
   role: "Founder & Principal Engineer",
   url: "https://bilalkhursheed.com",
   upworkBadge: "Top Rated Plus",
-  bio: "Bilal Khursheed is the founder of CodeBaxh and an Upwork Top Rated Plus full-stack engineer. He led the build of Zoneomics, a production geospatial SaaS used by Redfin, CBRE, Moody's, and Cushman & Wakefield, and has shipped multi-tenant SaaS platforms and production AI/RAG systems for international clients.",
+  // Honest framing: Zoneomics is where Bilal works as a full-stack developer
+  // (employment), not a CodeBaxh client deliverable — kept as a light credential
+  // only, with no client-logo claims attached to CodeBaxh.
+  bio: "Bilal Khursheed is the founder of CodeBaxh and an Upwork Top Rated Plus full-stack engineer with 6+ years building production web, SaaS, and AI products for international clients. His professional experience includes full-stack development on Zoneomics, a production geospatial SaaS.",
 } as const;
 
 /**
@@ -80,18 +83,20 @@ export const SECONDARY_CTA = {
   href: "/work",
 } as const;
 
-/** Enterprise clients reached via the Zoneomics platform (approved proof). */
-export const CLIENT_LOGOS = [
-  "Redfin",
-  "CBRE",
-  "Moody's",
-  "Cushman & Wakefield",
-] as const;
+/**
+ * Real CodeBaxh client / project names to feature in the trust strip.
+ * ⚠️ Only list names you've built FOR or products you OWN, and only where you
+ * have permission to name them publicly. (Do NOT list Zoneomics' enterprise
+ * clients here — those are not CodeBaxh clients.)
+ * TODO: confirm which of these can be shown — e.g. "Galaxy Digital", "Nary AI",
+ * "Fabrication Flow".
+ */
+export const CLIENT_LOGOS: readonly string[] = [];
 
 /** Headline proof stats reused across pages. */
 export const STATS = [
+  { value: "6+ yrs", label: "Building production software" },
   { value: "11 wks", label: "Multi-tenant SaaS MVP delivered" },
-  { value: "4", label: "Enterprise clients via Zoneomics" },
   { value: "Top Rated Plus", label: "Upwork — sustained track record" },
   { value: "US / EU", label: "Timezone overlap, async-first" },
 ] as const;

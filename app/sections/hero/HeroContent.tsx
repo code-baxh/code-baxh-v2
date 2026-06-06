@@ -55,8 +55,8 @@ export function HeroContent() {
         style={{ animationDelay: introReady ? "580ms" : undefined }}
       >
         CodeBaxh is a senior full-stack software studio. We turn ideas into
-        shipped products — the team behind a geospatial SaaS used by Redfin,
-        CBRE, and Moody&apos;s.
+        shipped products — multi-tenant SaaS, production AI, and the web and
+        mobile apps around them.
       </p>
 
       <div

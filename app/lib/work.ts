@@ -25,36 +25,11 @@ export type CaseStudy = {
   featured?: boolean;
 };
 
+// NOTE: Zoneomics was removed as a case study — it's the founder's employer /
+// product, not a CodeBaxh client deliverable. Real owned/client projects
+// (e.g. Nary AI, Fabrication Flow, Galaxy Digital) to be added from details
+// the owner provides. Existing entries below should be confirmed/expanded.
 export const CASE_STUDIES: CaseStudy[] = [
-  {
-    slug: "zoneomics",
-    client: "Zoneomics",
-    title: "Zoneomics — geospatial SaaS trusted by Redfin, CBRE & Moody's",
-    category: "Geospatial SaaS",
-    metaTitle: "Zoneomics Case Study | Geospatial SaaS for Enterprise | CodeBaxh",
-    metaDescription:
-      "How CodeBaxh built and scaled Zoneomics, a production geospatial SaaS platform used by Redfin, CBRE, Moody's, and Cushman & Wakefield.",
-    summary:
-      "A production geospatial SaaS platform serving zoning and land-use data to enterprise real-estate and financial firms.",
-    clients: ["Redfin", "CBRE", "Moody's", "Cushman & Wakefield"],
-    problem:
-      "Zoning and land-use data in the US is fragmented across thousands of jurisdictions, in inconsistent formats. Enterprise real-estate and finance teams needed a single, reliable, queryable source — fast enough for production workflows and accurate enough to underwrite decisions.",
-    approach: [
-      "Designed a scalable geospatial data pipeline to ingest, normalize, and standardize zoning data across jurisdictions.",
-      "Built a performant API and web platform for querying parcels, zoning, and land-use at scale.",
-      "Architected for enterprise reliability, throughput, and data accuracy.",
-    ],
-    solution:
-      "A production geospatial SaaS platform with a standardized zoning dataset, a fast query API, and a web application — reliable enough to power workflows at major real-estate and financial institutions.",
-    results: [
-      { value: "Redfin · CBRE", label: "Enterprise clients" },
-      { value: "Moody's", label: "Financial-grade data users" },
-      { value: "Nationwide", label: "Zoning coverage across jurisdictions" },
-    ],
-    techStack: ["Next.js", "Node.js", "PostgreSQL", "PostGIS", "AWS"],
-    serviceSlug: "saas-development",
-    featured: true,
-  },
   {
     slug: "saas-mvp-11-weeks",
     client: "Multi-tenant SaaS startup",

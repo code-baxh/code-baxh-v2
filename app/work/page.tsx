@@ -11,7 +11,7 @@ import { CASE_STUDIES } from "../lib/work";
 export const metadata: Metadata = {
   title: "Our Work — SaaS & AI Case Studies",
   description:
-    "Case studies from CodeBaxh: Zoneomics geospatial SaaS (Redfin, CBRE, Moody's), an 11-week SaaS MVP, legal-contract RAG, and AI call analysis.",
+    "Case studies from CodeBaxh: a multi-tenant SaaS MVP shipped in 11 weeks, a legal-contract RAG pipeline, AI call analysis, and more production web, SaaS, and AI work.",
   alternates: { canonical: "/work" },
 };
 

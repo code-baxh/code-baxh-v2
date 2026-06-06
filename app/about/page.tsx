@@ -81,10 +81,11 @@ export default function AboutPage() {
                 <Reveal delay={100}>
                   <p className="text-lg leading-relaxed text-text-secondary">
                     CodeBaxh builds software that runs in production for real
-                    customers. We led the build of Zoneomics — a geospatial SaaS
-                    platform used by Redfin, CBRE, Moody&apos;s, and Cushman &amp;
-                    Wakefield — and we&apos;ve shipped multi-tenant SaaS MVPs and
-                    production AI systems for international clients.
+                    customers — multi-tenant SaaS platforms, production AI
+                    systems, and the web and mobile apps around them. Our founder
+                    also works as a full-stack developer on Zoneomics, a
+                    production geospatial SaaS, bringing that real-world product
+                    experience to every engagement.
                   </p>
                 </Reveal>
                 <Reveal delay={200}>
