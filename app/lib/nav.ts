@@ -1,11 +1,11 @@
 /** Navigation config shared by header, footer, and sitemap. */
 
 export const NAV_LINKS = [
+  { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
-  { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
+  { href: "/work", label: "Work" },
   { href: "/blog", label: "Blog" },
-  { href: "/process", label: "Process" },
 ] as const;
 
 export const NAV_CTA = {

@@ -60,10 +60,11 @@ function ShowcaseCard({
   progress: MotionValue<number>;
   reduce: boolean | null;
 }) {
-  // Earlier cards shrink slightly as later ones stack over them (depth).
+  // Card is bigger when in view, shrinks dramatically as it moves out of view
   const start = index / total;
-  const scale = useTransform(progress, [start, 1], [1, 1 - (total - 1 - index) * 0.05]);
-  const opacity = useTransform(progress, [start, start + 0.4 / total], [1, index === total - 1 ? 1 : 0.55]);
+  const end = start + 1 / total;
+  const scale = useTransform(progress, [start, end], [1, 0.88 - (total - 1 - index) * 0.05]);
+  const opacity = useTransform(progress, [start, end], [1, 0.65]);
 
   return (
     <div
@@ -72,15 +73,15 @@ function ShowcaseCard({
     >
       <motion.article
         style={reduce ? undefined : { scale, opacity }}
-        className="showcase-card relative overflow-hidden rounded-3xl border border-white/10 p-8 md:p-12"
+        className="showcase-card relative rounded-3xl border border-white/10 p-6 md:p-12"
       >
-        <div className="showcase-card-glow pointer-events-none absolute inset-0" aria-hidden />
-        <div className="relative grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
+        <div className="showcase-card-glow pointer-events-none absolute inset-0 rounded-3xl" aria-hidden />
+        <div className="relative grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-[1.1fr_0.9fr] md:items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
               {panel.tag}
             </p>
-            <h3 className="mt-4 text-3xl font-semibold tracking-tight text-text-primary md:text-4xl lg:text-5xl">
+            <h3 className="mt-4 text-2xl sm:text-3xl font-semibold tracking-tight text-text-primary md:text-4xl lg:text-5xl">
               {panel.title}
             </h3>
             <p className="mt-5 max-w-md text-base leading-relaxed text-text-secondary md:text-lg">
@@ -102,7 +103,7 @@ function ShowcaseCard({
             {panel.points.map((point) => (
               <li
                 key={point}
-                className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary md:text-base"
+                className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 sm:px-5 sm:py-4 text-sm font-medium text-text-primary md:text-base"
               >
                 {point}
               </li>
@@ -123,15 +124,15 @@ export function HomeShowcase() {
   });
 
   return (
-    <section className="theme-obsidian relative border-t border-border bg-surface">
+    <section className="theme-obsidian relative w-full border-t border-border bg-surface overflow-hidden">
       <div className="section-orb -left-32 top-1/4 h-96 w-96 opacity-50" aria-hidden />
       <div className="section-orb -right-24 bottom-1/4 h-80 w-80 opacity-30" aria-hidden />
-      <div ref={ref} className="relative mx-auto max-w-5xl px-5 pb-24 pt-20 sm:px-8 md:pb-32 md:pt-28">
+      <div ref={ref} className="relative mx-auto max-w-5xl px-4 sm:px-6 md:px-8 pb-16 md:pb-32 pt-16 md:pt-28">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <p className="heading-accent mx-auto inline-block text-xs font-semibold uppercase tracking-[0.2em] text-text-muted [&::before]:mx-auto">
             What we build
           </p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-text-primary md:text-5xl md:leading-[1.05]">
+          <h2 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight text-text-primary md:text-5xl md:leading-[1.05]">
             Three things we do exceptionally well.
           </h2>
         </div>

@@ -201,7 +201,10 @@
     pointer-events: auto;
   }
 
+  .section-why,
+  .section-build,
   .section-services,
+  .section-work,
   .section-process,
   .section-about {
     z-index: auto;
@@ -209,16 +212,28 @@
   }
 }
 
-.section-services {
+.section-why {
   z-index: 1;
 }
 
-.section-process {
+.section-build {
   z-index: 2;
 }
 
-.section-about {
+.section-services {
   z-index: 3;
+}
+
+.section-work {
+  z-index: 4;
+}
+
+.section-process {
+  z-index: 5;
+}
+
+.section-about {
+  z-index: 6;
 }
 
 .stack-section-inner {
@@ -801,6 +816,7 @@
     ),
     var(--brand-obsidian-elevated);
   box-shadow: 0 24px 70px rgb(0 0 0 / 0.5);
+  overflow: visible;
 }
 
 .showcase-card-glow {
@@ -809,6 +825,7 @@
     var(--accent-soft),
     transparent 70%
   );
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
