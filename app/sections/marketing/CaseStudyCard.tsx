@@ -6,7 +6,7 @@ export function CaseStudyCard({ study }: { study: CaseStudy }) {
   return (
     <Link
       href={`/work/${study.slug}`}
-      className="group kinetic-card flex h-full flex-col rounded-2xl border border-border bg-surface-elevated p-7 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[var(--glass-shadow)] md:p-8"
+      className="group kinetic-card flex h-full flex-col rounded-2xl border border-border bg-surface-elevated p-7 md:p-8"
     >
       <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-accent">
         {study.category}

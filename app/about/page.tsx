@@ -98,9 +98,9 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="mt-14">
+            <Reveal variant="pop-in" delay={100} className="mt-14">
               <StatStrip />
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -116,6 +116,7 @@ export default function AboutPage() {
               {VALUES.map((value, i) => (
                 <Reveal
                   key={value.title}
+                  variant="pop-in"
                   delay={((i % 2) * 100) as 0 | 100}
                   className="kinetic-card rounded-2xl border border-border bg-surface-elevated p-7"
                 >

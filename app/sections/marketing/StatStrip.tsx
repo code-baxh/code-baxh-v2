@@ -8,8 +8,9 @@ export function StatStrip() {
       {STATS.map((stat, i) => (
         <Reveal
           key={stat.label}
+          variant="pop-in"
           delay={(i * 100) as 0 | 100 | 200 | 300}
-          className="bg-surface-elevated p-6 md:p-7"
+          className="kinetic-card bg-surface-elevated p-6 md:p-7"
         >
           <p className="text-2xl font-semibold tracking-tight text-text-primary md:text-3xl">
             {stat.value}

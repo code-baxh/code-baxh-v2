@@ -1,4 +1,5 @@
 import { CLIENT_LOGOS, FOUNDER } from "../../lib/site";
+import { Reveal } from "../shared";
 
 /**
  * Trust strip — Upwork Top Rated Plus badge + (optionally) real CodeBaxh client
@@ -9,7 +10,7 @@ export function ClientLogos() {
   const hasLogos = CLIENT_LOGOS.length > 0;
 
   return (
-    <div className="flex flex-col items-center gap-4 text-center">
+    <Reveal variant="pop-in" className="flex flex-col items-center gap-4 text-center">
       <p className="text-xs font-medium uppercase tracking-[0.2em] text-text-muted">
         {hasLogos ? "Recent work for" : "Trusted by clients worldwide"}
       </p>
@@ -23,6 +24,6 @@ export function ClientLogos() {
       <p className="text-xs text-text-muted">
         Upwork {FOUNDER.upworkBadge} · senior full-stack delivery
       </p>
-    </div>
+    </Reveal>
   );
 }

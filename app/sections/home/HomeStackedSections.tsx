@@ -85,8 +85,8 @@ export function HomeStackedSections() {
           buildInView ? "section-visible" : ""
         }`}
       >
-        <div className="relative mx-auto max-w-5xl px-5 pb-24 pt-20 sm:px-8 md:pb-32 md:pt-28">
-          <div className="mx-auto mb-12 max-w-2xl text-center">
+        <div className="relative mx-auto max-w-5xl px-5 pb-32 pt-24 sm:px-8 md:pb-40 md:pt-36">
+          <div className="section-entrance-item section-entrance-item--1 mx-auto mb-16 max-w-2xl text-center">
             <p className="heading-accent mx-auto inline-block text-xs font-semibold uppercase tracking-[0.2em] text-text-muted [&::before]:mx-auto">
               What we build
             </p>
@@ -94,9 +94,9 @@ export function HomeStackedSections() {
               Three things we do exceptionally well.
             </h2>
           </div>
-          <div className="space-y-6 md:space-y-8">
+          <div className="space-y-12 md:space-y-16">
             {/* Card 1: Web & Mobile */}
-            <div className="sticky" style={{ top: "calc(6.5rem + 0rem)" }}>
+            <div className="section-entrance-item section-entrance-item--2">
               <article className="showcase-card relative overflow-hidden rounded-3xl border border-white/10 p-8 md:p-12 h-fit">
                 <div
                   className="showcase-card-glow pointer-events-none absolute inset-0"
@@ -123,13 +123,13 @@ export function HomeStackedSections() {
                     </Link>
                   </div>
                   <ul className="grid gap-3">
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary md:text-base">
+                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
                       Next.js &amp; React on the web
                     </li>
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary md:text-base">
+                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
                       React Native for iOS &amp; Android
                     </li>
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary md:text-base">
+                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
                       Design, build, and launch
                     </li>
                   </ul>
@@ -138,7 +138,7 @@ export function HomeStackedSections() {
             </div>
 
             {/* Card 2: SaaS Platforms */}
-            <div className="sticky" style={{ top: "calc(6.5rem + 18rem)" }}>
+            <div className="section-entrance-item section-entrance-item--3">
               <article className="showcase-card relative overflow-hidden rounded-3xl border border-white/10 p-8 md:p-12 h-fit">
                 <div
                   className="showcase-card-glow pointer-events-none absolute inset-0"
@@ -165,13 +165,13 @@ export function HomeStackedSections() {
                     </Link>
                   </div>
                   <ul className="grid gap-3">
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary md:text-base">
+                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
                       Multi-tenant architecture
                     </li>
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary md:text-base">
+                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
                       Stripe billing &amp; subscriptions
                     </li>
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary md:text-base">
+                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
                       MVP delivered in 11 weeks
                     </li>
                   </ul>
@@ -180,7 +180,7 @@ export function HomeStackedSections() {
             </div>
 
             {/* Card 3: AI Products */}
-            <div className="sticky" style={{ top: "calc(6.5rem + 36rem)" }}>
+            <div className="section-entrance-item section-entrance-item--4">
               <article className="showcase-card relative overflow-hidden rounded-3xl border border-white/10 p-8 md:p-12 h-fit">
                 <div
                   className="showcase-card-glow pointer-events-none absolute inset-0"
@@ -207,13 +207,13 @@ export function HomeStackedSections() {
                     </Link>
                   </div>
                   <ul className="grid gap-3">
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary md:text-base">
+                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
                       RAG &amp; vector search
                     </li>
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary md:text-base">
+                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
                       OpenAI &amp; Anthropic
                     </li>
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary md:text-base">
+                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
                       Chatbots &amp; AI agents
                     </li>
                   </ul>

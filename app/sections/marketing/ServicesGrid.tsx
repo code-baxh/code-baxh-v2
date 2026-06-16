@@ -12,12 +12,13 @@ export function ServicesGrid({ limit }: { limit?: number }) {
       {services.map((service, i) => (
         <Reveal
           key={service.slug}
+          variant="pop-in"
           delay={((i % 3) * 100) as 0 | 100 | 200}
           className="h-full"
         >
           <Link
             href={`/services/${service.slug}`}
-            className="group kinetic-card flex h-full flex-col rounded-2xl border border-border bg-surface-elevated p-7 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[var(--glass-shadow)]"
+            className="group kinetic-card flex h-full flex-col rounded-2xl border border-border bg-surface-elevated p-7"
           >
             <h3 className="flex items-start justify-between gap-3 text-lg font-semibold text-text-primary md:text-xl">
               {service.navLabel}
