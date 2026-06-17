@@ -18,17 +18,17 @@ export function ServicesGrid({ limit }: { limit?: number }) {
         >
           <Link
             href={`/services/${service.slug}`}
-            className="group kinetic-card flex h-full flex-col rounded-2xl border border-border bg-surface-elevated p-7"
+            className="group kinetic-card flex h-full flex-col rounded-xl border border-border bg-surface-elevated p-4 sm:rounded-2xl sm:p-5 md:p-7"
           >
-            <h3 className="flex items-start justify-between gap-3 text-lg font-semibold text-text-primary md:text-xl">
+            <h3 className="flex items-start justify-between gap-2 text-base font-semibold text-text-primary sm:gap-3 sm:text-lg md:text-xl">
               {service.navLabel}
               <ArrowUpRight
-                className="size-4 shrink-0 text-text-muted transition-[transform,color] duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                className="size-3 shrink-0 text-text-muted transition-[transform,color] duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent sm:size-4"
                 strokeWidth={2}
                 aria-hidden
               />
             </h3>
-            <p className="mt-3 flex-1 text-sm leading-relaxed text-text-secondary md:text-base">
+            <p className="mt-2 flex-1 text-xs leading-relaxed text-text-secondary sm:mt-3 sm:text-sm md:text-base">
               {service.summary}
             </p>
           </Link>

@@ -45,9 +45,9 @@ export function HomeStackedSections() {
         }`}
       >
         <div className="stack-section-inner mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="section-entrance-item section-entrance-item--1 mb-12">
+          <div className="section-entrance-item section-entrance-item--1 mb-8">
             <SectionHeading
-              size="large"
+              size="default"
               eyebrow="Why Code Baxh"
               title="A product partner, not a body shop."
               description="Breadth across web, SaaS, and AI — with the depth of an experienced team that ships."
@@ -59,13 +59,13 @@ export function HomeStackedSections() {
               return (
                 <div
                   key={prop.title}
-                  className={`section-entrance-item section-entrance-item--${i + 2} kinetic-card rounded-2xl border border-border bg-surface-elevated p-7`}
+                  className={`section-entrance-item section-entrance-item--${i + 2} kinetic-card rounded-2xl border border-border bg-surface-elevated p-5`}
                 >
-                  <Icon className="size-7 text-accent" strokeWidth={1.75} aria-hidden />
-                  <h3 className="mt-5 text-lg font-semibold text-text-primary">
+                  <Icon className="size-6 text-accent" strokeWidth={1.75} aria-hidden />
+                  <h3 className="mt-4 text-base font-semibold text-text-primary">
                     {prop.title}
                   </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+                  <p className="mt-2 text-xs leading-relaxed text-text-secondary">
                     {prop.body}
                   </p>
                 </div>
@@ -86,9 +86,9 @@ export function HomeStackedSections() {
         }`}
       >
         <div className="stack-section-inner mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="section-entrance-item section-entrance-item--1 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between mb-10">
+          <div className="section-entrance-item section-entrance-item--1 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between mb-8 sm:mb-10 lg:gap-8">
             <SectionHeading
-              size="large"
+              size="default"
               eyebrow="All services"
               title="Everything you need to ship a product."
               description="From web and mobile to SaaS, AI, backend, and cloud — pick the service that fits. Each is handled by an experienced team."
@@ -109,16 +109,16 @@ export function HomeStackedSections() {
         }`}
       >
         <div className="stack-section-inner mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="section-entrance-item section-entrance-item--1 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between mb-10">
+          <div className="section-entrance-item section-entrance-item--1 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between mb-8 sm:mb-10 lg:gap-8">
             <SectionHeading
-              size="large"
+              size="default"
               eyebrow="Selected work"
               title="Real software, real results."
               description="From multi-tenant SaaS to AI systems — work that shipped, scaled, and is used by real customers."
             />
             <SectionLink href="/work" label="All case studies" />
           </div>
-          <div className="grid gap-5 md:grid-cols-3">
+          <div className="grid gap-3 sm:gap-4 md:gap-5 md:grid-cols-3">
             {featured.map((study, i) => (
               <div
                 key={study.slug}
@@ -128,7 +128,7 @@ export function HomeStackedSections() {
               </div>
             ))}
           </div>
-          <div className="section-entrance-item section-entrance-item--5 mt-12">
+          <div className="section-entrance-item section-entrance-item--5 mt-8 sm:mt-10 md:mt-12">
             <StatStrip />
           </div>
         </div>

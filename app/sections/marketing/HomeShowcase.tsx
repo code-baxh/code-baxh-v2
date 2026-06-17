@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import {
   motion,
   useScroll,
@@ -113,32 +113,39 @@ function ShowcaseSlide({
   );
 }
 
-function ShowcaseStatic() {
-  const { ref, inView } = useStackProgress<HTMLElement>();
-
+function ShowcaseStatic({
+  mobileOnly = true,
+  compact = false,
+}: {
+  mobileOnly?: boolean;
+  compact?: boolean;
+}) {
   return (
     <section
-      ref={ref}
       aria-label="What we build"
-      className={`stack-section section-build theme-obsidian border-t border-border bg-surface ${
-        inView ? "section-visible" : ""
+      className={`relative overflow-hidden theme-obsidian border-t border-border bg-surface ${
+        mobileOnly ? "block lg:hidden" : ""
       }`}
     >
       <div
         className="section-build-card__glow pointer-events-none absolute inset-0"
         aria-hidden
       />
-      <div className="stack-section-inner relative mx-auto max-w-6xl px-5 sm:px-8">
-        <div className="section-entrance-item section-entrance-item--1 mx-auto mb-14 max-w-2xl text-center md:mb-16">
+      <div className="relative mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-16">
+        <div className="mx-auto mb-6 max-w-2xl text-center sm:mb-10 md:mb-14">
           <SectionHeading
             align="center"
             eyebrow="What we build"
             title="Three things we do exceptionally well."
           />
         </div>
-        <div className="flex flex-col gap-12 md:gap-16">
+        <div className="flex flex-col gap-6 sm:gap-10 md:gap-16">
           {SHOWCASE_PANELS.map((panel) => (
-            <ShowcasePanelContent key={panel.tag} panel={panel} />
+            <ShowcasePanelContent
+              key={panel.tag}
+              panel={panel}
+              compact={compact}
+            />
           ))}
         </div>
       </div>
@@ -153,8 +160,7 @@ function ShowcaseStatic() {
 export function HomeShowcase() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
-  const [mobile, setMobile] = useState(false);
-  const { ref: stackRef, inView } = useStackProgress<HTMLElement>();
+  const { ref: stackRef, inView } = useStackProgress<HTMLDivElement>();
   const runwayHeight =
     PANEL_COUNT * RUNWAY_VH_PER_PANEL + RUNWAY_END_BUFFER_VH;
 
@@ -163,57 +169,53 @@ export function HomeShowcase() {
     offset: ["start start", "end end"],
   });
 
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 640px)");
-    const update = () => setMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  if (reduce || mobile) {
-    return <ShowcaseStatic />;
+  if (reduce) {
+    return <ShowcaseStatic mobileOnly={false} compact={false} />;
   }
 
   return (
-    <section
-      ref={sectionRef}
-      aria-label="What we build"
-      className="section-build section-build--runway theme-obsidian border-t border-border bg-surface"
-      style={{ height: `${runwayHeight}vh` }}
-    >
-      <div
-        ref={stackRef}
-        className={`showcase-sticky-viewport ${
-          inView ? "section-visible" : ""
-        }`}
+    <>
+      <section
+        ref={sectionRef}
+        aria-label="What we build"
+        className="section-build section-build--runway theme-obsidian border-t border-border bg-surface hidden lg:block"
+        style={{ height: `${runwayHeight}vh` }}
       >
         <div
-          className="section-build-card__glow pointer-events-none absolute inset-0"
-          aria-hidden
-        />
-        <div className="showcase-sticky-inner relative mx-auto flex w-full max-w-6xl flex-col px-5 pb-8 sm:px-8 md:pb-12">
-          <div className="section-entrance-item section-entrance-item--1 mx-auto mb-10 max-w-2xl shrink-0 text-center md:mb-12">
-            <SectionHeading
-              align="center"
-              eyebrow="What we build"
-              title="Three things we do exceptionally well."
-            />
-          </div>
-
-          <div className="showcase-stage relative min-h-0 flex-1 overflow-hidden">
-            {SHOWCASE_PANELS.map((panel, i) => (
-              <ShowcaseSlide
-                key={panel.tag}
-                panel={panel}
-                index={i}
-                total={PANEL_COUNT}
-                progress={scrollYProgress}
+          ref={stackRef}
+          className={`showcase-sticky-viewport ${
+            inView ? "section-visible" : ""
+          }`}
+        >
+          <div
+            className="section-build-card__glow pointer-events-none absolute inset-0"
+            aria-hidden
+          />
+          <div className="showcase-sticky-inner relative mx-auto flex w-full max-w-6xl flex-col px-5 pb-8 sm:px-8 md:pb-12">
+            <div className="section-entrance-item section-entrance-item--1 mx-auto mb-10 max-w-2xl shrink-0 text-center md:mb-12">
+              <SectionHeading
+                align="center"
+                eyebrow="What we build"
+                title="Three things we do exceptionally well."
               />
-            ))}
+            </div>
+
+            <div className="showcase-stage relative min-h-0 flex-1 overflow-hidden">
+              {SHOWCASE_PANELS.map((panel, i) => (
+                <ShowcaseSlide
+                  key={panel.tag}
+                  panel={panel}
+                  index={i}
+                  total={PANEL_COUNT}
+                  progress={scrollYProgress}
+                />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <ShowcaseStatic mobileOnly compact />
+    </>
   );
 }

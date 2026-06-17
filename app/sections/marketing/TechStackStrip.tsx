@@ -120,12 +120,13 @@ export function TechStackStrip({
 
   return (
     <section
-      className={`theme-${theme} overflow-x-hidden border-t border-border bg-surface-muted py-20 md:py-28`}
+      className={`theme-${theme} overflow-x-hidden border-t border-border bg-surface-muted py-14 sm:py-20 md:py-28`}
     >
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         {heading && (
           <Reveal>
             <SectionHeading
+              size="default"
               eyebrow="Tech stack"
               title="Modern, type-safe, battle-tested."
               description="We build on a broad, proven stack — and pick the right tools for your project, not a one-size-fits-all."
@@ -134,7 +135,7 @@ export function TechStackStrip({
         )}
       </div>
 
-      <Reveal variant="pop-in" delay={100} className="tech-marquee-rows mt-12 md:mt-14">
+      <Reveal variant="pop-in" delay={100} className="tech-marquee-rows mt-8 sm:mt-10 md:mt-12 md:mt-14">
         <TechMarqueeRow items={leftCol} duration={MARQUEE_DURATION} />
         <TechMarqueeRow
           items={centerCol}

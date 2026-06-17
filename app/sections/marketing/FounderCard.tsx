@@ -18,12 +18,13 @@ const STATS = [
 
 export function FounderSection() {
   return (
-    <section className="theme-paper border-t border-border bg-surface py-20 md:py-28">
+    <section className="theme-paper border-t border-border bg-surface py-14 sm:py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:gap-16">
-          <div className="flex flex-col gap-10">
+        <div className="grid gap-6 sm:gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:gap-12 lg:gap-16">
+          <div className="flex flex-col gap-6 sm:gap-8 lg:gap-10">
             <Reveal>
               <SectionHeading
+                size="default"
                 eyebrow="Who you'll work with"
                 title="Senior delivery, led by the founder."
                 description="CodeBaxh is founder-led. You get experienced engineers in the room from day one — scoping, building, and shipping with you."
@@ -31,22 +32,22 @@ export function FounderSection() {
             </Reveal>
 
             <Reveal delay={100}>
-              <div className="kinetic-card rounded-2xl border border-border bg-surface-elevated p-6">
-                <Quote className="size-6 text-accent/50" strokeWidth={2} aria-hidden />
-                <p className="mt-3 text-base leading-relaxed text-text-secondary">
+              <div className="kinetic-card rounded-lg border border-border bg-surface-elevated p-4 sm:rounded-2xl sm:p-5 md:p-6">
+                <Quote className="size-4 text-accent/50 sm:size-6" strokeWidth={2} aria-hidden />
+                <p className="mt-2 text-xs leading-relaxed text-text-secondary sm:mt-3 sm:text-sm md:text-base">
                   {FOUNDER.bio}
                 </p>
               </div>
             </Reveal>
 
             <Reveal delay={200}>
-              <div className="grid grid-cols-3 gap-4 border-t border-border pt-8">
+              <div className="grid grid-cols-3 gap-3 border-t border-border pt-4 sm:gap-4 sm:pt-6 md:pt-8">
                 {STATS.map((stat) => (
                   <div key={stat.label}>
-                    <p className="text-2xl font-semibold text-text-primary md:text-3xl">
+                    <p className="text-lg font-semibold text-text-primary sm:text-xl md:text-2xl md:text-3xl">
                       {stat.value}
                     </p>
-                    <p className="mt-1 text-xs text-text-muted md:text-sm">{stat.label}</p>
+                    <p className="mt-0.5 text-[0.65rem] text-text-muted sm:mt-1 sm:text-xs md:text-sm">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -54,33 +55,33 @@ export function FounderSection() {
           </div>
 
           <Reveal delay={100} variant="pop-in">
-            <div className="kinetic-card rounded-2xl border border-border bg-surface-elevated p-7 md:p-9">
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex size-12 items-center justify-center rounded-full border border-accent/30 bg-accent/10 text-sm font-bold text-accent">
+            <div className="kinetic-card rounded-lg border border-border bg-surface-elevated p-4 sm:rounded-2xl sm:p-5 md:p-7 md:p-9">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                <div className="flex size-10 items-center justify-center rounded-full border border-accent/30 bg-accent/10 text-xs font-bold text-accent sm:size-12 sm:text-sm">
                   BK
                 </div>
                 <div>
-                  <p className="text-lg font-semibold text-text-primary">{FOUNDER.name}</p>
-                  <p className="text-sm text-text-muted">{FOUNDER.role}</p>
+                  <p className="text-sm font-semibold text-text-primary sm:text-lg">{FOUNDER.name}</p>
+                  <p className="text-xs text-text-muted sm:text-sm">{FOUNDER.role}</p>
                 </div>
-                <div className="ml-auto inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-sm font-medium text-text-primary">
-                  <BadgeCheck className="size-4 text-accent" strokeWidth={2} aria-hidden />
+                <div className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2 py-1 text-xs font-medium text-text-primary sm:gap-2 sm:px-3 sm:py-1.5 sm:text-sm">
+                  <BadgeCheck className="size-3 text-accent sm:size-4" strokeWidth={2} aria-hidden />
                   Upwork {FOUNDER.upworkBadge}
                 </div>
               </div>
 
-              <div className="mt-7 border-t border-border pt-7">
-                <p className="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">
+              <div className="mt-4 border-t border-border pt-4 sm:mt-5 sm:pt-5 md:mt-7 md:pt-7">
+                <p className="text-[0.65rem] font-medium uppercase tracking-[0.14em] text-text-muted sm:text-xs">
                   What working with us looks like
                 </p>
-                <ul className="mt-4 space-y-3">
+                <ul className="mt-2 space-y-2 sm:mt-3 sm:space-y-2.5 md:mt-4 md:space-y-3">
                   {DELIVERY_POINTS.map((point) => (
                     <li
                       key={point}
-                      className="flex gap-3 text-sm leading-relaxed text-text-secondary md:text-base"
+                      className="flex gap-2 text-xs leading-relaxed text-text-secondary sm:gap-2.5 sm:text-sm md:text-base"
                     >
                       <Check
-                        className="mt-0.5 size-4 shrink-0 text-accent"
+                        className="mt-0.5 size-3 shrink-0 text-accent sm:size-4"
                         strokeWidth={2.5}
                         aria-hidden
                       />

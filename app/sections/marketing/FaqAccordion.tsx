@@ -10,7 +10,7 @@ export function FaqAccordion({
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="mt-10 divide-y divide-border border-y border-border">
+    <div className="mt-6 divide-y divide-border border-y border-border sm:mt-8 md:mt-10">
       {faqs.map((faq, i) => {
         const isOpen = openIndex === i;
 
@@ -21,13 +21,13 @@ export function FaqAccordion({
               aria-expanded={isOpen}
               onClick={() => setOpenIndex(isOpen ? null : i)}
               className={[
-                "flex w-full cursor-pointer items-start justify-between gap-4 rounded-xl px-3 py-5 text-left transition-[color,background-color] duration-200",
+                "flex w-full cursor-pointer items-start justify-between gap-3 rounded-lg px-2 py-3 text-left transition-[color,background-color] duration-200 sm:rounded-xl sm:gap-4 sm:px-3 sm:py-4 md:py-5",
                 isOpen
                   ? "bg-surface-muted/50 text-text-primary"
                   : "text-text-primary hover:bg-surface-muted/35 hover:text-text-secondary",
               ].join(" ")}
             >
-              <span className="text-base font-semibold md:text-lg">{faq.q}</span>
+              <span className="text-sm font-semibold sm:text-base md:text-lg">{faq.q}</span>
               <span
                 className={[
                   "mt-0.5 shrink-0 text-xl leading-none text-accent transition-transform duration-300 ease-out",
@@ -46,7 +46,7 @@ export function FaqAccordion({
               <div className="overflow-hidden">
                 <p
                   className={[
-                    "max-w-3xl pb-5 text-sm leading-relaxed text-text-secondary transition-opacity duration-300 md:text-base",
+                    "max-w-3xl pb-3 text-xs leading-relaxed text-text-secondary transition-opacity duration-300 sm:pb-4 sm:text-sm md:pb-5 md:text-base",
                     isOpen ? "opacity-100" : "opacity-0",
                   ].join(" ")}
                 >

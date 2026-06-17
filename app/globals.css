@@ -211,6 +211,14 @@
     z-index: auto;
     pointer-events: auto;
   }
+
+  .section-why {
+    min-height: 150dvh;
+  }
+
+  .section-why .stack-section-inner {
+    padding-bottom: 5rem;
+  }
 }
 
 .section-why {
@@ -1142,14 +1150,29 @@
   transform: scale(1.12);
 }
 
-/* Hero eyebrow — yellow line above (one accent per section) */
+/* Hero eyebrow — yellow line underneath (mobile only) */
 .hero-eyebrow::before {
+  content: "";
+  display: none;
+  width: 2rem;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.hero-eyebrow::after {
   content: "";
   display: block;
   width: 2rem;
   height: 2px;
   background: var(--accent);
-  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .hero-eyebrow::after {
+    display: none;
+  }
 }
 
 /* Hero visual grid */

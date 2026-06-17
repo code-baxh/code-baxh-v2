@@ -23,11 +23,11 @@ export function FaqSection({
   if (!faqs.length) return null;
 
   return (
-    <section className="theme-paper border-t border-border bg-surface py-20 md:py-28">
+    <section className="theme-paper border-t border-border bg-surface py-14 sm:py-20 md:py-28">
       {emitSchema && <JsonLd data={faqSchema(faqs)} />}
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
         <Reveal>
-          <SectionHeading eyebrow={eyebrow} title={title} />
+          <SectionHeading size="default" eyebrow={eyebrow} title={title} />
         </Reveal>
         <Reveal variant="pop-in" delay={100}>
           <FaqAccordion faqs={faqs} />
