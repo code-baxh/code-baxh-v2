@@ -1,11 +1,9 @@
 "use client";
 
-import { Rocket, BrainCircuit, Gauge, ShieldCheck, ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import { Rocket, BrainCircuit, Gauge, ShieldCheck } from "lucide-react";
 import { SectionHeading, SectionLink, useStackProgress } from "../shared";
 import { CASE_STUDIES } from "../../lib/work";
-import { ORDERED_SERVICES } from "../../lib/services";
-import { CaseStudyCard, ServicesGrid, StatStrip } from "../marketing";
+import { CaseStudyCard, HomeShowcase, ServicesGrid, StatStrip } from "../marketing";
 
 const VALUE_PROPS = [
   {
@@ -32,7 +30,6 @@ const VALUE_PROPS = [
 
 export function HomeStackedSections() {
   const { ref: whyRef, inView: whyInView } = useStackProgress<HTMLDivElement>();
-  const { ref: buildRef, inView: buildInView } = useStackProgress<HTMLDivElement>();
   const { ref: servicesRef, inView: servicesInView } = useStackProgress<HTMLDivElement>();
   const { ref: workRef, inView: workInView } = useStackProgress<HTMLDivElement>();
 
@@ -78,153 +75,10 @@ export function HomeStackedSections() {
         </div>
       </div>
 
-      {/* Section 2: What We Build */}
-      <div
-        ref={buildRef}
-        className={`stack-section section-build theme-obsidian bg-surface ${
-          buildInView ? "section-visible" : ""
-        }`}
-      >
-        <div className="relative mx-auto max-w-5xl px-5 pb-32 pt-24 sm:px-8 md:pb-40 md:pt-36">
-          <div className="section-entrance-item section-entrance-item--1 mx-auto mb-16 max-w-2xl text-center">
-            <p className="heading-accent mx-auto inline-block text-xs font-semibold uppercase tracking-[0.2em] text-text-muted [&::before]:mx-auto">
-              What we build
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-text-primary md:text-5xl md:leading-[1.05]">
-              Three things we do exceptionally well.
-            </h2>
-          </div>
-          <div className="space-y-12 md:space-y-16">
-            {/* Card 1: Web & Mobile */}
-            <div className="section-entrance-item section-entrance-item--2">
-              <article className="showcase-card relative overflow-hidden rounded-3xl border border-white/10 p-8 md:p-12 h-fit">
-                <div
-                  className="showcase-card-glow pointer-events-none absolute inset-0"
-                  aria-hidden="true"
-                ></div>
-                <div className="relative grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
-                      01 · Web &amp; Mobile
-                    </p>
-                    <h3 className="mt-4 text-3xl font-semibold tracking-tight text-text-primary md:text-4xl lg:text-5xl">
-                      Web &amp; mobile apps your users love
-                    </h3>
-                    <p className="mt-5 max-w-md text-base leading-relaxed text-text-secondary md:text-lg">
-                      Fast, polished web apps and cross-platform mobile apps — built once, shipped to
-                      every screen.
-                    </p>
-                    <Link
-                      href="/services/web-development"
-                      className="group mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-[#0d0d0d] transition-[transform,opacity] hover:-translate-y-px hover:opacity-90 md:text-base"
-                    >
-                      Web development
-                      <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                    </Link>
-                  </div>
-                  <ul className="grid gap-3">
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
-                      Next.js &amp; React on the web
-                    </li>
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
-                      React Native for iOS &amp; Android
-                    </li>
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
-                      Design, build, and launch
-                    </li>
-                  </ul>
-                </div>
-              </article>
-            </div>
+      {/* Section 2: What we build (tall runway — All Services stacks on top after) */}
+      <HomeShowcase />
 
-            {/* Card 2: SaaS Platforms */}
-            <div className="section-entrance-item section-entrance-item--3">
-              <article className="showcase-card relative overflow-hidden rounded-3xl border border-white/10 p-8 md:p-12 h-fit">
-                <div
-                  className="showcase-card-glow pointer-events-none absolute inset-0"
-                  aria-hidden="true"
-                ></div>
-                <div className="relative grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
-                      02 · SaaS Platforms
-                    </p>
-                    <h3 className="mt-4 text-3xl font-semibold tracking-tight text-text-primary md:text-4xl lg:text-5xl">
-                      SaaS platforms, from MVP to scale
-                    </h3>
-                    <p className="mt-5 max-w-md text-base leading-relaxed text-text-secondary md:text-lg">
-                      Secure multi-tenant SaaS with billing, auth, and dashboards — on architecture
-                      that grows with you.
-                    </p>
-                    <Link
-                      href="/services/saas-development"
-                      className="group mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-[#0d0d0d] transition-[transform,opacity] hover:-translate-y-px hover:opacity-90 md:text-base"
-                    >
-                      SaaS development
-                      <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                    </Link>
-                  </div>
-                  <ul className="grid gap-3">
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
-                      Multi-tenant architecture
-                    </li>
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
-                      Stripe billing &amp; subscriptions
-                    </li>
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
-                      MVP delivered in 11 weeks
-                    </li>
-                  </ul>
-                </div>
-              </article>
-            </div>
-
-            {/* Card 3: AI Products */}
-            <div className="section-entrance-item section-entrance-item--4">
-              <article className="showcase-card relative overflow-hidden rounded-3xl border border-white/10 p-8 md:p-12 h-fit">
-                <div
-                  className="showcase-card-glow pointer-events-none absolute inset-0"
-                  aria-hidden="true"
-                ></div>
-                <div className="relative grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
-                      03 · AI Products
-                    </p>
-                    <h3 className="mt-4 text-3xl font-semibold tracking-tight text-text-primary md:text-4xl lg:text-5xl">
-                      AI features that actually work
-                    </h3>
-                    <p className="mt-5 max-w-md text-base leading-relaxed text-text-secondary md:text-lg">
-                      RAG pipelines, LLM features, and AI agents grounded in your data — accurate,
-                      evaluated, and cost-controlled.
-                    </p>
-                    <Link
-                      href="/services/ai-integration"
-                      className="group mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-[#0d0d0d] transition-[transform,opacity] hover:-translate-y-px hover:opacity-90 md:text-base"
-                    >
-                      AI integration
-                      <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                    </Link>
-                  </div>
-                  <ul className="grid gap-3">
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
-                      RAG &amp; vector search
-                    </li>
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
-                      OpenAI &amp; Anthropic
-                    </li>
-                    <li className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-medium text-text-primary transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-accent/30 md:text-base">
-                      Chatbots &amp; AI agents
-                    </li>
-                  </ul>
-                </div>
-              </article>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Section 3: All Services */}
+      {/* Section 3: All Services — stacks over What we build */}
       <div
         ref={servicesRef}
         className={`stack-section section-services theme-paper bg-surface ${
@@ -247,7 +101,7 @@ export function HomeStackedSections() {
         </div>
       </div>
 
-      {/* Section 4: Selected Work */}
+      {/* Section 7: Selected Work */}
       <div
         ref={workRef}
         className={`stack-section section-work theme-obsidian bg-surface ${

@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
   useScroll,
@@ -9,145 +8,210 @@ import {
   useReducedMotion,
   type MotionValue,
 } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { useStackProgress, SectionHeading } from "../shared";
+import { SHOWCASE_PANELS, type ShowcasePanel } from "./showcase-panels";
+import { ShowcasePanelContent } from "./ShowcasePanelCard";
 
-type Panel = {
-  tag: string;
-  title: string;
-  body: string;
-  points: string[];
-  href: string;
-  cta: string;
-};
+const PANEL_COUNT = SHOWCASE_PANELS.length;
+const RUNWAY_VH_PER_PANEL = 145;
+const RUNWAY_END_BUFFER_VH = 100;
+const TRAVEL_PCT = 68;
 
-const PANELS: Panel[] = [
-  {
-    tag: "01 · Web & Mobile",
-    title: "Web & mobile apps your users love",
-    body: "Fast, polished web apps and cross-platform mobile apps — built once, shipped to every screen.",
-    points: ["Next.js & React on the web", "React Native for iOS & Android", "Design, build, and launch"],
-    href: "/services/web-development",
-    cta: "Web development",
-  },
-  {
-    tag: "02 · SaaS Platforms",
-    title: "SaaS platforms, from MVP to scale",
-    body: "Secure multi-tenant SaaS with billing, auth, and dashboards — on architecture that grows with you.",
-    points: ["Multi-tenant architecture", "Stripe billing & subscriptions", "MVP delivered in 11 weeks"],
-    href: "/services/saas-development",
-    cta: "SaaS development",
-  },
-  {
-    tag: "03 · AI Products",
-    title: "AI features that actually work",
-    body: "RAG pipelines, LLM features, and AI agents grounded in your data — accurate, evaluated, and cost-controlled.",
-    points: ["RAG & vector search", "OpenAI & Anthropic", "Chatbots & AI agents"],
-    href: "/services/ai-integration",
-    cta: "AI integration",
-  },
-];
+function easeOutCubic(t: number) {
+  return 1 - (1 - t) ** 3;
+}
 
-function ShowcaseCard({
+function easeInCubic(t: number) {
+  return t ** 3;
+}
+
+function enterRatio(index: number, total: number) {
+  if (index === 0) return 0.05;
+  return 0.11;
+}
+
+function exitRatio(index: number, total: number) {
+  if (index === total - 1) return 0.05;
+  return 0.11;
+}
+
+function slideState(
+  p: number,
+  index: number,
+  total: number,
+  fromLeft: boolean,
+) {
+  const seg = 1 / total;
+  const start = index * seg;
+  const enterR = enterRatio(index, total);
+  const exitR = exitRatio(index, total);
+  const off = fromLeft ? -TRAVEL_PCT : TRAVEL_PCT;
+  const local = (p - start) / seg;
+
+  if (local < 0) {
+    if (index === 0) return { x: "0%", opacity: 1 };
+    return { x: `${off}%`, opacity: 0 };
+  }
+
+  if (local > 1) {
+    if (index === total - 1) return { x: "0%", opacity: 1 };
+    return { x: `${off}%`, opacity: 0 };
+  }
+
+  if (index === 0 && local < enterR) {
+    return { x: "0%", opacity: 1 };
+  }
+
+  if (index === total - 1 && local > 1 - exitR) {
+    return { x: "0%", opacity: 1 };
+  }
+
+  if (local < enterR) {
+    const t = easeOutCubic(local / enterR);
+    const x = off * (1 - t);
+    return { x: `${x}%`, opacity: t };
+  }
+
+  if (local < 1 - exitR) {
+    return { x: "0%", opacity: 1 };
+  }
+
+  const t = easeInCubic((local - (1 - exitR)) / exitR);
+  const x = off * t;
+  return { x: `${x}%`, opacity: 1 - t };
+}
+
+function ShowcaseSlide({
   panel,
   index,
   total,
   progress,
-  reduce,
 }: {
-  panel: Panel;
+  panel: ShowcasePanel;
   index: number;
   total: number;
   progress: MotionValue<number>;
-  reduce: boolean | null;
 }) {
-  // Card is bigger when in view, shrinks dramatically as it moves out of view
-  const start = index / total;
-  const end = start + 1 / total;
-  const scale = useTransform(progress, [start, end], [1, 0.88 - (total - 1 - index) * 0.05]);
-  const opacity = useTransform(progress, [start, end], [1, 0.65]);
+  const fromLeft = index % 2 === 0;
+
+  const x = useTransform(progress, (p) =>
+    slideState(p, index, total, fromLeft).x,
+  );
+  const opacity = useTransform(progress, (p) =>
+    slideState(p, index, total, fromLeft).opacity,
+  );
 
   return (
-    <div
-      className="sticky"
-      style={{ top: `calc(6.5rem + ${index * 1.5}rem)` }}
+    <motion.div
+      className="showcase-slide absolute inset-0 flex items-center"
+      style={{ x, opacity }}
     >
-      <motion.article
-        style={reduce ? undefined : { scale, opacity }}
-        className="showcase-card relative rounded-3xl border border-white/10 p-6 md:p-12"
-      >
-        <div className="showcase-card-glow pointer-events-none absolute inset-0 rounded-3xl" aria-hidden />
-        <div className="relative grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-[1.1fr_0.9fr] md:items-center">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
-              {panel.tag}
-            </p>
-            <h3 className="mt-4 text-2xl sm:text-3xl font-semibold tracking-tight text-text-primary md:text-4xl lg:text-5xl">
-              {panel.title}
-            </h3>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-text-secondary md:text-lg">
-              {panel.body}
-            </p>
-            <Link
-              href={panel.href}
-              className="group mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-[#0d0d0d] transition-[transform,opacity] hover:-translate-y-px hover:opacity-90 md:text-base"
-            >
-              {panel.cta}
-              <ArrowUpRight
-                className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                strokeWidth={2}
-                aria-hidden
-              />
-            </Link>
-          </div>
-          <ul className="grid gap-3">
-            {panel.points.map((point) => (
-              <li
-                key={point}
-                className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 sm:px-5 sm:py-4 text-sm font-medium text-text-primary md:text-base"
-              >
-                {point}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </motion.article>
-    </div>
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
+        <ShowcasePanelContent panel={panel} />
+      </div>
+    </motion.div>
   );
 }
 
+function ShowcaseStatic() {
+  const { ref, inView } = useStackProgress<HTMLElement>();
+
+  return (
+    <section
+      ref={ref}
+      aria-label="What we build"
+      className={`stack-section section-build theme-obsidian border-t border-border bg-surface ${
+        inView ? "section-visible" : ""
+      }`}
+    >
+      <div
+        className="section-build-card__glow pointer-events-none absolute inset-0"
+        aria-hidden
+      />
+      <div className="stack-section-inner relative mx-auto max-w-6xl px-5 sm:px-8">
+        <div className="section-entrance-item section-entrance-item--1 mx-auto mb-14 max-w-2xl text-center md:mb-16">
+          <SectionHeading
+            align="center"
+            eyebrow="What we build"
+            title="Three things we do exceptionally well."
+          />
+        </div>
+        <div className="flex flex-col gap-12 md:gap-16">
+          {SHOWCASE_PANELS.map((panel) => (
+            <ShowcasePanelContent key={panel.tag} panel={panel} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Tall stack layer (z-index 2). Sticky viewport pins while cards slide;
+ * All Services (z-index 3) stacks on top once this section is scrolled through.
+ */
 export function HomeShowcase() {
-  const ref = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
+  const [mobile, setMobile] = useState(false);
+  const { ref: stackRef, inView } = useStackProgress<HTMLElement>();
+  const runwayHeight =
+    PANEL_COUNT * RUNWAY_VH_PER_PANEL + RUNWAY_END_BUFFER_VH;
+
   const { scrollYProgress } = useScroll({
-    target: ref,
+    target: sectionRef,
     offset: ["start start", "end end"],
   });
 
-  return (
-    <section className="theme-obsidian relative w-full border-t border-border bg-surface overflow-hidden">
-      <div className="section-orb -left-32 top-1/4 h-96 w-96 opacity-50" aria-hidden />
-      <div className="section-orb -right-24 bottom-1/4 h-80 w-80 opacity-30" aria-hidden />
-      <div ref={ref} className="relative mx-auto max-w-5xl px-4 sm:px-6 md:px-8 pb-16 md:pb-32 pt-16 md:pt-28">
-        <div className="mx-auto mb-12 max-w-2xl text-center">
-          <p className="heading-accent mx-auto inline-block text-xs font-semibold uppercase tracking-[0.2em] text-text-muted [&::before]:mx-auto">
-            What we build
-          </p>
-          <h2 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight text-text-primary md:text-5xl md:leading-[1.05]">
-            Three things we do exceptionally well.
-          </h2>
-        </div>
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const update = () => setMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
-        <div className="space-y-6 md:space-y-8">
-          {PANELS.map((panel, i) => (
-            <ShowcaseCard
-              key={panel.tag}
-              panel={panel}
-              index={i}
-              total={PANELS.length}
-              progress={scrollYProgress}
-              reduce={reduce}
+  if (reduce || mobile) {
+    return <ShowcaseStatic />;
+  }
+
+  return (
+    <section
+      ref={sectionRef}
+      aria-label="What we build"
+      className="section-build section-build--runway theme-obsidian border-t border-border bg-surface"
+      style={{ height: `${runwayHeight}vh` }}
+    >
+      <div
+        ref={stackRef}
+        className={`showcase-sticky-viewport ${
+          inView ? "section-visible" : ""
+        }`}
+      >
+        <div
+          className="section-build-card__glow pointer-events-none absolute inset-0"
+          aria-hidden
+        />
+        <div className="showcase-sticky-inner relative mx-auto flex w-full max-w-6xl flex-col px-5 pb-8 sm:px-8 md:pb-12">
+          <div className="section-entrance-item section-entrance-item--1 mx-auto mb-10 max-w-2xl shrink-0 text-center md:mb-12">
+            <SectionHeading
+              align="center"
+              eyebrow="What we build"
+              title="Three things we do exceptionally well."
             />
-          ))}
+          </div>
+
+          <div className="showcase-stage relative min-h-0 flex-1 overflow-hidden">
+            {SHOWCASE_PANELS.map((panel, i) => (
+              <ShowcaseSlide
+                key={panel.tag}
+                panel={panel}
+                index={i}
+                total={PANEL_COUNT}
+                progress={scrollYProgress}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

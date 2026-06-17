@@ -17,7 +17,7 @@ export function SectionHeading({
 }: SectionHeadingProps) {
   const alignClass =
     align === "center"
-      ? "mx-auto text-center items-center [&::before]:mx-auto"
+      ? "mx-auto text-center items-center"
       : "text-left items-start";
 
   return (
@@ -27,7 +27,7 @@ export function SectionHeading({
       }`}
     >
       {eyebrow ? (
-        <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-text-muted md:text-sm">
+        <p className="heading-accent__eyebrow text-xs font-medium uppercase tracking-[0.2em] text-text-muted md:text-sm">
           {eyebrow}
         </p>
       ) : null}

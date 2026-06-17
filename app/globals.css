@@ -189,6 +189,10 @@
     pointer-events: auto;
   }
 
+  .home-stack-container .section-services {
+    margin-top: 0;
+  }
+
   .stack-section {
     position: relative;
     top: auto;
@@ -214,19 +218,17 @@
 }
 
 .section-build {
-  position: relative !important;
-  top: auto !important;
-  sticky: none !important;
   z-index: 2;
-  height: auto;
-  overflow: visible;
-  display: block;
-  align-items: auto;
-  width: 100%;
 }
 
 .section-services {
   z-index: 3;
+}
+
+/* Last 100vh of the build runway = stack transition; services slides over pinned build */
+.home-stack-container .section-services {
+  margin-top: -100vh;
+  margin-top: -100dvh;
 }
 
 .section-work {
@@ -374,6 +376,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .home-stack-container .section-services {
+    margin-top: 0;
+  }
+
   .stack-section {
     position: relative;
     top: auto;
@@ -887,7 +893,71 @@
   background: var(--brand-footer-surface);
 }
 
-/* ── Home showcase (sticky stacking cards) ── */
+/* ── Home showcase (horizontal scroll runway) ── */
+.section-build--runway {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.section-build--runway .showcase-sticky-viewport {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.showcase-sticky-inner {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding-top: 7rem;
+  padding-bottom: 2rem;
+  box-sizing: border-box;
+}
+
+@media (min-width: 769px) {
+  .showcase-sticky-inner {
+    padding-top: 8.5rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+.showcase-stage {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+.showcase-slide {
+  will-change: transform, opacity;
+}
+
+.section-build-card__glow {
+  background:
+    radial-gradient(
+      130% 90% at 0% 0%,
+      color-mix(in srgb, var(--accent) 11%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      80% 70% at 100% 20%,
+      color-mix(in srgb, var(--accent) 6%, transparent),
+      transparent 60%
+    );
+}
+
+.showcase-panel {
+  width: 100%;
+}
+
 .showcase-card {
   /* Opaque so stacked cards cleanly cover the one beneath. */
   background:
@@ -1128,14 +1198,22 @@
   }
 }
 
-/* ── Accent heading line ── */
+/* ── Accent heading line (under eyebrow label) ── */
 .heading-accent::before {
+  display: none;
+}
+
+.heading-accent__eyebrow::after,
+p.heading-accent::after {
   content: "";
   display: block;
   width: 2rem;
   height: 2px;
   background: var(--accent);
+  margin-top: 0.75rem;
   margin-bottom: 1rem;
+  margin-left: 0;
+  margin-right: auto;
 }
 
 /* ── Base ── */
