@@ -89,7 +89,7 @@ export const SERVICES: Service[] = [
     navLabel: "SaaS Development",
     title: "SaaS Development Services",
     keyword: "saas development company",
-    metaTitle: "SaaS Development Company | Multi-Tenant SaaS Built Fast | CodeBaxh",
+    metaTitle: "SaaS Development Company | Multi-Tenant SaaS | CodeBaxh",
     metaDescription:
       "CodeBaxh builds robust, multi-tenant SaaS platforms with Next.js, Node.js, and AWS. We shipped a multi-tenant SaaS MVP in 11 weeks. Book a free discovery call.",
     eyebrow: "SaaS Development",
@@ -147,9 +147,9 @@ export const SERVICES: Service[] = [
     navLabel: "AI Integration",
     title: "AI Integration Services",
     keyword: "ai integration services",
-    metaTitle: "AI Integration Services | OpenAI, Anthropic & RAG | CodeBaxh",
+    metaTitle: "AI Integration Services | RAG & LLM Features | CodeBaxh",
     metaDescription:
-      "Add real AI to your product: RAG pipelines, LLM features, and AI agents with OpenAI and Anthropic. CodeBaxh ships real-world AI — including a legal-contract RAG system. Book a call.",
+      "Add real AI to your product with RAG pipelines, LLM features, and agents using OpenAI and Anthropic. CodeBaxh ships production AI. Book a free call.",
     eyebrow: "AI Integration",
     summary:
       "Real, production AI features — RAG pipelines, LLM apps, and agents built with OpenAI and Anthropic.",
@@ -205,9 +205,9 @@ export const SERVICES: Service[] = [
     navLabel: "Web Development",
     title: "Full-Stack Web Development Services",
     keyword: "custom web development company",
-    metaTitle: "Full-Stack Web Development Company | Next.js & React | CodeBaxh",
+    metaTitle: "Web Development Company | Next.js & React | CodeBaxh",
     metaDescription:
-      "Custom full-stack web development with Next.js, React, TypeScript, Node.js, and Python. CodeBaxh builds fast, scalable web apps for clients worldwide. Book a free discovery call.",
+      "Custom full-stack web development with Next.js, React, TypeScript, and Node.js. CodeBaxh builds fast, scalable web apps worldwide. Book a free call.",
     eyebrow: "Web Development",
     summary:
       "Custom, full-stack web applications built with Next.js, React, TypeScript, and Node.js.",
@@ -259,9 +259,9 @@ export const SERVICES: Service[] = [
     navLabel: "Next.js Development",
     title: "Next.js Development Agency",
     keyword: "nextjs development agency",
-    metaTitle: "Next.js Development Agency | App Router & React 19 | CodeBaxh",
+    metaTitle: "Next.js Development Agency | App Router & SSR | CodeBaxh",
     metaDescription:
-      "Expert Next.js development: App Router, Server Components, SSR/SSG/ISR, and Core Web Vitals. CodeBaxh ships fast, SEO-ready Next.js apps. Book a free discovery call.",
+      "Expert Next.js development: App Router, Server Components, SSR/SSG/ISR, and Core Web Vitals. CodeBaxh ships fast, SEO-ready apps. Book a call.",
     eyebrow: "Next.js Development",
     summary:
       "Specialist Next.js development — App Router, Server Components, and SEO-ready rendering.",
@@ -313,7 +313,7 @@ export const SERVICES: Service[] = [
     navLabel: "Mobile Apps",
     title: "React Native App Development Company",
     keyword: "react native app development company",
-    metaTitle: "React Native App Development Company | iOS & Android | CodeBaxh",
+    metaTitle: "React Native App Development | iOS & Android | CodeBaxh",
     metaDescription:
       "Cross-platform mobile apps with React Native — one codebase for iOS and Android. CodeBaxh ships polished, native-feeling apps. Book a free discovery call.",
     eyebrow: "Mobile App Development",
@@ -366,7 +366,7 @@ export const SERVICES: Service[] = [
     navLabel: "Cloud & DevOps",
     title: "Cloud & DevOps Services (AWS & Azure)",
     keyword: "aws cloud devops services",
-    metaTitle: "AWS & Azure Cloud + DevOps Services | CI/CD & Infra | CodeBaxh",
+    metaTitle: "Cloud & DevOps Services | AWS, Azure & CI/CD | CodeBaxh",
     metaDescription:
       "Cloud architecture, CI/CD, and DevOps on AWS and Azure. CodeBaxh sets up scalable, observable, cost-efficient infrastructure. Book a free discovery call.",
     eyebrow: "Cloud & DevOps",
@@ -419,7 +419,7 @@ export const SERVICES: Service[] = [
     navLabel: "Stripe Integration",
     title: "Stripe Integration Services",
     keyword: "stripe integration services",
-    metaTitle: "Stripe Integration Services | Subscriptions & Billing | CodeBaxh",
+    metaTitle: "Stripe Integration Services | SaaS Billing | CodeBaxh",
     metaDescription:
       "Stripe integration done right: subscriptions, usage-based billing, webhooks, and edge cases. CodeBaxh ships reliable payments for SaaS. Book a free discovery call.",
     eyebrow: "Stripe Integration",
@@ -529,7 +529,7 @@ export const SERVICES: Service[] = [
     keyword: "api and backend development services",
     metaTitle: "API & Backend Development | Node.js, Python, PHP | CodeBaxh",
     metaDescription:
-      "Scalable APIs and backends with Node.js, NestJS, Python/FastAPI, PHP/Laravel, and Strapi — across PostgreSQL, MySQL, MongoDB, and Supabase. CodeBaxh builds secure, well-documented backends. Book a free discovery call.",
+      "Scalable, secure APIs and backends in Node.js, Python/FastAPI, or PHP/Laravel — across PostgreSQL, MySQL, MongoDB, and Supabase. Book a free call.",
     eyebrow: "API & Backend",
     summary:
       "Secure, scalable APIs and backends in Node.js, Python, or PHP — your stack, your database.",

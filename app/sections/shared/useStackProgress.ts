@@ -2,9 +2,18 @@
 
 import { useEffect, useRef, useState, type RefObject } from "react";
 
+/**
+ * Reveals a section once it has scrolled a little way into the viewport.
+ *
+ * Uses IntersectionObserver rather than a per-frame scroll/getBoundingClientRect
+ * loop, so several instances can run at once without forcing layout every frame
+ * (that per-frame reflow was a real source of scroll jank).
+ *
+ * `deadZoneStart` is how far into the viewport (0–1, measured up from the
+ * bottom edge) the element must travel before it counts as in view.
+ */
 export function useStackProgress<T extends HTMLElement = HTMLElement>(
   deadZoneStart = 0.15,
-  deadZoneEnd = 0.85,
 ): { ref: RefObject<T | null>; inView: boolean } {
   const ref = useRef<T>(null);
   const [inView, setInView] = useState(false);
@@ -18,52 +27,26 @@ export function useStackProgress<T extends HTMLElement = HTMLElement>(
     ).matches;
 
     if (reducedMotion) {
-      const timer = window.setTimeout(() => {
-        setInView(true);
-      }, 0);
+      const timer = window.setTimeout(() => setInView(true), 0);
       return () => window.clearTimeout(timer);
     }
 
-    let animationFrameId: number;
+    // Trigger when the element's top edge crosses a line `deadZoneStart` of the
+    // way up from the bottom of the viewport (matches the old threshold).
+    const bottomMargin = Math.round(deadZoneStart * 100);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: `0px 0px -${bottomMargin}% 0px`, threshold: 0 },
+    );
 
-    const updateProgress = () => {
-      if (!element) return;
-
-      const rect = element.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-
-      // Calculate progress: 0 when section top is at bottom of viewport, 1 when top is at top
-      const distanceFromBottom = rect.top;
-      const progress = 1 - distanceFromBottom / viewportHeight;
-
-      // Clamp to 0-1
-      const clampedProgress = Math.max(0, Math.min(1, progress));
-
-      // Apply dead zone
-      const adjustedProgress = Math.max(
-        0,
-        Math.min(
-          1,
-          (clampedProgress - deadZoneStart) / (deadZoneEnd - deadZoneStart),
-        ),
-      );
-
-      // Only show when past dead zone
-      if (adjustedProgress > 0.01) {
-        setInView(true);
-      }
-
-      animationFrameId = requestAnimationFrame(updateProgress);
-    };
-
-    updateProgress();
-
-    return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-    };
-  }, [deadZoneStart, deadZoneEnd]);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [deadZoneStart]);
 
   return { ref, inView };
 }

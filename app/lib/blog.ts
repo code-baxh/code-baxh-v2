@@ -17,6 +17,8 @@ export type BlogPost = {
   metaDescription: string;
   excerpt: string;
   datePublished: string; // ISO date
+  /** ISO date of the last substantive edit; defaults to datePublished. */
+  dateModified?: string;
   readingTime: string;
   category: string;
   /** Related service for internal linking. */

@@ -40,7 +40,6 @@ function shouldPlayIntro(pathname: string) {
 
 export function IntroProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const [introReady, setIntroReady] = useState(() => !shouldPlayIntro(pathname));
   const [showOverlay, setShowOverlay] = useState(() =>
     shouldPlayIntro(pathname),
   );
@@ -56,11 +55,14 @@ export function IntroProvider({ children }: { children: ReactNode }) {
   const handleIntroComplete = () => {
     markIntroCompletedThisLoad();
     setShowOverlay(false);
-    setIntroReady(true);
   };
 
+  // `introReady` is intentionally always true: the header + hero (the LCP
+  // element) must paint immediately, be crawlable, and work without JS. The
+  // intro plays as a *non-blocking, skippable* overlay ON TOP of the already-
+  // rendered page — it no longer gates content visibility.
   return (
-    <IntroContext.Provider value={{ introReady }}>
+    <IntroContext.Provider value={{ introReady: true }}>
       {showOverlay ? <IntroWindow onComplete={handleIntroComplete} /> : null}
       {children}
     </IntroContext.Provider>

@@ -72,6 +72,7 @@ export default async function BlogPostPage({
             description: post.metaDescription,
             slug: post.slug,
             datePublished: post.datePublished,
+            dateModified: post.dateModified,
           }),
           breadcrumbSchema(crumbs),
           ...(post.faqs && post.faqs.length ? [faqSchema(post.faqs)] : []),

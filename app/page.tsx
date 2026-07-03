@@ -70,7 +70,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stacked sections: Why Code Baxh, What We Build, All Services, Selected Work */}
+        {/* Stacked sections: Why CodeBaxh, What We Build, All Services, Selected Work */}
         <HomeStackedSections />
 
         {/* Process overview */}

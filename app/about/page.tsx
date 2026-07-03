@@ -14,7 +14,7 @@ import { breadcrumbSchema } from "../lib/schema";
 import { SITE } from "../lib/site";
 
 export const metadata: Metadata = {
-  title: "About CodeBaxh — Software Development Agency",
+  title: "About Us — Software Development Agency",
   description:
     "CodeBaxh is a software development agency led by Bilal Khursheed. Our team delivers web and mobile apps, SaaS, and AI products for startups and companies worldwide. Upwork Top Rated Plus.",
   alternates: { canonical: "/about" },

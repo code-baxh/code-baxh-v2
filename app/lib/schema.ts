@@ -3,7 +3,7 @@
  * consistent everywhere (consistency is what makes Google + AI engines trust
  * the entity and cite it). Render the returned objects with <JsonLd />.
  */
-import { SITE, SITE_URL, FOUNDER, SAME_AS } from "./site";
+import { SITE, SITE_URL, FOUNDER, SAME_AS, CONTENT_LAST_UPDATED } from "./site";
 
 const ORG_ID = `${SITE_URL}/#organization`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
@@ -139,6 +139,8 @@ export function caseStudySchema(opts: {
     headline: opts.title,
     description: opts.description,
     url: `${SITE_URL}/work/${opts.slug}`,
+    image: `${SITE_URL}${SITE.ogImage}`,
+    dateModified: CONTENT_LAST_UPDATED,
     author: { "@id": FOUNDER_ID },
     publisher: { "@id": ORG_ID },
   } as const;
@@ -149,6 +151,7 @@ export function articleSchema(opts: {
   description: string;
   slug: string;
   datePublished: string;
+  dateModified?: string;
 }) {
   return {
     "@context": "https://schema.org",
@@ -156,7 +159,9 @@ export function articleSchema(opts: {
     headline: opts.title,
     description: opts.description,
     url: `${SITE_URL}/blog/${opts.slug}`,
+    image: `${SITE_URL}${SITE.ogImage}`,
     datePublished: opts.datePublished,
+    dateModified: opts.dateModified ?? opts.datePublished,
     author: { "@id": FOUNDER_ID },
     publisher: { "@id": ORG_ID },
     mainEntityOfPage: `${SITE_URL}/blog/${opts.slug}`,

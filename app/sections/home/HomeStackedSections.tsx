@@ -37,7 +37,7 @@ export function HomeStackedSections() {
 
   return (
     <div className="home-stack-container">
-      {/* Section 1: Why Code Baxh */}
+      {/* Section 1: Why CodeBaxh */}
       <div
         ref={whyRef}
         className={`stack-section section-why theme-paper bg-surface ${
@@ -48,7 +48,7 @@ export function HomeStackedSections() {
           <div className="section-entrance-item section-entrance-item--1 mb-8">
             <SectionHeading
               size="default"
-              eyebrow="Why Code Baxh"
+              eyebrow="Why CodeBaxh"
               title="A product partner, not a body shop."
               description="Breadth across web, SaaS, and AI — with the depth of an experienced team that ships."
             />

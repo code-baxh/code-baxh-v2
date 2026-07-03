@@ -14,6 +14,14 @@ export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.codebaxh.com"
 ).replace(/\/$/, "");
 
+/**
+ * Last meaningful content update (YYYY-MM-DD). Used for sitemap `lastModified`
+ * on pages that don't carry their own date, so the value stays STABLE across
+ * builds — a fresh `new Date()` every build tells crawlers everything changed
+ * (noise they learn to ignore). Bump this when you ship a real content change.
+ */
+export const CONTENT_LAST_UPDATED = "2026-07-03";
+
 export const SITE = {
   name: "CodeBaxh",
   legalName: "CodeBaxh",
@@ -58,6 +66,7 @@ export const SOCIALS = {
   facebook: "", // TODO: Facebook page URL
   instagram: "", // TODO: Instagram profile URL
   github: "", // optional: GitHub org URL
+  x: "", // TODO: X/Twitter handle e.g. "@codebaxh" — powers the Twitter card
 } as const;
 
 // Used for Organization.sameAs — only include non-empty profiles.

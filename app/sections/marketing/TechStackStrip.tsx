@@ -3,7 +3,15 @@ import Image from "next/image";
 import { Reveal, SectionHeading } from "../shared";
 import { TECH_STACK_ITEMS, type TechStackItem } from "./tech-stack-icons";
 
-const MARQUEE_DURATION = "28s";
+const MARQUEE_DURATION = "34s";
+
+const TECH_CATEGORIES = [
+  "Frontend",
+  "Backend",
+  "Databases",
+  "Cloud",
+  "AI",
+] as const;
 
 function splitIntoColumns<T>(items: readonly T[], columns: number): T[][] {
   const result: T[][] = Array.from({ length: columns }, () => []);
@@ -13,42 +21,28 @@ function splitIntoColumns<T>(items: readonly T[], columns: number): T[][] {
   return result;
 }
 
-function TechStackTile({
-  item,
-  muted,
-}: {
-  item: TechStackItem;
-  muted?: boolean;
-}) {
-  const label =
-    item.name === "Strapi (headless CMS)" ? "Strapi" : item.name;
+function TechStackPill({ item }: { item: TechStackItem }) {
+  const label = item.name === "Strapi (headless CMS)" ? "Strapi" : item.name;
 
   return (
-    <div
-      className={[
-        "flex w-[5rem] shrink-0 flex-col items-center gap-2.5 md:w-[5.5rem]",
-        muted ? "opacity-80" : "",
-      ].join(" ")}
-    >
-      <div className="flex size-16 items-center justify-center p-1 md:size-[4.5rem]">
+    <div className="tech-pill">
+      <span className="tech-pill__icon">
         {item.icon ? (
           <Image
             src={item.icon}
             alt=""
-            width={48}
-            height={48}
-            className="size-10 object-contain md:size-11"
+            width={28}
+            height={28}
+            className="size-6 object-contain"
             aria-hidden
           />
         ) : (
-          <span className="flex size-10 items-center justify-center text-xl font-bold uppercase tracking-tight text-accent md:size-11 md:text-2xl">
+          <span className="text-[11px] font-bold uppercase tracking-tight text-accent">
             {label.slice(0, 2)}
           </span>
         )}
-      </div>
-      <span className="max-w-[5rem] text-center text-[10px] font-medium leading-tight text-text-muted md:text-[11px]">
-        {label}
       </span>
+      <span className="tech-pill__label">{label}</span>
     </div>
   );
 }
@@ -56,20 +50,19 @@ function TechStackTile({
 function MarqueeGroup({
   items,
   groupId,
-  muted,
+  clone,
 }: {
   items: readonly TechStackItem[];
   groupId: string;
-  muted?: boolean;
+  clone?: boolean;
 }) {
   return (
-    <div className="tech-marquee-group" aria-hidden>
+    <div
+      className={`tech-marquee-group ${clone ? "tech-marquee-group--clone" : ""}`}
+      aria-hidden
+    >
       {items.map((item, i) => (
-        <TechStackTile
-          key={`${groupId}-${item.name}-${i}`}
-          item={item}
-          muted={muted}
-        />
+        <TechStackPill key={`${groupId}-${item.name}-${i}`} item={item} />
       ))}
     </div>
   );
@@ -79,17 +72,15 @@ function TechMarqueeRow({
   items,
   reverse = false,
   duration,
-  muted = false,
 }: {
   items: readonly TechStackItem[];
   reverse?: boolean;
   duration: string;
-  muted?: boolean;
 }) {
   if (!items.length) return null;
 
   return (
-    <div className="tech-marquee overflow-hidden py-2" aria-hidden>
+    <div className="tech-marquee" aria-hidden>
       <div
         className={[
           "tech-marquee-track",
@@ -99,9 +90,9 @@ function TechMarqueeRow({
           .join(" ")}
         style={{ "--marquee-duration": duration } as CSSProperties}
       >
-        <MarqueeGroup items={items} groupId="a" muted={muted} />
-        <MarqueeGroup items={items} groupId="b" muted={muted} />
-        <MarqueeGroup items={items} groupId="c" muted={muted} />
+        <MarqueeGroup items={items} groupId="a" />
+        <MarqueeGroup items={items} groupId="b" clone />
+        <MarqueeGroup items={items} groupId="c" clone />
       </div>
     </div>
   );
@@ -120,29 +111,43 @@ export function TechStackStrip({
 
   return (
     <section
-      className={`theme-${theme} overflow-x-hidden border-t border-border bg-surface-muted py-14 sm:py-20 md:py-28`}
+      className={`tech-stack-section theme-${theme} relative overflow-hidden border-t border-border bg-surface-muted py-16 sm:py-24 md:py-28`}
     >
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        {heading && (
-          <Reveal>
+      <div className="tech-stack-glow pointer-events-none absolute inset-x-0 -top-16 h-72" aria-hidden />
+
+      {heading && (
+        <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
+          <Reveal className="mx-auto flex max-w-2xl flex-col items-center text-center">
             <SectionHeading
-              size="default"
+              align="center"
               eyebrow="Tech stack"
               title="Modern, type-safe, battle-tested."
               description="We build on a broad, proven stack — and pick the right tools for your project, not a one-size-fits-all."
             />
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-text-muted sm:text-xs">
+              {TECH_CATEGORIES.map((category, i) => (
+                <span key={category} className="flex items-center gap-3">
+                  {i > 0 ? (
+                    <span
+                      className="size-1 rounded-full bg-accent/60"
+                      aria-hidden
+                    />
+                  ) : null}
+                  {category}
+                </span>
+              ))}
+            </div>
           </Reveal>
-        )}
-      </div>
+        </div>
+      )}
 
-      <Reveal variant="pop-in" delay={100} className="tech-marquee-rows mt-8 sm:mt-10 md:mt-12 md:mt-14">
+      <Reveal
+        variant="pop-in"
+        delay={100}
+        className={`tech-marquee-rows ${heading ? "mt-12 sm:mt-14 md:mt-16" : ""}`}
+      >
         <TechMarqueeRow items={leftCol} duration={MARQUEE_DURATION} />
-        <TechMarqueeRow
-          items={centerCol}
-          reverse
-          duration={MARQUEE_DURATION}
-          muted
-        />
+        <TechMarqueeRow items={centerCol} reverse duration={MARQUEE_DURATION} />
         <TechMarqueeRow items={rightCol} duration={MARQUEE_DURATION} />
       </Reveal>
 

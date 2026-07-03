@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Nunito } from "next/font/google";
 import { Providers } from "./providers";
-import { SITE, SITE_URL } from "./lib/site";
+import { SITE, SITE_URL, SOCIALS } from "./lib/site";
 import { JsonLd } from "./lib/JsonLd";
 import {
   graph,
@@ -61,11 +61,19 @@ export const metadata: Metadata = {
     title: `${SITE.name} — ${SITE.tagline}`,
     description: SITE.description,
     images: [SITE.ogImage],
+    // Auto-included once you set SOCIALS.x (e.g. "@codebaxh").
+    ...(SOCIALS.x ? { site: SOCIALS.x, creator: SOCIALS.x } : {}),
   },
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 

@@ -13,8 +13,10 @@ import { SHOWCASE_PANELS, type ShowcasePanel } from "./showcase-panels";
 import { ShowcasePanelContent } from "./ShowcasePanelCard";
 
 const PANEL_COUNT = SHOWCASE_PANELS.length;
-const RUNWAY_VH_PER_PANEL = 145;
-const RUNWAY_END_BUFFER_VH = 100;
+// Scroll distance the pinned stage occupies. Kept tight so each card responds
+// to scroll quickly instead of holding static for a full extra screen height.
+const RUNWAY_VH_PER_PANEL = 90;
+const RUNWAY_END_BUFFER_VH = 40;
 const TRAVEL_PCT = 68;
 
 function easeOutCubic(t: number) {
@@ -25,14 +27,16 @@ function easeInCubic(t: number) {
   return t ** 3;
 }
 
+// Larger ratios = the card is moving for more of its segment (feels responsive
+// to scroll) with a shorter fully-static "read" pause in the middle.
 function enterRatio(index: number, total: number) {
-  if (index === 0) return 0.05;
-  return 0.11;
+  if (index === 0) return 0.06;
+  return 0.3;
 }
 
 function exitRatio(index: number, total: number) {
-  if (index === total - 1) return 0.05;
-  return 0.11;
+  if (index === total - 1) return 0.06;
+  return 0.3;
 }
 
 function slideState(

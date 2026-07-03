@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useIntroReady } from "../intro";
 
 export function HeroActions() {
   return (
@@ -23,36 +22,29 @@ export function HeroActions() {
 }
 
 export function HeroContent() {
-  const introReady = useIntroReady();
-
+  // The hero (LCP element) is never gated behind the intro: it renders in the
+  // server HTML and reveals via a pure-CSS entrance on mount, so it paints
+  // immediately, is crawlable, and works without JS. The intro overlay (when
+  // it plays) simply sits on top and is skippable.
   return (
-    <div
-      className={`max-w-2xl ${introReady ? "animate-hero-reveal" : "opacity-0"}`}
-      style={{ animationDelay: introReady ? "280ms" : undefined }}
-    >
+    <div className="max-w-2xl animate-hero-reveal" style={{ animationDelay: "80ms" }}>
       <p
-        className={`hero-eyebrow mb-6 text-xs font-medium uppercase tracking-[0.25em] text-text-muted sm:mb-8 md:text-sm ${
-          introReady ? "animate-fade-up" : "opacity-0"
-        }`}
-        style={{ animationDelay: introReady ? "420ms" : undefined }}
+        className="hero-eyebrow mb-6 text-xs font-medium uppercase tracking-[0.25em] text-text-muted sm:mb-8 md:text-sm animate-fade-up"
+        style={{ animationDelay: "160ms" }}
       >
         Software development agency
       </p>
 
       <h1
-        className={`text-2xl font-semibold leading-[1.08] tracking-tight text-text-primary sm:text-4xl md:text-5xl lg:text-[3.75rem] lg:leading-[1.02] ${
-          introReady ? "animate-fade-up" : "opacity-0"
-        }`}
-        style={{ animationDelay: introReady ? "500ms" : undefined }}
+        className="text-2xl font-semibold leading-[1.08] tracking-tight text-text-primary sm:text-4xl md:text-5xl lg:text-[3.75rem] lg:leading-[1.02] animate-fade-up"
+        style={{ animationDelay: "220ms" }}
       >
         We build web, mobile, SaaS &amp; AI products that ship.
       </h1>
 
       <p
-        className={`mt-8 max-w-xl text-base leading-relaxed text-text-secondary sm:mt-12 md:text-lg lg:text-xl ${
-          introReady ? "animate-fade-up" : "opacity-0"
-        }`}
-        style={{ animationDelay: introReady ? "580ms" : undefined }}
+        className="mt-8 max-w-xl text-base leading-relaxed text-text-secondary sm:mt-12 md:text-lg lg:text-xl animate-fade-up"
+        style={{ animationDelay: "300ms" }}
       >
         CodeBaxh is a software development agency. Our team turns your idea into
         a real, working product — web and mobile apps, SaaS platforms, and AI
@@ -60,19 +52,15 @@ export function HeroContent() {
       </p>
 
       <div
-        className={`mt-8 flex flex-wrap gap-3 sm:mt-14 sm:gap-4 ${
-          introReady ? "animate-fade-up" : "opacity-0"
-        }`}
-        style={{ animationDelay: introReady ? "660ms" : undefined }}
+        className="mt-8 flex flex-wrap gap-3 sm:mt-14 sm:gap-4 animate-fade-up"
+        style={{ animationDelay: "380ms" }}
       >
         <HeroActions />
       </div>
 
       <dl
-        className={`mt-12 grid grid-cols-3 gap-4 border-t border-border pt-8 sm:mt-16 sm:gap-6 sm:pt-12 ${
-          introReady ? "animate-fade-up" : "opacity-0"
-        }`}
-        style={{ animationDelay: introReady ? "740ms" : undefined }}
+        className="mt-12 grid grid-cols-3 gap-4 border-t border-border pt-8 sm:mt-16 sm:gap-6 sm:pt-12 animate-fade-up"
+        style={{ animationDelay: "460ms" }}
       >
         {[
           { term: "SaaS", detail: "MVP to scale, multi-tenant" },
