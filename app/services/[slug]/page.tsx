@@ -91,20 +91,103 @@ export default async function ServicePage({
           secondaryLabel="See our work"
         />
 
-        {/* Problem framing */}
+        {/* Overview + challenge */}
         <section className="theme-paper border-t border-border bg-surface py-16 md:py-24">
-          <div className="mx-auto max-w-3xl px-5 sm:px-8">
+          <div className="mx-auto max-w-6xl px-5 sm:px-8">
             <Breadcrumbs items={crumbs} />
-            <Reveal>
-              <p className="heading-accent text-xs font-semibold uppercase tracking-[0.2em] text-text-muted">
-                The challenge
-              </p>
-              <p className="mt-5 text-xl leading-relaxed text-text-primary md:text-2xl">
-                {service.problem}
-              </p>
-            </Reveal>
+            <div className="mt-8 grid gap-10 lg:grid-cols-3 lg:gap-14">
+              <div className="lg:col-span-1">
+                <Reveal className="lg:sticky lg:top-28">
+                  <p className="heading-accent text-xs font-semibold uppercase tracking-[0.2em] text-text-muted">
+                    The challenge
+                  </p>
+                  <p className="mt-5 text-lg leading-relaxed text-text-primary md:text-xl">
+                    {service.problem}
+                  </p>
+                </Reveal>
+              </div>
+
+              {service.overview && service.overview.length > 0 && (
+                <div className="lg:col-span-2">
+                  <Reveal>
+                    {service.overview.map((para, i) => (
+                      <p
+                        key={i}
+                        className={`text-lg leading-relaxed text-text-secondary md:text-xl ${
+                          i > 0 ? "mt-5" : ""
+                        }`}
+                      >
+                        {para}
+                      </p>
+                    ))}
+                  </Reveal>
+                </div>
+              )}
+            </div>
           </div>
         </section>
+
+        {/* Sound familiar? — pain points */}
+        {service.painPoints && service.painPoints.length > 0 && (
+          <section className="theme-obsidian border-t border-border bg-surface py-16 md:py-24">
+            <div className="mx-auto max-w-5xl px-5 sm:px-8">
+              <SectionHeading
+                eyebrow="Sound familiar?"
+                title="If any of this rings true, you're in the right place."
+              />
+              <div className="mt-10 grid gap-4 sm:grid-cols-2">
+                {service.painPoints.map((pain, i) => (
+                  <Reveal
+                    key={pain}
+                    delay={((i % 2) * 100) as 0 | 100}
+                    className="rounded-2xl border border-border border-l-2 border-l-accent bg-surface-elevated p-5"
+                  >
+                    <p className="text-base leading-relaxed text-text-primary md:text-lg">
+                      {pain}
+                    </p>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* How we solve it — problem → solution */}
+        {service.solutions && service.solutions.length > 0 && (
+          <section className="theme-paper border-t border-border bg-surface py-20 md:py-28">
+            <div className="mx-auto max-w-5xl px-5 sm:px-8">
+              <SectionHeading
+                eyebrow="How we solve it"
+                title="Your problem, and exactly how we remove it."
+              />
+              <div className="mt-10 space-y-4">
+                {service.solutions.map((pair) => (
+                  <Reveal
+                    key={pair.problem}
+                    className="grid gap-4 rounded-2xl border border-border bg-surface-elevated p-6 md:grid-cols-2 md:gap-8 md:p-7"
+                  >
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-text-muted">
+                        The problem
+                      </p>
+                      <p className="mt-2 text-base font-medium leading-relaxed text-text-primary">
+                        {pair.problem}
+                      </p>
+                    </div>
+                    <div className="md:border-l md:border-border md:pl-8">
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
+                        How we solve it
+                      </p>
+                      <p className="mt-2 text-base leading-relaxed text-text-secondary">
+                        {pair.solution}
+                      </p>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Scope / what we deliver */}
         <section className="theme-obsidian border-t border-border bg-surface py-20 md:py-28">
@@ -172,7 +255,17 @@ export default async function ServicePage({
           </div>
         </section>
 
-        <ProcessSteps theme="obsidian" />
+        {service.processSteps && service.processSteps.length > 0 ? (
+          <ProcessSteps
+            theme="obsidian"
+            steps={service.processSteps}
+            eyebrow="How we work"
+            title={`How a ${service.navLabel} project runs`}
+            description="A calm, visible rhythm from the first call to launch — short loops, weekly demos, and clear updates throughout."
+          />
+        ) : (
+          <ProcessSteps theme="obsidian" />
+        )}
 
         {/* Related case study */}
         {caseStudy && (

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import { CtaSection } from "../../sections/cta";
 import { FooterSection } from "../../sections/footer";
 import { HeaderSection } from "../../sections/header";
@@ -78,56 +78,156 @@ export default async function CaseStudyPage({
         />
 
         <section className="theme-paper border-t border-border bg-surface py-16 md:py-24">
-          <div className="mx-auto max-w-3xl px-5 sm:px-8">
+          <div className="mx-auto max-w-6xl px-5 sm:px-8">
             <Breadcrumbs items={crumbs} />
 
-            {study.clients && study.clients.length > 0 && (
-              <Reveal className="mb-12 rounded-2xl border border-border bg-surface-elevated p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">
-                  Enterprise clients
-                </p>
-                <p className="mt-3 text-lg font-semibold text-text-primary">
-                  {study.clients.join(" · ")}
-                </p>
-              </Reveal>
-            )}
+            <div className="mt-8 grid gap-10 lg:grid-cols-3 lg:gap-14">
+              {/* Main narrative */}
+              <article className="space-y-12 lg:col-span-2">
+                {study.overview && study.overview.length > 0 && (
+                  <Reveal>
+                    {study.overview.map((para, i) => (
+                      <p
+                        key={i}
+                        className={`text-lg leading-relaxed text-text-secondary md:text-xl ${
+                          i > 0 ? "mt-5" : ""
+                        }`}
+                      >
+                        {para}
+                      </p>
+                    ))}
+                  </Reveal>
+                )}
 
-            <article className="space-y-12">
-              <Reveal>
-                <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
-                  The problem
-                </h2>
-                <p className="mt-4 text-lg leading-relaxed text-text-secondary">
-                  {study.problem}
-                </p>
-              </Reveal>
+                <Reveal>
+                  <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
+                    The problem
+                  </h2>
+                  <p className="mt-4 text-lg leading-relaxed text-text-secondary">
+                    {study.problem}
+                  </p>
+                </Reveal>
 
-              <Reveal>
-                <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
-                  Our approach
-                </h2>
-                <ul className="mt-4 space-y-3">
-                  {study.approach.map((step) => (
-                    <li
-                      key={step}
-                      className="flex items-start gap-3 text-lg leading-relaxed text-text-secondary"
-                    >
-                      <ArrowRight className="mt-1.5 size-4 shrink-0 text-accent" strokeWidth={2.25} aria-hidden />
-                      {step}
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
+                <Reveal>
+                  <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
+                    Our approach
+                  </h2>
+                  <ul className="mt-4 space-y-3">
+                    {study.approach.map((step) => (
+                      <li
+                        key={step}
+                        className="flex items-start gap-3 text-lg leading-relaxed text-text-secondary"
+                      >
+                        <ArrowRight className="mt-1.5 size-4 shrink-0 text-accent" strokeWidth={2.25} aria-hidden />
+                        {step}
+                      </li>
+                    ))}
+                  </ul>
+                </Reveal>
 
-              <Reveal>
-                <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
-                  The solution
-                </h2>
-                <p className="mt-4 text-lg leading-relaxed text-text-secondary">
-                  {study.solution}
-                </p>
-              </Reveal>
-            </article>
+                <Reveal>
+                  <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
+                    The solution
+                  </h2>
+                  <p className="mt-4 text-lg leading-relaxed text-text-secondary">
+                    {study.solution}
+                  </p>
+                </Reveal>
+
+                {study.highlights && study.highlights.length > 0 && (
+                  <Reveal>
+                    <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
+                      What we built
+                    </h2>
+                    <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                      {study.highlights.map((h) => (
+                        <div
+                          key={h.title}
+                          className="kinetic-card rounded-2xl border border-border bg-surface-elevated p-5"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <Check className="size-4 shrink-0 text-accent" strokeWidth={2.5} aria-hidden />
+                            <h3 className="text-base font-semibold text-text-primary">
+                              {h.title}
+                            </h3>
+                          </div>
+                          <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+                            {h.body}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </Reveal>
+                )}
+              </article>
+
+              {/* Sticky project-details sidebar */}
+              <aside className="lg:col-span-1">
+                <div className="space-y-5 lg:sticky lg:top-28">
+                  <Reveal className="rounded-2xl border border-border bg-surface-elevated p-6">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">
+                      Project
+                    </p>
+                    <p className="mt-2 text-lg font-semibold text-text-primary">
+                      {study.client}
+                    </p>
+                    <dl className="mt-5 space-y-4 border-t border-border pt-5 text-sm">
+                      <div>
+                        <dt className="text-text-muted">Category</dt>
+                        <dd className="mt-1 font-medium text-text-primary">
+                          {study.category}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-text-muted">Tech stack</dt>
+                        <dd className="mt-2 flex flex-wrap gap-2">
+                          {study.techStack.map((tech) => (
+                            <span
+                              key={tech}
+                              className="rounded-full border border-border px-3 py-1 text-xs text-text-primary"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </dd>
+                      </div>
+                    </dl>
+                  </Reveal>
+
+                  {study.clients && study.clients.length > 0 && (
+                    <Reveal className="rounded-2xl border border-border bg-surface-elevated p-6">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">
+                        Enterprise clients
+                      </p>
+                      <p className="mt-3 text-base font-semibold text-text-primary">
+                        {study.clients.join(" · ")}
+                      </p>
+                    </Reveal>
+                  )}
+
+                  {service && (
+                    <Reveal>
+                      <Link
+                        href={`/services/${service.slug}`}
+                        className="group flex items-center justify-between gap-3 rounded-2xl border border-border bg-surface-elevated p-6 transition-colors hover:border-accent/40"
+                      >
+                        <span className="text-sm">
+                          <span className="block text-text-muted">Related service</span>
+                          <span className="mt-1 block font-semibold text-text-primary">
+                            {service.navLabel}
+                          </span>
+                        </span>
+                        <ArrowUpRight
+                          className="size-5 shrink-0 text-text-muted transition-[transform,color] duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                          strokeWidth={2}
+                          aria-hidden
+                        />
+                      </Link>
+                    </Reveal>
+                  )}
+                </div>
+              </aside>
+            </div>
           </div>
         </section>
 
@@ -147,34 +247,6 @@ export default async function CaseStudyPage({
                 </div>
               ))}
             </div>
-
-            <div className="mt-10">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-text-muted">
-                Tech stack
-              </p>
-              <ul className="mt-4 flex flex-wrap gap-2.5">
-                {study.techStack.map((tech) => (
-                  <li
-                    key={tech}
-                    className="rounded-full border border-border px-3.5 py-1.5 text-sm text-text-primary"
-                  >
-                    {tech}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {service && (
-              <div className="mt-10">
-                <Link
-                  href={`/services/${service.slug}`}
-                  className="group inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-semibold text-[#0d0d0d] transition-[transform,opacity] hover:-translate-y-px hover:opacity-90 md:text-base"
-                >
-                  Explore {service.navLabel}
-                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2} aria-hidden />
-                </Link>
-              </div>
-            )}
           </div>
         </section>
       </main>

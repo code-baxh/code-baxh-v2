@@ -22,8 +22,16 @@ export type Service = {
   summary: string;
   /** Hero subhead. */
   heroSubhead: string;
+  /** Richer 2–3 paragraph intro shown on the service detail page. */
+  overview?: string[];
   /** Buyer pain this service removes. */
   problem: string;
+  /** "Sound familiar?" — pains in the customer's own words. */
+  painPoints?: string[];
+  /** Problem → solution pairs shown as "How we solve it". */
+  solutions?: { problem: string; solution: string }[];
+  /** Service-specific process steps (falls back to shared PROCESS_STEPS). */
+  processSteps?: { title: string; body: string }[];
   /** What we deliver (scope). */
   deliverables: string[];
   techStack: string[];
@@ -97,8 +105,38 @@ export const SERVICES: Service[] = [
       "Robust multi-tenant SaaS — from MVP to scale, built to launch fast and grow.",
     heroSubhead:
       "We build secure, multi-tenant SaaS platforms that are ready for real customers — billing, auth, dashboards, and the architecture to scale.",
+    overview: [
+      "SaaS is where most of our work lives. We build multi-tenant products end to end — the tenant isolation, authentication, subscription billing, dashboards, and background jobs that turn an idea into software real customers pay for — and we design that foundation to survive your first hundred customers instead of forcing a rewrite.",
+      "The hard parts of SaaS aren't the screens; they're the architecture underneath. Per-tenant data isolation, role-based permissions, usage metering, and billing edge cases decide whether a product scales or collapses under its own success. We get those right from the first sprint.",
+      "Whether you're a founder validating an MVP or an established team adding a product line, we ship in weekly loops with working demos so you steer the build — and hand over type-safe, documented code your team can own.",
+    ],
     problem:
       "Most SaaS ideas stall between prototype and production: multi-tenancy, billing, auth, and reliability are hard to get right, and the wrong early architecture becomes expensive technical debt. You need a partner who has shipped real SaaS before.",
+    painPoints: [
+      "Your prototype or no-code build works, but you know it won't survive real, paying customers.",
+      "You need billing, multi-tenancy, and auth done right — and getting them wrong later means a painful rewrite.",
+      "You've been burned by agencies that hand off to juniors and vanish after launch.",
+    ],
+    solutions: [
+      {
+        problem: "Multi-tenancy and tenant isolation are risky to build in-house.",
+        solution: "We architect secure per-tenant data isolation and role-based access from the first sprint, so one customer can never see another's data.",
+      },
+      {
+        problem: "Subscription billing breaks in the edge cases — proration, failed payments, webhooks.",
+        solution: "We implement Stripe end to end with idempotent webhooks and reconciliation, so revenue is never silently lost.",
+      },
+      {
+        problem: "Early architecture choices quietly become expensive technical debt.",
+        solution: "We design the data model and services for growth, so you scale past your first hundred customers instead of re-platforming.",
+      },
+    ],
+    processSteps: [
+      { title: "Scope the MVP", body: "We map the smallest product that proves the core value, plus the tenancy and billing model it needs." },
+      { title: "Architect for scale", body: "Multi-tenant data model, auth, and billing designed before we write production code." },
+      { title: "Build in weekly loops", body: "Working demos every week so you steer features as the product comes together." },
+      { title: "Launch & scale", body: "CI/CD, monitoring, and a clean handover — then we stay on to iterate and scale." },
+    ],
     deliverables: [
       "Multi-tenant architecture with secure tenant isolation",
       "Subscription billing and metering (Stripe)",
@@ -122,7 +160,7 @@ export const SERVICES: Service[] = [
         body: "No hand-offs to juniors. The people scoping your build are the people writing the code.",
       },
     ],
-    caseStudySlug: "saas-mvp-11-weeks",
+    caseStudySlug: "zoneomics-proptech-saas",
     faqs: [
       {
         q: "How long does it take to build a SaaS MVP?",
@@ -155,8 +193,38 @@ export const SERVICES: Service[] = [
       "Real, production AI features — RAG pipelines, LLM apps, and agents built with OpenAI and Anthropic.",
     heroSubhead:
       "We integrate LLMs into your product the right way: grounded in your data, cost-controlled, evaluated, and reliable in production.",
+    overview: [
+      "We add real AI to products — the kind that survives contact with production, not a demo that impresses once and breaks on the tenth query. That means grounding models in your own data with retrieval-augmented generation (RAG), building evaluation harnesses so quality is measured rather than hoped for, and controlling token cost as usage grows.",
+      "Most AI features fail for predictable reasons: hallucinations, prompt fragility, runaway costs, and no way to tell whether an answer is right. We design around those failure modes from the start — retrieval that cites sources, guardrails, fallbacks, and observability on spend.",
+      "We've shipped a legal-contract analysis RAG pipeline over 500–1000 page documents, AI chatbots, and an AI call-analysis system — so the patterns here come from production, not slideware.",
+    ],
     problem:
       "Demos are easy; production AI is hard. Hallucinations, runaway token costs, prompt fragility, and no evaluation harness are why most AI features never ship. We build AI systems that hold up with real users and real data.",
+    painPoints: [
+      "Your AI demo impressed everyone once, then hallucinated the moment real users touched it.",
+      "Token costs are climbing and you have no idea what's driving them.",
+      "You can't actually tell whether the model's answers are right.",
+    ],
+    solutions: [
+      {
+        problem: "Generic LLMs make things up on your domain data.",
+        solution: "We ground models in your own content with RAG, so answers are retrieved from and cited against your real sources.",
+      },
+      {
+        problem: "There's no way to know if quality is improving or regressing.",
+        solution: "We build an evaluation harness so answer quality is measured on every change, not guessed.",
+      },
+      {
+        problem: "Costs scale unpredictably with usage.",
+        solution: "We tune retrieval, cache aggressively, and pick the right model per task, with observability on token spend.",
+      },
+    ],
+    processSteps: [
+      { title: "Discovery & feasibility", body: "We pressure-test the use case, your data, and what 'good enough' actually means." },
+      { title: "Data & retrieval design", body: "We shape ingestion, chunking, embeddings, and retrieval before touching a prompt." },
+      { title: "Build & evaluate", body: "We build the feature alongside an eval set, so quality is measured from day one." },
+      { title: "Ship & monitor", body: "We deploy with guardrails, fallbacks, and cost and latency observability." },
+    ],
     deliverables: [
       "RAG pipelines grounded in your documents and data",
       "LLM-powered features (search, summarization, extraction, chat)",
@@ -213,8 +281,38 @@ export const SERVICES: Service[] = [
       "Custom, full-stack web applications built with Next.js, React, TypeScript, and Node.js.",
     heroSubhead:
       "From marketing sites to complex web apps — fast, accessible, and built on a modern, type-safe stack.",
+    overview: [
+      "We build custom web applications and high-performance sites on a modern, type-safe stack — Next.js and React with TypeScript on the front, Node.js or NestJS behind it. Full-stack, from the UI to the APIs to the infrastructure and deployment, delivered by one experienced team so nothing falls through the gaps between front and back.",
+      "Off-the-shelf tools stop fitting the moment your product is genuinely yours, and slow, brittle builds quietly cost you conversions and trust. We build to green Core Web Vitals — fast loads, low input latency, stable layout — because speed is both ranking and revenue.",
+      "Everything we ship is type-safe, tested, and documented, so your team can maintain and extend it long after launch.",
+    ],
     problem:
       "Off-the-shelf tools don't fit, and slow, brittle builds hurt conversion and trust. You need a custom web app that's fast, maintainable, and built to grow with your business.",
+    painPoints: [
+      "Off-the-shelf tools have stopped fitting how your business actually works.",
+      "Your current site is slow, and you suspect it's costing you conversions and rankings.",
+      "The front-end and back-end were built by different people, and things fall through the cracks.",
+    ],
+    solutions: [
+      {
+        problem: "No existing tool fits your workflow.",
+        solution: "We build a custom application shaped around your process, not a template you have to bend to.",
+      },
+      {
+        problem: "Slow loads hurt conversions and SEO.",
+        solution: "We build to green Core Web Vitals — fast LCP, low input latency, stable layout — because speed is revenue and ranking.",
+      },
+      {
+        problem: "Hand-offs between front and back create bugs and delays.",
+        solution: "One full-stack team owns the UI, APIs, and infrastructure, so there are no integration seams.",
+      },
+    ],
+    processSteps: [
+      { title: "Discovery", body: "We map the outcome, users, and constraints in a free discovery call." },
+      { title: "Design & architecture", body: "We shape the UX, data model, and system architecture before production code." },
+      { title: "Build in short loops", body: "Weekly demos of working software, not status decks." },
+      { title: "Deploy & support", body: "CI/CD, performance budgets, monitoring, and a clean handover." },
+    ],
     deliverables: [
       "Custom web applications and platforms",
       "High-performance marketing and product sites",
@@ -238,7 +336,7 @@ export const SERVICES: Service[] = [
         body: "Type-safe, tested, documented code your team can own after launch.",
       },
     ],
-    caseStudySlug: "saas-mvp-11-weeks",
+    caseStudySlug: "redeemx-admin-dashboard",
     faqs: [
       {
         q: "What tech stack do you use for web development?",
@@ -267,8 +365,38 @@ export const SERVICES: Service[] = [
       "Specialist Next.js development — App Router, Server Components, and SEO-ready rendering.",
     heroSubhead:
       "We build Next.js apps that are fast, crawlable, and launch-ready — using the App Router, Server Components, and the right rendering strategy per route.",
+    overview: [
+      "Next.js is our default framework, and we use it deliberately — the App Router, Server Components, and the right rendering strategy per route rather than a blanket approach. Static generation and ISR for marketing and content so pages are fast and fully crawlable; SSR only where data must be fresh per request.",
+      "The framework is powerful but easy to misuse: client-only rendering quietly kills SEO, data waterfalls hurt performance, and the App Router has a real learning curve. We know where those traps are because we build on the latest Next.js and React daily — including this site.",
+      "The result is apps with server-rendered HTML, structured data, and green Core Web Vitals — pages that rank, get cited by AI search, and load instantly.",
+    ],
     problem:
       "Next.js is powerful but easy to misuse: client-only rendering kills SEO, waterfalls hurt performance, and the App Router has real learning curve. You want a team that knows the framework deeply.",
+    painPoints: [
+      "Your Next.js app renders client-side and Google can't see the content that matters.",
+      "Pages feel slow, with layout shifts and long loads you can't pin down.",
+      "The App Router migration stalled, or you're not sure you're using it right.",
+    ],
+    solutions: [
+      {
+        problem: "Client-only rendering strands your content and kills SEO.",
+        solution: "We server-render the content that needs to rank and pick SSG, ISR, or SSR per route, so pages are fast and crawlable.",
+      },
+      {
+        problem: "Data waterfalls and poor rendering hurt Core Web Vitals.",
+        solution: "We use Server Components and streaming to cut waterfalls and hit green LCP and INP.",
+      },
+      {
+        problem: "The App Router has a real learning curve.",
+        solution: "We build on the latest Next.js daily and migrate incrementally, keeping the app shippable throughout.",
+      },
+    ],
+    processSteps: [
+      { title: "Audit & strategy", body: "We review rendering, data flow, and SEO, and choose the right strategy per route." },
+      { title: "Architecture", body: "App Router structure, Server Components, and metadata and SEO foundations." },
+      { title: "Build in short loops", body: "Weekly demos with performance tracked as we go." },
+      { title: "Ship & measure", body: "Deploy with green Core Web Vitals, structured data, and monitoring." },
+    ],
     deliverables: [
       "Next.js App Router architecture",
       "Server Components and streaming",
@@ -292,7 +420,7 @@ export const SERVICES: Service[] = [
         body: "SSG/ISR for marketing, SSR for dynamic data — never indexable content stranded client-side.",
       },
     ],
-    caseStudySlug: "saas-mvp-11-weeks",
+    caseStudySlug: "snippetz-code-learning",
     faqs: [
       {
         q: "Should I use SSR, SSG, or ISR in Next.js?",
@@ -321,8 +449,38 @@ export const SERVICES: Service[] = [
       "Cross-platform iOS and Android apps from a single React Native codebase.",
     heroSubhead:
       "Native-feeling mobile apps for iOS and Android, built once with React Native and shipped to both stores.",
+    overview: [
+      "We build cross-platform iOS and Android apps from a single React Native codebase — one team, one codebase, both stores — so you're not paying for and coordinating two separate native builds. When a feature genuinely needs it we drop to native modules, but most of the app is shared and native-feeling on both platforms.",
+      "Mobile is more than the app: it's the backend, APIs, auth, push notifications, offline behaviour, and the store-submission gauntlet. Because we're full-stack, we build the app and the services it runs on together — no integration seams.",
+      "We handle App Store and Play Store submission, over-the-air updates, and crash monitoring, so the app keeps improving after launch.",
+    ],
     problem:
       "Building separate native iOS and Android apps doubles cost and slows you down. You want one codebase, a great UX on both platforms, and a smooth path to the App Store and Play Store.",
+    painPoints: [
+      "Building separate iOS and Android apps doubles your cost and slows every release.",
+      "You need the app and its backend built together, not stitched across two teams.",
+      "Getting through App Store and Play Store review feels like a black box.",
+    ],
+    solutions: [
+      {
+        problem: "Two native codebases double the work.",
+        solution: "We build once in React Native and ship to both stores, dropping to native modules only where it's truly needed.",
+      },
+      {
+        problem: "The app and backend are built by separate teams.",
+        solution: "As a full-stack team we build the APIs, auth, and infrastructure alongside the app — no seams.",
+      },
+      {
+        problem: "Store submission and updates are painful.",
+        solution: "We handle App Store and Play Store submission, over-the-air updates, and crash monitoring for you.",
+      },
+    ],
+    processSteps: [
+      { title: "Discovery", body: "We map the app, the platforms, and the backend it depends on." },
+      { title: "Design & architecture", body: "Shared UI, navigation, and API design across iOS and Android." },
+      { title: "Build in short loops", body: "Weekly builds on real devices so you feel the app as it grows." },
+      { title: "Ship to both stores", body: "Store submission, OTA updates, and crash monitoring after launch." },
+    ],
     deliverables: [
       "Cross-platform iOS and Android apps (React Native)",
       "Native modules and device integrations",
@@ -346,6 +504,7 @@ export const SERVICES: Service[] = [
         body: "Store submission, OTA updates, and crash monitoring handled for you.",
       },
     ],
+    caseStudySlug: "mydasma-wedding-platform",
     faqs: [
       {
         q: "Why React Native instead of native iOS/Android?",
@@ -374,8 +533,38 @@ export const SERVICES: Service[] = [
       "Scalable, observable cloud infrastructure and CI/CD on AWS and Azure.",
     heroSubhead:
       "We set up the cloud infrastructure, pipelines, and monitoring your product needs to ship safely and scale reliably.",
+    overview: [
+      "We set up the cloud infrastructure, pipelines, and monitoring your product needs to ship safely and scale reliably — on AWS or Azure. Reproducible infrastructure as code, CI/CD that makes deploys boring, containerization, and the observability to see incidents before your users do.",
+      "Manual deploys, no monitoring, and a surprise cloud bill are all symptoms of infrastructure that won't scale. We right-size architecture, remove waste, and harden security so your bill matches your stage and your deploys stop being scary.",
+      "We run this for our own SaaS work, so the setup is designed around real delivery — not theory — and we offer ongoing retainers for scaling and incident response.",
+    ],
     problem:
       "Manual deploys, no monitoring, and a surprise cloud bill are signs of infrastructure that won't scale. You need reliable pipelines, observability, and a cost-efficient architecture.",
+    painPoints: [
+      "Every deploy is manual and a little bit scary.",
+      "You find out something's down when a customer tells you.",
+      "Your cloud bill keeps growing and no one's sure why.",
+    ],
+    solutions: [
+      {
+        problem: "Manual, error-prone deploys.",
+        solution: "We set up CI/CD and infrastructure as code so deploys are automated, repeatable, and boring.",
+      },
+      {
+        problem: "No visibility when things break.",
+        solution: "We add monitoring, logging, and alerting so you see incidents before your users do.",
+      },
+      {
+        problem: "An unpredictable, bloated cloud bill.",
+        solution: "We right-size architecture and remove waste so your bill matches your stage.",
+      },
+    ],
+    processSteps: [
+      { title: "Assess", body: "We review your current infrastructure, deploys, and cost profile." },
+      { title: "Design", body: "Cloud architecture and an IaC plan on AWS or Azure, sized for your stage." },
+      { title: "Implement", body: "CI/CD, containerization, monitoring, and security hardening." },
+      { title: "Operate", body: "Optional retainer for scaling, incident response, and continuous improvement." },
+    ],
     deliverables: [
       "Cloud architecture on AWS or Azure",
       "CI/CD pipelines and automated deployments",
@@ -399,6 +588,7 @@ export const SERVICES: Service[] = [
         body: "Infrastructure as Code plus monitoring means deploys are safe and incidents are visible.",
       },
     ],
+    caseStudySlug: "home-equity-fintech-saas",
     faqs: [
       {
         q: "AWS or Azure — which should we use?",
@@ -427,8 +617,38 @@ export const SERVICES: Service[] = [
       "Reliable Stripe payments and subscription billing — including the edge cases.",
     heroSubhead:
       "We implement Stripe end to end: subscriptions, usage-based billing, webhooks, and the failure modes that break revenue in production.",
+    overview: [
+      "Payments are unforgiving, so we implement Stripe end to end and build for the failure modes that quietly lose revenue: missed webhooks, proration bugs, failed-payment recovery, and reconciliation. Subscriptions, usage-based billing, the Customer Portal, trials, upgrades, and downgrades — done correctly, not just wired to the happy path.",
+      "The parts that break in production are rarely the checkout page. They're the idempotent webhook handling, the retries, and keeping your database in sync with Stripe as the source of truth. We build those so a dropped or duplicated event never corrupts your billing state.",
+      "We've shipped subscription billing inside real multi-tenant SaaS — including Zoneomics' on-demand reports and subscriptions — not just one-off payment buttons.",
+    ],
     problem:
       "Payments are unforgiving. Missed webhooks, proration bugs, failed-payment handling, and tax/compliance gaps quietly lose revenue. You want billing that's correct, tested, and reconciled.",
+    painPoints: [
+      "You've had a payment succeed in Stripe but not update in your app — or the reverse.",
+      "Subscriptions, proration, and upgrades turned out more complex than they looked.",
+      "Failed payments are quietly churning customers you never hear about.",
+    ],
+    solutions: [
+      {
+        problem: "Missed or duplicated webhooks corrupt billing state.",
+        solution: "We build idempotent webhook handlers reconciled against Stripe, so your data always matches.",
+      },
+      {
+        problem: "Proration, trials, and plan changes are error-prone.",
+        solution: "We implement subscriptions, upgrades, downgrades, and the Customer Portal correctly — edge cases included.",
+      },
+      {
+        problem: "Failed payments silently churn customers.",
+        solution: "We add smart retries, dunning, and grace periods to recover revenue and reduce involuntary churn.",
+      },
+    ],
+    processSteps: [
+      { title: "Model the billing", body: "We map your plans, pricing, trials, and the edge cases up front." },
+      { title: "Integrate", body: "Checkout, Billing, and the Customer Portal wired into your product." },
+      { title: "Harden webhooks", body: "Idempotent handlers, signature verification, and reconciliation." },
+      { title: "Recover & report", body: "Dunning, failed-payment recovery, and revenue reporting." },
+    ],
     deliverables: [
       "Subscription and usage-based (metered) billing",
       "Stripe Checkout, Billing, and Customer Portal",
@@ -452,7 +672,7 @@ export const SERVICES: Service[] = [
         body: "We've shipped subscription billing inside real multi-tenant SaaS, not just one-off checkouts.",
       },
     ],
-    caseStudySlug: "saas-mvp-11-weeks",
+    caseStudySlug: "zoneomics-proptech-saas",
     faqs: [
       {
         q: "Can you set up subscription billing with Stripe?",
@@ -481,8 +701,38 @@ export const SERVICES: Service[] = [
       "Launch a real MVP in weeks — fast, focused, and built on architecture you won't outgrow.",
     heroSubhead:
       "We help founders go from idea to a launched, fundable MVP quickly — without the throwaway code that haunts version two.",
+    overview: [
+      "We help founders go from idea to a launched, fundable MVP in weeks — the smallest thing that genuinely proves the idea, built on a foundation you can keep building on. Fast, but not throwaway: the MVP becomes the base for v2 instead of the rewrite that haunts version two.",
+      "The two ways MVPs fail are opposite: rushed ones become unfixable, and over-built ones never ship. We scope tightly to what proves the core value, then build it properly — auth, payments, and the essentials to launch, deployed and measured.",
+      "We shipped a multi-tenant SaaS MVP in 11 weeks with auth, billing, and a customer dashboard — fast, on architecture that scaled past launch — and you get plain-language updates and fixed-scope options throughout.",
+    ],
     problem:
       "Founders need to validate fast, but a rushed MVP becomes unfixable, and an over-built one never ships. You need the smallest thing that proves the idea — on a foundation you can keep building on.",
+    painPoints: [
+      "You need to validate with real users before the runway runs out.",
+      "You're afraid of building too little to prove it — or too much to ship it.",
+      "You want something investors and users can actually try, not a clickable mockup.",
+    ],
+    solutions: [
+      {
+        problem: "A rushed MVP becomes unfixable.",
+        solution: "We scope tightly but build on solid architecture, so the MVP becomes v2's foundation, not a rewrite.",
+      },
+      {
+        problem: "An over-built MVP never ships.",
+        solution: "We cut to the smallest feature set that proves the core value and ship it in weeks.",
+      },
+      {
+        problem: "You need something real to show.",
+        solution: "You get a launched, working product with auth, payments, and the essentials — ready for users and investors.",
+      },
+    ],
+    processSteps: [
+      { title: "Scope", body: "We define the smallest product that genuinely proves the idea." },
+      { title: "Build the core", body: "The core feature, a clean UI, and the essentials to launch." },
+      { title: "Weekly demos", body: "Short loops so you steer, with plain-language updates throughout." },
+      { title: "Launch & measure", body: "Deployed and monitored, with analytics to measure validation and a roadmap for v2." },
+    ],
     deliverables: [
       "Scoping the smallest viable product",
       "Core feature build and a clean, usable UI",
@@ -535,8 +785,38 @@ export const SERVICES: Service[] = [
       "Secure, scalable APIs and backends in Node.js, Python, or PHP — your stack, your database.",
     heroSubhead:
       "We build the APIs, data models, and backend services your product runs on — in Node.js, Python/FastAPI, or PHP/Laravel — secure, documented, and ready to scale.",
+    overview: [
+      "We build the APIs, data models, and backend services your product runs on — in Node.js/NestJS, Python/FastAPI, or PHP/Laravel — secure, documented, and designed to scale rather than just clear the first feature. Your stack and your database, not a one-size-fits-all default.",
+      "A shaky backend caps everything above it: slow APIs, fragile data models, and missing documentation slow down every team that touches them. We design data models and API contracts for growth, with auth, validation, rate limiting, and least-privilege access built in from the start.",
+      "REST or GraphQL; PostgreSQL, MySQL, MongoDB, Redis, or Supabase; plus headless CMS with Strapi — we pick what fits, then ship it documented and tested so your team can build on it with confidence.",
+    ],
     problem:
       "A shaky backend caps everything above it: slow APIs, fragile data models, and no documentation slow every team that touches them. You need a backend built to last, in the language and database that fit your project.",
+    painPoints: [
+      "Your APIs are slow, and every new feature makes them slower.",
+      "The data model is fragile, and no one fully trusts it anymore.",
+      "There's no documentation, so onboarding anyone new takes weeks.",
+    ],
+    solutions: [
+      {
+        problem: "APIs and data models weren't built to scale.",
+        solution: "We design data models and API contracts for growth, not just the first feature.",
+      },
+      {
+        problem: "Security is an afterthought.",
+        solution: "Auth, validation, rate limiting, and least-privilege access are built in from the start.",
+      },
+      {
+        problem: "No docs or tests slow every team that touches it.",
+        solution: "We ship documented, tested APIs your team can build on with confidence.",
+      },
+    ],
+    processSteps: [
+      { title: "Discovery", body: "We map the domain, the data, and the clients your API serves." },
+      { title: "Design", body: "Data model, API contracts, and the right database for your data." },
+      { title: "Build & test", body: "Secure endpoints with validation, tests, and clear documentation." },
+      { title: "Ship & support", body: "Deploy with monitoring, then extend as your product grows." },
+    ],
     deliverables: [
       "REST and GraphQL APIs (Node.js, Python/FastAPI, PHP/Laravel)",
       "Headless CMS setup and integration (Strapi)",
@@ -560,6 +840,7 @@ export const SERVICES: Service[] = [
         body: "Clear API docs and test coverage so your team can build on it confidently.",
       },
     ],
+    caseStudySlug: "landlord-academy-lms",
     faqs: [
       {
         q: "REST or GraphQL — which do you build?",
@@ -592,8 +873,38 @@ export const SERVICES: Service[] = [
       "Custom AI chatbots grounded in your data — accurate, on-brand, and launch-ready.",
     heroSubhead:
       "We build AI chatbots that actually know your business — grounded in your content with RAG, not generic and hallucinating.",
+    overview: [
+      "We build AI chatbots that actually know your business — grounded in your real content with RAG, not a generic model that confidently makes things up. Support assistants, sales bots, and internal knowledge tools that answer from your data or say they don't know, rather than hallucinating.",
+      "A chatbot is only as good as its guardrails and its grounding. We keep answers sourced from your content, add tone control and escalation to humans when it matters, and evaluate answer quality so you can see and improve it over time.",
+      "They live where your users already are — your website or app, Slack, WhatsApp, or Intercom — with analytics and content controls so you stay in charge of what the bot says.",
+    ],
     problem:
       "Generic chatbots make things up and frustrate users. You want an assistant grounded in your real content — accurate, on-brand, and safe to put in front of customers.",
+    painPoints: [
+      "You tried a generic chatbot and it confidently gave customers wrong answers.",
+      "You want an assistant that knows your business, not the open internet.",
+      "You're worried a bot will go off-brand or off-topic in front of customers.",
+    ],
+    solutions: [
+      {
+        problem: "Generic bots hallucinate and frustrate users.",
+        solution: "We ground the bot in your real content with RAG, so it answers from your data or says it doesn't know.",
+      },
+      {
+        problem: "Off-brand or unsafe replies are a real risk.",
+        solution: "We add guardrails, tone control, and human escalation so the bot stays safe and on-brand.",
+      },
+      {
+        problem: "You can't tell if it's actually helping.",
+        solution: "We add analytics and evaluation so you can see answer quality and improve it over time.",
+      },
+    ],
+    processSteps: [
+      { title: "Discovery", body: "We map the use case, the content to ground on, and the channels." },
+      { title: "Ground & design", body: "We ingest your content into a retrieval layer and design the conversation." },
+      { title: "Build & evaluate", body: "We build the bot with guardrails and test answer quality on real questions." },
+      { title: "Launch & tune", body: "We deploy to your channels with analytics, then tune over time." },
+    ],
     deliverables: [
       "Custom chatbots grounded in your data (RAG)",
       "Support, sales, and internal-assistant bots",
@@ -617,7 +928,7 @@ export const SERVICES: Service[] = [
         body: "Evaluation and analytics so you can see and improve answer quality over time.",
       },
     ],
-    caseStudySlug: "legal-contract-ai",
+    caseStudySlug: "ai-business-consultant-chatbot",
     faqs: [
       {
         q: "How do you stop the chatbot from hallucinating?",
