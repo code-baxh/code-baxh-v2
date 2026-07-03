@@ -29,6 +29,7 @@ export default function BlogPage() {
   const posts = [...BLOG_POSTS].sort(
     (a, b) => +new Date(b.datePublished) - +new Date(a.datePublished),
   );
+  const [featured, ...rest] = posts;
 
   return (
     <>
@@ -56,8 +57,42 @@ export default function BlogPage() {
                 { name: "Blog", path: "/blog" },
               ]}
             />
+            {featured ? (
+              <Reveal>
+                <Link
+                  href={`/blog/${featured.slug}`}
+                  className="group kinetic-card mb-5 flex flex-col rounded-2xl border border-border bg-surface-elevated p-8 md:mb-6 md:p-10"
+                >
+                  <div className="flex flex-wrap items-center gap-3 text-xs">
+                    <span className="rounded-full bg-accent/10 px-2.5 py-1 font-semibold uppercase tracking-[0.14em] text-accent">
+                      Featured
+                    </span>
+                    <span className="font-semibold uppercase tracking-[0.14em] text-text-muted">
+                      {featured.category}
+                    </span>
+                    <span className="text-text-muted" aria-hidden>·</span>
+                    <span className="text-text-muted">{featured.readingTime}</span>
+                  </div>
+                  <h2 className="mt-5 flex items-start justify-between gap-4 text-2xl font-semibold tracking-tight text-text-primary md:text-3xl">
+                    {featured.title}
+                    <ArrowUpRight
+                      className="mt-1 size-5 shrink-0 text-text-muted transition-[transform,color] duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                      strokeWidth={2}
+                      aria-hidden
+                    />
+                  </h2>
+                  <p className="mt-4 max-w-2xl text-base leading-relaxed text-text-secondary md:text-lg">
+                    {featured.excerpt}
+                  </p>
+                  <p className="mt-6 text-xs text-text-muted">
+                    {formatDate(featured.datePublished)}
+                  </p>
+                </Link>
+              </Reveal>
+            ) : null}
+
             <div className="grid gap-5 md:grid-cols-2">
-              {posts.map((post, i) => (
+              {rest.map((post, i) => (
                 <Reveal
                   key={post.slug}
                   delay={((i % 2) * 100) as 0 | 100}

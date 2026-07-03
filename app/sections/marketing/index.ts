@@ -3,6 +3,7 @@ export { HomeShowcase } from "./HomeShowcase";
 export { StatStrip } from "./StatStrip";
 export { Breadcrumbs } from "./Breadcrumbs";
 export { FaqSection } from "./FaqSection";
+export { ArticleBody } from "./ArticleBody";
 export { ProcessSteps } from "./ProcessSteps";
 export { TechStackStrip } from "./TechStackStrip";
 export { ServicesGrid } from "./ServicesGrid";

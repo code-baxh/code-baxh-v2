@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { CtaSection } from "../../sections/cta";
 import { FooterSection } from "../../sections/footer";
 import { HeaderSection } from "../../sections/header";
 import { PageHero, Reveal } from "../../sections/shared";
-import { Breadcrumbs, FaqSection } from "../../sections/marketing";
+import { ArticleBody, Breadcrumbs, FaqSection } from "../../sections/marketing";
 import { JsonLd } from "../../lib/JsonLd";
 import { articleSchema, breadcrumbSchema, faqSchema, graph } from "../../lib/schema";
-import { BLOG_POSTS, getPost } from "../../lib/blog";
+import { BLOG_POSTS, getPost, getRelatedPosts } from "../../lib/blog";
 import { getService } from "../../lib/services";
 import { FOUNDER } from "../../lib/site";
 
@@ -57,6 +57,7 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   const service = post.serviceSlug ? getService(post.serviceSlug) : undefined;
+  const related = getRelatedPosts(post.slug, 3);
   const crumbs = [
     { name: "Home", path: "/" },
     { name: "Blog", path: "/blog" },
@@ -94,40 +95,7 @@ export default async function BlogPostPage({
               <span>{post.readingTime}</span>
             </div>
 
-            <article className="mt-10 space-y-10">
-              {post.sections.map((section, i) => (
-                <Reveal key={i}>
-                  {section.heading && (
-                    <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
-                      {section.heading}
-                    </h2>
-                  )}
-                  {section.paragraphs?.map((p, j) => (
-                    <p
-                      key={j}
-                      className={`text-lg leading-relaxed text-text-secondary ${
-                        section.heading || j > 0 ? "mt-4" : ""
-                      }`}
-                    >
-                      {p}
-                    </p>
-                  ))}
-                  {section.bullets && (
-                    <ul className="mt-4 space-y-3">
-                      {section.bullets.map((b) => (
-                        <li
-                          key={b}
-                          className="flex items-start gap-3 text-lg leading-relaxed text-text-secondary"
-                        >
-                          <ArrowRight className="mt-1.5 size-4 shrink-0 text-accent" strokeWidth={2.25} aria-hidden />
-                          {b}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </Reveal>
-              ))}
-            </article>
+            <ArticleBody sections={post.sections} />
 
             {service && (
               <div className="mt-12 rounded-2xl border border-border bg-surface-elevated p-7">
@@ -152,6 +120,45 @@ export default async function BlogPostPage({
 
         {post.faqs && post.faqs.length > 0 && (
           <FaqSection faqs={post.faqs} emitSchema={false} />
+        )}
+
+        {related.length > 0 && (
+          <section className="theme-paper border-t border-border bg-surface-muted py-16 md:py-20">
+            <div className="mx-auto max-w-5xl px-5 sm:px-8">
+              <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
+                Keep reading
+              </h2>
+              <div className="mt-8 grid gap-5 md:grid-cols-3">
+                {related.map((rp) => (
+                  <Reveal key={rp.slug} className="h-full">
+                    <Link
+                      href={`/blog/${rp.slug}`}
+                      className="group kinetic-card flex h-full flex-col rounded-2xl border border-border bg-surface-elevated p-6"
+                    >
+                      <div className="flex items-center gap-2.5 text-xs text-text-muted">
+                        <span className="font-semibold uppercase tracking-[0.14em] text-accent">
+                          {rp.category}
+                        </span>
+                        <span aria-hidden>·</span>
+                        <span>{rp.readingTime}</span>
+                      </div>
+                      <h3 className="mt-3 flex items-start justify-between gap-3 text-base font-semibold leading-snug tracking-tight text-text-primary">
+                        {rp.title}
+                        <ArrowUpRight
+                          className="size-4 shrink-0 text-text-muted transition-[transform,color] duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                          strokeWidth={2}
+                          aria-hidden
+                        />
+                      </h3>
+                      <p className="mt-2 flex-1 text-sm leading-relaxed text-text-secondary">
+                        {rp.excerpt}
+                      </p>
+                    </Link>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </section>
         )}
       </main>
       <CtaSection />
