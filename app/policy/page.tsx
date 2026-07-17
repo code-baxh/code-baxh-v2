@@ -6,9 +6,10 @@ import { LegalPageHeading } from "../sections/shared/LegalPageHeading";
 import { PrivacyPolicyContent } from "./PrivacyPolicyContent";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — Code Baxh",
+  title: "Privacy Policy",
   description:
-    "How Code Baxh collects, uses, and protects your personal information.",
+    "How CodeBaxh collects, uses, and protects your personal information.",
+  alternates: { canonical: "/policy" },
 };
 
 export default function PrivacyPage() {

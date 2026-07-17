@@ -8,7 +8,7 @@ export function FooterLinkedIn() {
       target="_blank"
       rel="noopener noreferrer"
       className="footer-linkedin mt-5 inline-flex items-center"
-      aria-label="Code Baxh on LinkedIn"
+      aria-label="CodeBaxh on LinkedIn"
     >
       <Image
         src={LINKEDIN_ICON_SRC}

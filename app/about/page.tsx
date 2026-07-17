@@ -1,100 +1,123 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { CtaSection } from "../sections/cta";
 import { FooterSection } from "../sections/footer";
 import { HeaderSection } from "../sections/header";
-import { PageHero, Reveal } from "../sections/shared";
+import { PageHero, Reveal, SectionHeading } from "../sections/shared";
+import {
+  StatStrip,
+  FounderSection,
+  ClientLogos,
+  Breadcrumbs,
+} from "../sections/marketing";
+import { JsonLd } from "../lib/JsonLd";
+import { breadcrumbSchema } from "../lib/schema";
+import { SITE } from "../lib/site";
+
+export const metadata: Metadata = {
+  title: "About Us — Software Development Agency",
+  description:
+    "CodeBaxh is a software development agency led by Bilal Khursheed. Our team delivers web and mobile apps, SaaS, and AI products for startups and companies worldwide. Upwork Top Rated Plus.",
+  alternates: { canonical: "/about" },
+};
 
 const VALUES = [
   {
-    title: "Specialist recruiting",
-    body: "We understand engineering markets, team shapes, and the signals that separate good profiles from great fits.",
+    title: "Experienced, hands-on delivery",
+    body: "No hand-offs to juniors. The people who scope your build are the people who write the code.",
   },
   {
-    title: "Builder mindset",
-    body: "Because we ship software too, we talk to clients and candidates with practical product and delivery context.",
+    title: "Clear, async communication",
+    body: "Weekly demos, a shared board, and direct updates that flex to your timezone. You always know where things stand.",
   },
   {
-    title: "Clear communication",
-    body: "Short loops, direct feedback, and visible progress keep hiring and build work moving without noise.",
+    title: "Built to last",
+    body: "We ship fast, but on solid architecture — so your MVP becomes the foundation for v2, not a rewrite.",
   },
-] as const;
-
-export const metadata: Metadata = {
-  title: "About — Code Baxh",
-  description:
-    "Learn how Code Baxh combines tech recruitment expertise with a software studio mindset.",
-};
+  {
+    title: "Low-risk engagements",
+    body: "Free discovery calls, clear contracts, NDAs on request, and milestone-based payments.",
+  },
+];
 
 export default function AboutPage() {
   return (
     <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "About", path: "/about" },
+        ])}
+      />
       <HeaderSection />
       <main>
         <PageHero
-          eyebrow="About Code Baxh"
-          title="A recruitment team with a builder's eye."
-          description="Code Baxh connects companies with strong technical talent and helps teams ship the digital products they need. We are small, focused, and built around momentum."
+          eyebrow="About CodeBaxh"
+          title="A software development agency that ships."
+          description="We're a focused, full-stack team that designs, builds, and launches web and mobile apps, SaaS platforms, and AI products for clients worldwide — with the proof to back it."
           primaryHref="/contact"
-          primaryLabel="Talk to us"
-          secondaryHref="/services"
-          secondaryLabel="Explore services"
+          primaryLabel="Book a free discovery call"
+          secondaryHref="/work"
+          secondaryLabel="See our work"
         />
 
-        <section className="theme-paper border-t border-border bg-surface py-20 md:py-28">
-          <div className="mx-auto grid max-w-5xl gap-12 px-5 sm:px-8 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
-            <Reveal>
-              <p className="heading-accent text-xs font-semibold uppercase tracking-[0.2em] text-text-muted">
-                Our story
-              </p>
-              <h2 className="mt-4 text-3xl font-semibold tracking-tight text-text-primary md:text-4xl">
-                We started with talent. We kept getting closer to the work.
-              </h2>
-            </Reveal>
-
-            <div className="space-y-6">
-              <Reveal delay={100}>
-                <p className="text-lg leading-relaxed text-text-secondary">
-                  Recruitment taught us how teams are built: the pressure of
-                  deadlines, the shape of strong technical judgment, and the
-                  difference the right person can make.
+        <section className="theme-paper border-t border-border bg-surface py-16 md:py-24">
+          <div className="mx-auto max-w-5xl px-5 sm:px-8">
+            <Breadcrumbs
+              items={[
+                { name: "Home", path: "/" },
+                { name: "About", path: "/about" },
+              ]}
+            />
+            <div className="grid gap-12 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
+              <Reveal>
+                <p className="heading-accent text-xs font-semibold uppercase tracking-[0.2em] text-text-muted">
+                  Who we are
                 </p>
+                <h2 className="mt-4 text-3xl font-semibold tracking-tight text-text-primary md:text-4xl">
+                  Real experience, not promises.
+                </h2>
               </Reveal>
-              <Reveal delay={200}>
-                <p className="text-lg leading-relaxed text-text-secondary">
-                  Software delivery taught us the other side: how strategy,
-                  design, engineering, and communication turn ideas into things
-                  people can use. Code Baxh sits at that intersection.
-                </p>
-              </Reveal>
-              <Reveal delay={300}>
-                <Link
-                  href="/careers"
-                  className="inline-flex rounded-full border border-border px-6 py-3 text-sm font-medium text-text-primary transition-colors hover:bg-surface-muted"
-                >
-                  Careers at Code Baxh
-                </Link>
-              </Reveal>
+              <div className="space-y-6">
+                <Reveal delay={100}>
+                  <p className="text-lg leading-relaxed text-text-secondary">
+                    CodeBaxh builds software that real customers use every day —
+                    multi-tenant SaaS platforms, AI systems, and the web and
+                    mobile apps around them. Our founder also works as a
+                    full-stack developer on Zoneomics, a live geospatial SaaS,
+                    bringing that real-world product experience to every
+                    engagement.
+                  </p>
+                </Reveal>
+                <Reveal delay={200}>
+                  <p className="text-lg leading-relaxed text-text-secondary">
+                    We&apos;re based in Islamabad and work with clients worldwide
+                    — across North America, Europe, the Middle East, and beyond.
+                    {" "}{SITE.timezoneNote}.
+                  </p>
+                </Reveal>
+              </div>
             </div>
+
+            <Reveal variant="pop-in" delay={100} className="mt-14">
+              <StatStrip />
+            </Reveal>
           </div>
         </section>
 
-        <section className="theme-obsidian border-t border-border bg-surface-muted py-20 md:py-28">
-          <div className="mx-auto max-w-5xl px-5 sm:px-8">
-            <Reveal className="max-w-2xl">
-              <p className="heading-accent text-xs font-semibold uppercase tracking-[0.2em] text-text-muted">
-                What guides us
-              </p>
-              <h2 className="mt-4 text-3xl font-semibold tracking-tight text-text-primary md:text-4xl">
-                Practical, direct, and built for momentum.
-              </h2>
-            </Reveal>
+        <FounderSection />
 
-            <div className="mt-12 grid gap-5 md:grid-cols-3">
-              {VALUES.map((value, index) => (
+        <section className="theme-obsidian border-t border-border bg-surface py-20 md:py-28">
+          <div className="mx-auto max-w-6xl px-5 sm:px-8">
+            <SectionHeading
+              eyebrow="What guides us"
+              title="How we work with clients."
+            />
+            <div className="mt-12 grid gap-5 sm:grid-cols-2">
+              {VALUES.map((value, i) => (
                 <Reveal
                   key={value.title}
-                  delay={(index * 100) as 0 | 100 | 200}
+                  variant="pop-in"
+                  delay={((i % 2) * 100) as 0 | 100}
                   className="kinetic-card rounded-2xl border border-border bg-surface-elevated p-7"
                 >
                   <h3 className="text-xl font-semibold text-text-primary">
@@ -106,6 +129,12 @@ export default function AboutPage() {
                 </Reveal>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section className="theme-paper border-t border-border bg-surface py-16">
+          <div className="mx-auto max-w-5xl px-5 sm:px-8">
+            <ClientLogos />
           </div>
         </section>
       </main>

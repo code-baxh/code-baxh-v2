@@ -13,7 +13,7 @@ export function FooterLogo({ centered = false }: FooterLogoProps) {
       className={`footer-logo group inline-flex shrink-0 ${
         centered ? "mx-auto" : ""
       }`}
-      aria-label="Code Baxh home"
+      aria-label="CodeBaxh home"
     >
       <span
         className={`relative block shrink-0 transition-opacity duration-200 group-hover:opacity-90 ${
@@ -24,7 +24,7 @@ export function FooterLogo({ centered = false }: FooterLogoProps) {
       >
         <Image
           src={LOGO_SRC}
-          alt="Code Baxh"
+          alt="CodeBaxh"
           fill
           sizes="(max-width: 640px) 160px, 176px"
           className={`object-contain ${centered ? "object-center" : "object-left"}`}

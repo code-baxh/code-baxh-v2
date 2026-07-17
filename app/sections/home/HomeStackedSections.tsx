@@ -1,57 +1,84 @@
 "use client";
 
-import {
-  BUILD_SERVICES,
-  RECRUITMENT_SERVICES,
-} from "../services/constants";
-import { ServiceCard } from "../services/ServiceCard";
-import {
-  SectionHeading,
-  SectionLink,
-  useStackProgress,
-} from "../shared";
+import { Rocket, BrainCircuit, Gauge, ShieldCheck } from "lucide-react";
+import { SectionHeading, SectionLink, useStackProgress } from "../shared";
+import { CASE_STUDIES } from "../../lib/work";
+import { CaseStudyCard, HomeShowcase, ServicesGrid, StatStrip } from "../marketing";
 
-const PROCESS_STEPS = [
+const VALUE_PROPS = [
   {
-    title: "Understand the outcome",
-    body: "We start with the hiring brief, product goal, or delivery constraint.",
+    icon: Rocket,
+    title: "We ship real products",
+    body: "Web and mobile apps to multi-tenant SaaS — real software people use, including an MVP delivered in 11 weeks. Not prototypes.",
   },
   {
-    title: "Shape the right response",
-    body: "Recruitment, contractor support, or build work — mapped to the need.",
+    icon: BrainCircuit,
+    title: "AI that actually works",
+    body: "RAG pipelines, LLM features, and AI agents built for real users — grounded in your data, evaluated, and cost-controlled.",
   },
   {
-    title: "Move in short loops",
-    body: "Clear updates, fast feedback, and visible progress.",
+    icon: Gauge,
+    title: "Fast time-to-launch",
+    body: "Tight scoping and experienced delivery get you to a launched, fundable product in weeks, not quarters.",
   },
   {
-    title: "Deliver with clarity",
-    body: "Placements, packages, or shipped work — handed over cleanly.",
+    icon: ShieldCheck,
+    title: "One team, end to end",
+    body: "Design, web, mobile, backend, AI, and cloud under one roof. The people who scope your build write the code.",
   },
-] as const;
-
-const VALUES = [
-  {
-    title: "Specialist recruiting",
-    body: "Deep tech market knowledge, not generic CV pushing.",
-  },
-  {
-    title: "Builder mindset",
-    body: "We understand delivery because we ship software too.",
-  },
-  {
-    title: "Clear communication",
-    body: "Short loops, direct updates, and visible progress.",
-  },
-] as const;
+];
 
 export function HomeStackedSections() {
+  const { ref: whyRef, inView: whyInView } = useStackProgress<HTMLDivElement>();
   const { ref: servicesRef, inView: servicesInView } = useStackProgress<HTMLDivElement>();
-  const { ref: processRef, inView: processInView } = useStackProgress<HTMLDivElement>();
-  const { ref: aboutRef, inView: aboutInView } = useStackProgress<HTMLDivElement>();
+  const { ref: workRef, inView: workInView } = useStackProgress<HTMLDivElement>();
+
+  const featured = CASE_STUDIES.filter((c) => c.featured);
 
   return (
     <div className="home-stack-container">
+      {/* Section 1: Why CodeBaxh */}
+      <div
+        ref={whyRef}
+        className={`stack-section section-why theme-paper bg-surface ${
+          whyInView ? "section-visible" : ""
+        }`}
+      >
+        <div className="stack-section-inner mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="section-entrance-item section-entrance-item--1 mb-8">
+            <SectionHeading
+              size="default"
+              eyebrow="Why CodeBaxh"
+              title="A product partner, not a body shop."
+              description="Breadth across web, SaaS, and AI — with the depth of an experienced team that ships."
+            />
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {VALUE_PROPS.map((prop, i) => {
+              const Icon = prop.icon;
+              return (
+                <div
+                  key={prop.title}
+                  className={`section-entrance-item section-entrance-item--${i + 2} kinetic-card rounded-2xl border border-border bg-surface-elevated p-5`}
+                >
+                  <Icon className="size-6 text-accent" strokeWidth={1.75} aria-hidden />
+                  <h3 className="mt-4 text-base font-semibold text-text-primary">
+                    {prop.title}
+                  </h3>
+                  <p className="mt-2 text-xs leading-relaxed text-text-secondary">
+                    {prop.body}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Section 2: What we build (tall runway — All Services stacks on top after) */}
+      <HomeShowcase />
+
+      {/* Section 3: All Services — stacks over What we build */}
       <div
         ref={servicesRef}
         className={`stack-section section-services theme-paper bg-surface ${
@@ -59,105 +86,50 @@ export function HomeStackedSections() {
         }`}
       >
         <div className="stack-section-inner mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="section-entrance-item section-entrance-item--1 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="section-entrance-item section-entrance-item--1 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between mb-8 sm:mb-10 lg:gap-8">
             <SectionHeading
-              size="large"
-              eyebrow="What we do"
-              title="Recruit talent. Build products."
-              description="Specialist recruitment and practical software delivery — two capabilities, one focused team."
+              size="default"
+              eyebrow="All services"
+              title="Everything you need to ship a product."
+              description="From web and mobile to SaaS, AI, backend, and cloud — pick the service that fits. Each is handled by an experienced team."
             />
             <SectionLink href="/services" label="View all services" />
           </div>
-          <div className="mt-10 grid gap-5 md:grid-cols-2">
-            <div className="section-entrance-item section-entrance-item--2">
-              <ServiceCard {...RECRUITMENT_SERVICES[0]} />
-            </div>
-            <div className="section-entrance-item section-entrance-item--3">
-              <ServiceCard {...BUILD_SERVICES[0]} />
-            </div>
-            <div className="section-entrance-item section-entrance-item--4">
-              <ServiceCard {...RECRUITMENT_SERVICES[1]} />
-            </div>
-            <div className="section-entrance-item section-entrance-item--5">
-              <ServiceCard {...BUILD_SERVICES[1]} />
-            </div>
+          <div className="section-entrance-item section-entrance-item--2">
+            <ServicesGrid limit={6} />
           </div>
         </div>
       </div>
 
+      {/* Section 7: Selected Work */}
       <div
-        ref={processRef}
-        className={`stack-section section-process theme-obsidian bg-surface ${
-          processInView ? "section-visible" : ""
+        ref={workRef}
+        className={`stack-section section-work theme-obsidian bg-surface ${
+          workInView ? "section-visible" : ""
         }`}
       >
         <div className="stack-section-inner mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="section-entrance-item section-entrance-item--1">
+          <div className="section-entrance-item section-entrance-item--1 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between mb-8 sm:mb-10 lg:gap-8">
             <SectionHeading
-              size="large"
-              eyebrow="How we work"
-              title="Structured enough to trust. Light enough to move."
-              description="Four steps we use for hiring and build work — same rhythm, different outcomes."
+              size="default"
+              eyebrow="Selected work"
+              title="Real software, real results."
+              description="From multi-tenant SaaS to AI systems — work that shipped, scaled, and is used by real customers."
             />
+            <SectionLink href="/work" label="All case studies" />
           </div>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {PROCESS_STEPS.map((step, stepIndex) => (
+          <div className="grid gap-3 sm:gap-4 md:gap-5 md:grid-cols-3">
+            {featured.map((study, i) => (
               <div
-                key={step.title}
-                className={`kinetic-card section-entrance-item section-entrance-item--${stepIndex + 2} rounded-2xl border border-border bg-surface-elevated p-6 md:p-7`}
+                key={study.slug}
+                className={`section-entrance-item section-entrance-item--${i + 2} h-full`}
               >
-                <p className="text-sm font-semibold tabular-nums text-accent">
-                  0{stepIndex + 1}
-                </p>
-                <h3 className="mt-4 text-lg font-semibold text-text-primary md:text-xl">
-                  {step.title}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-text-secondary">
-                  {step.body}
-                </p>
+                <CaseStudyCard study={study} />
               </div>
             ))}
           </div>
-        </div>
-      </div>
-
-      <div
-        ref={aboutRef}
-        className={`stack-section section-about theme-paper bg-surface ${
-          aboutInView ? "section-visible" : ""
-        }`}
-      >
-        <div className="stack-section-inner mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:gap-14">
-            <div>
-              <div className="section-entrance-item section-entrance-item--1">
-                <SectionHeading
-                  size="large"
-                  eyebrow="Who we are"
-                  title="Recruiters who build. Builders who recruit."
-                  description="Code Baxh connects companies with strong technical talent and helps teams ship the products they need."
-                />
-              </div>
-              <div className="section-entrance-item section-entrance-item--2 mt-8 flex flex-wrap gap-4">
-                <SectionLink href="/about" label="About us" />
-                <SectionLink href="/careers" label="Careers" />
-              </div>
-            </div>
-            <div className="grid gap-4">
-              {VALUES.map((value, valueIndex) => (
-                <div
-                  key={value.title}
-                  className={`section-entrance-item section-entrance-item--${valueIndex + 3} rounded-2xl border border-border bg-surface-elevated p-6`}
-                >
-                  <h3 className="text-lg font-semibold text-text-primary">
-                    {value.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-                    {value.body}
-                  </p>
-                </div>
-              ))}
-            </div>
+          <div className="section-entrance-item section-entrance-item--5 mt-8 sm:mt-10 md:mt-12">
+            <StatStrip />
           </div>
         </div>
       </div>

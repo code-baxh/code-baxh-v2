@@ -6,44 +6,33 @@ export type Service = {
   category: ServiceCategory;
 };
 
-export const RECRUITMENT_SERVICES: Service[] = [
-  {
-    category: "recruit",
-    title: "Tech recruitment",
-    description:
-      "Permanent and contract hires across all levels — from in-house teams to remote specialists, with real-time market insight.",
-  },
-  {
-    category: "recruit",
-    title: "Contractor package",
-    description:
-      "Compliance, onboarding, and payroll handled end-to-end. Agent of record, payment flows, and ongoing contractor tracking.",
-  },
-  {
-    category: "recruit",
-    title: "Market expertise",
-    description:
-      "Consultants who know the tech landscape deeply — specialty, knowledge, and connections to talent others miss.",
-  },
-];
-
-export const BUILD_SERVICES: Service[] = [
+/**
+ * Featured services for homepage stacking section.
+ * Displayed as cards in the "What we build" stack section.
+ */
+export const FEATURED_SERVICES: Service[] = [
   {
     category: "build",
-    title: "Websites",
+    title: "Web Development",
     description:
-      "Fast, polished sites built with modern stacks — from marketing pages to full product experiences.",
+      "Fast, polished web apps built with modern stacks — from marketing pages to full product experiences.",
   },
   {
     category: "build",
-    title: "Software",
+    title: "SaaS Development",
     description:
-      "Custom tools, dashboards, and platforms tailored to how your team actually works.",
+      "Secure multi-tenant SaaS with billing, auth, and dashboards — on architecture that grows with you.",
   },
   {
     category: "build",
-    title: "Collaboration",
+    title: "AI Integration",
     description:
-      "We embed with your team, ship in iterations, and keep communication clear from kickoff to launch.",
+      "RAG pipelines, LLM features, and AI agents grounded in your data — accurate, evaluated, and cost-controlled.",
+  },
+  {
+    category: "build",
+    title: "Mobile Apps",
+    description:
+      "Cross-platform iOS and Android apps with React Native — shipped fast, updated faster.",
   },
 ];

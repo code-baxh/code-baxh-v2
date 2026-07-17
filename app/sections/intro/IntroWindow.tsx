@@ -35,8 +35,12 @@ export function IntroWindow({ onComplete }: IntroWindowProps) {
   const [bgWhite, setBgWhite] = useState(true);
   const [waitingDots, setWaitingDots] = useState(1);
   const startPos = useRef({ x: 0, y: 0 });
+  const finishedRef = useRef(false);
 
   const finishIntro = useCallback(() => {
+    // Idempotent: the sequence completing and a user skip can both fire.
+    if (finishedRef.current) return;
+    finishedRef.current = true;
     setOverlayOpacity(0);
     window.setTimeout(onComplete, 450);
   }, [onComplete]);
@@ -71,6 +75,25 @@ export function IntroWindow({ onComplete }: IntroWindowProps) {
     });
 
     return cancelSequence;
+  }, [finishIntro]);
+
+  // Never block the user: any intent to move on (Escape, click/tap, scroll,
+  // wheel) skips the intro immediately and reveals the already-rendered page.
+  useEffect(() => {
+    const skip = () => finishIntro();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" || event.key === "Enter" || event.key === " ") {
+        skip();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("wheel", skip, { passive: true });
+    window.addEventListener("touchmove", skip, { passive: true });
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("wheel", skip);
+      window.removeEventListener("touchmove", skip);
+    };
   }, [finishIntro]);
 
   useEffect(() => {
@@ -134,7 +157,19 @@ export function IntroWindow({ onComplete }: IntroWindowProps) {
       }`}
       style={{ opacity: overlayOpacity }}
       aria-hidden={overlayOpacity === 0}
+      role="presentation"
+      onClick={finishIntro}
     >
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          finishIntro();
+        }}
+        className="absolute right-4 top-4 z-[2] inline-flex h-11 items-center rounded-full border border-border bg-surface/70 px-4 text-xs font-medium tracking-[0.08em] text-text-secondary backdrop-blur transition-colors hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:right-6 sm:top-6"
+      >
+        Skip intro
+      </button>
       <div
         className={`intro-window theme-obsidian overflow-hidden border border-border bg-surface shadow-2xl ${
           expanded ? "intro-window--expanded" : "intro-window--compact"

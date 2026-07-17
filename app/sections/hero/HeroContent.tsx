@@ -1,87 +1,77 @@
 "use client";
 
-import { useIntroReady } from "../intro";
+import Link from "next/link";
 
 export function HeroActions() {
   return (
     <>
-      <a
-        href="/services"
+      <Link
+        href="/contact"
         className="rounded-full bg-accent px-7 py-3.5 text-sm font-semibold text-[#0d0d0d] transition-[transform,opacity] hover:-translate-y-px hover:opacity-90 md:text-base"
       >
-        Find talent
-      </a>
-      <a
-        href="/contact"
+        Book a free discovery call
+      </Link>
+      <Link
+        href="/work"
         className="rounded-full border border-text-primary/25 bg-transparent px-7 py-3.5 text-sm font-medium text-text-primary transition-colors hover:border-text-primary/50 hover:bg-text-primary/5 md:text-base"
       >
-        Start a project
-      </a>
+        See our work
+      </Link>
     </>
   );
 }
 
 export function HeroContent() {
-  const introReady = useIntroReady();
-
+  // The hero (LCP element) is never gated behind the intro: it renders in the
+  // server HTML and reveals via a pure-CSS entrance on mount, so it paints
+  // immediately, is crawlable, and works without JS. The intro overlay (when
+  // it plays) simply sits on top and is skippable.
   return (
-    <div
-      className={`max-w-2xl ${introReady ? "animate-hero-reveal" : "opacity-0"}`}
-      style={{ animationDelay: introReady ? "280ms" : undefined }}
-    >
+    <div className="max-w-2xl animate-hero-reveal" style={{ animationDelay: "80ms" }}>
       <p
-        className={`hero-eyebrow mb-6 text-xs font-medium uppercase tracking-[0.25em] text-text-muted md:text-sm ${
-          introReady ? "animate-fade-up" : "opacity-0"
-        }`}
-        style={{ animationDelay: introReady ? "420ms" : undefined }}
+        className="hero-eyebrow mb-6 text-xs font-medium uppercase tracking-[0.25em] text-text-muted sm:mb-8 md:text-sm animate-fade-up"
+        style={{ animationDelay: "160ms" }}
       >
-        Tech recruitment &amp; software studio
+        Software development agency
       </p>
 
       <h1
-        className={`text-4xl font-semibold leading-[1.08] tracking-tight text-text-primary sm:text-5xl lg:text-[3.75rem] lg:leading-[1.02] ${
-          introReady ? "animate-fade-up" : "opacity-0"
-        }`}
-        style={{ animationDelay: introReady ? "500ms" : undefined }}
+        className="text-2xl font-semibold leading-[1.08] tracking-tight text-text-primary sm:text-4xl md:text-5xl lg:text-[3.75rem] lg:leading-[1.02] animate-fade-up"
+        style={{ animationDelay: "220ms" }}
       >
-        Build the team. Ship the thing. Keep momentum visible.
+        We build web, mobile, SaaS &amp; AI products that ship.
       </h1>
 
       <p
-        className={`mt-8 max-w-xl text-lg leading-relaxed text-text-secondary md:text-xl ${
-          introReady ? "animate-fade-up" : "opacity-0"
-        }`}
-        style={{ animationDelay: introReady ? "580ms" : undefined }}
+        className="mt-8 max-w-xl text-base leading-relaxed text-text-secondary sm:mt-12 md:text-lg lg:text-xl animate-fade-up"
+        style={{ animationDelay: "300ms" }}
       >
-        Code Baxh helps companies hire technical talent and launch polished
-        digital products with the same calm, focused operating rhythm.
+        CodeBaxh is a software development agency. Our team turns your idea into
+        a real, working product — web and mobile apps, SaaS platforms, and AI
+        features — and ships it fast. Tell us what you&apos;re building.
       </p>
 
       <div
-        className={`mt-10 flex flex-wrap gap-3 ${
-          introReady ? "animate-fade-up" : "opacity-0"
-        }`}
-        style={{ animationDelay: introReady ? "660ms" : undefined }}
+        className="mt-8 flex flex-wrap gap-3 sm:mt-14 sm:gap-4 animate-fade-up"
+        style={{ animationDelay: "380ms" }}
       >
         <HeroActions />
       </div>
 
       <dl
-        className={`mt-12 grid grid-cols-3 gap-5 border-t border-border pt-10 ${
-          introReady ? "animate-fade-up" : "opacity-0"
-        }`}
-        style={{ animationDelay: introReady ? "740ms" : undefined }}
+        className="mt-12 grid grid-cols-3 gap-4 border-t border-border pt-8 sm:mt-16 sm:gap-6 sm:pt-12 animate-fade-up"
+        style={{ animationDelay: "460ms" }}
       >
         {[
-          { term: "01 Talent", detail: "Specialist tech search" },
-          { term: "02 Build", detail: "Websites and software" },
-          { term: "03 Motion", detail: "Short loops, clear progress" },
+          { term: "SaaS", detail: "MVP to scale, multi-tenant" },
+          { term: "AI / LLM", detail: "RAG & agents in production" },
+          { term: "Web & Mobile", detail: "Next.js, React, React Native" },
         ].map((item) => (
           <div key={item.term}>
-            <dt className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-text-primary">
+            <dt className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-text-primary sm:text-[0.6875rem]">
               {item.term}
             </dt>
-            <dd className="mt-1.5 text-xs leading-relaxed text-text-muted">
+            <dd className="mt-1 text-[0.7rem] leading-relaxed text-text-muted sm:mt-1.5 sm:text-xs">
               {item.detail}
             </dd>
           </div>

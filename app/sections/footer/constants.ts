@@ -1,36 +1,29 @@
+import { SITE } from "../../lib/site";
+import { PRIMARY_CTA } from "../../lib/site";
+import { FOOTER_NAV, LEGAL_LINKS } from "../../lib/nav";
+
 export const LOGO_SRC = "/logo/complete-logo.png";
 export const LOGO_COMPACT_SRC = "/logo/shortLogo.png";
 
 export const COMPANY = {
-  name: "Code Baxh",
+  name: SITE.name,
   tagline:
-    "Tech recruitment and software studio — finding talent and shipping products with teams worldwide.",
-  addressLines: ["Ghouri Town , Islamabad,"],
-  email: "code.baxh@gmail.com",
-  phone: "+923435527709",
-  phoneDisplay: "+92 343 552 7709",
+    "A software development agency. Our team delivers web and mobile apps, SaaS, and AI products for startups and companies worldwide.",
+  addressLines: SITE.addressLines,
+  email: SITE.email,
+  phone: SITE.phone,
+  phoneDisplay: SITE.phoneDisplay,
 } as const;
 
 export const FOOTER_CTA = {
-  title: "Let's build what's next.",
+  title: "Let's build your product.",
   description:
-    "Recruitment, contractor packages, or a product to ship — one conversation to start.",
-  href: "/contact",
-  label: "Start a conversation",
+    "Book a free, no-obligation discovery call. We'll map the outcome and the fastest path to shipping it.",
+  href: PRIMARY_CTA.href,
+  label: PRIMARY_CTA.label,
 } as const;
 
-export const MENU_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  { href: "/careers", label: "Careers" },
-  { href: "/contact", label: "Contact" },
-] as const;
-
-export const LEGAL_LINKS = [
-  { href: "/policy", label: "Privacy Policy" },
-  { href: "/tos", label: "Terms of Service" },
-] as const;
+export { FOOTER_NAV, LEGAL_LINKS };
 
 export const LINKEDIN_URL = "https://www.linkedin.com/company/code-baxh/";
 export const LINKEDIN_ICON_SRC = "/images/Linkedin%20Icons.png";

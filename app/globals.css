@@ -11,7 +11,7 @@
   --brand-obsidian-surface: #0d0d0d;
   --brand-obsidian-elevated: #141414;
   --brand-obsidian-muted: #1a1a1a;
-  --brand-cta-surface: #1a1a1a;
+  --brand-cta-surface: #111111;
   --brand-cta-elevated: #222222;
   --brand-footer-surface: #0a0a0a;
 
@@ -82,15 +82,12 @@
 }
 
 @keyframes pop-in {
-  0% {
-    transform: scale(0.72);
+  from {
+    transform: translateY(0.65rem) scale(0.985);
     opacity: 0;
   }
-  70% {
-    transform: scale(1.04);
-  }
-  100% {
-    transform: scale(1);
+  to {
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
 }
@@ -142,11 +139,11 @@
 }
 
 .animate-pop-in {
-  animation: pop-in 0.65s var(--ease-spring) both;
+  animation: pop-in 0.8s var(--ease-out-expo) 0.14s both;
 }
 
 .animate-fade-up {
-  animation: fade-up 0.55s var(--ease-out-expo) both;
+  animation: fade-up 0.65s var(--ease-out-expo) 0.1s both;
 }
 
 .animate-accent-line {
@@ -168,6 +165,28 @@
 
 .snap-section {
   scroll-margin-top: 5.25rem;
+}
+
+/* ── Sticky site header ── */
+/* Frosted, slightly elevated bar so it stays distinct from the dark hero
+   below it (they previously shared the same flat surface color and merged). */
+.site-header {
+  background: color-mix(in srgb, var(--surface-elevated) 65%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 8%, transparent);
+  transition:
+    background 0.3s var(--ease-out-expo),
+    border-color 0.3s var(--ease-out-expo),
+    box-shadow 0.3s var(--ease-out-expo);
+}
+
+/* Once the page scrolls, firm up the bar so content passing underneath
+   reads as a separate layer. */
+.site-header--scrolled {
+  background: color-mix(in srgb, var(--surface-elevated) 92%, transparent);
+  border-bottom-color: var(--border);
+  box-shadow: 0 10px 30px -14px color-mix(in srgb, #000 70%, transparent);
 }
 
 /* ── Home sticky stack scroll ── */
@@ -192,6 +211,10 @@
     pointer-events: auto;
   }
 
+  .home-stack-container .section-services {
+    margin-top: 0;
+  }
+
   .stack-section {
     position: relative;
     top: auto;
@@ -201,24 +224,55 @@
     pointer-events: auto;
   }
 
+  .section-why,
+  .section-build,
   .section-services,
+  .section-work,
   .section-process,
   .section-about {
     z-index: auto;
     pointer-events: auto;
   }
+
+  .section-why {
+    min-height: 150dvh;
+  }
+
+  .section-why .stack-section-inner {
+    padding-bottom: 5rem;
+  }
 }
 
-.section-services {
+.section-why {
   z-index: 1;
 }
 
-.section-process {
+.section-build {
   z-index: 2;
 }
 
-.section-about {
+.section-services {
   z-index: 3;
+}
+
+/* All Services follows the build runway and rises to cover it as it scrolls
+   away — the same stacking the sections below use. No negative margin: that
+   used to assume a 100vh dead-scroll buffer and, with the tighter runway,
+   covered the last panel ("03 · AI Products") before it was ever read. */
+.home-stack-container .section-services {
+  margin-top: 0;
+}
+
+.section-work {
+  z-index: 4;
+}
+
+.section-process {
+  z-index: 5;
+}
+
+.section-about {
+  z-index: 6;
 }
 
 .stack-section-inner {
@@ -237,47 +291,47 @@
 /* ── Reveal group (staggered scroll-in, one-shot) ── */
 .reveal-item {
   opacity: 0;
-  transform: translateY(1.25rem);
+  transform: translateY(0.85rem) scale(0.985);
   transition:
-    opacity 0.65s var(--ease-out-expo),
-    transform 0.65s var(--ease-out-expo);
+    opacity 0.75s var(--ease-out-expo),
+    transform 0.75s var(--ease-out-expo);
 }
 
 .reveal-group--visible .reveal-item {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .reveal-group--visible .reveal-item--1 {
-  transition-delay: 0ms;
+  transition-delay: 80ms;
 }
 
 .reveal-group--visible .reveal-item--2 {
-  transition-delay: 90ms;
-}
-
-.reveal-group--visible .reveal-item--3 {
   transition-delay: 180ms;
 }
 
+.reveal-group--visible .reveal-item--3 {
+  transition-delay: 280ms;
+}
+
 .reveal-group--visible .reveal-item--4 {
-  transition-delay: 270ms;
+  transition-delay: 380ms;
 }
 
 .reveal-group--visible .reveal-item--5 {
-  transition-delay: 360ms;
+  transition-delay: 480ms;
 }
 
 .reveal-group--visible .reveal-item--6 {
-  transition-delay: 450ms;
+  transition-delay: 580ms;
 }
 
 .reveal-group--visible .reveal-item--7 {
-  transition-delay: 540ms;
+  transition-delay: 680ms;
 }
 
 .reveal-group--visible .reveal-item--8 {
-  transition-delay: 630ms;
+  transition-delay: 780ms;
 }
 
 /* ── Contact section ── */
@@ -304,35 +358,35 @@
 /* Section entrance animations - weighted stagger with cubic easing */
 .section-entrance-item {
   opacity: 0;
-  transform: translateY(2rem);
+  transform: translateY(1.1rem) scale(0.985);
   transition:
-    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.8s var(--ease-out-expo),
+    transform 0.8s var(--ease-out-expo);
 }
 
 .section-visible .section-entrance-item {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .section-visible .section-entrance-item--1 {
-  transition-delay: 0ms;
+  transition-delay: 100ms;
 }
 
 .section-visible .section-entrance-item--2 {
-  transition-delay: 140ms;
+  transition-delay: 220ms;
 }
 
 .section-visible .section-entrance-item--3 {
-  transition-delay: 280ms;
+  transition-delay: 340ms;
 }
 
 .section-visible .section-entrance-item--4 {
-  transition-delay: 420ms;
+  transition-delay: 460ms;
 }
 
 .section-visible .section-entrance-item--5 {
-  transition-delay: 560ms;
+  transition-delay: 580ms;
 }
 
 @media (max-width: 768px) {
@@ -354,6 +408,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .home-stack-container .section-services {
+    margin-top: 0;
+  }
+
   .stack-section {
     position: relative;
     top: auto;
@@ -379,11 +437,70 @@
     transform: none;
     transition: none;
   }
+
+  .section-entrance-item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .reveal-motion {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  /* Entrance animations (header + hero) must resolve instantly, not fade, when
+     the user prefers reduced motion. Content stays fully visible. */
+  .animate-header-drop,
+  .animate-pop-in,
+  .animate-fade-up,
+  .animate-hero-reveal,
+  .animate-accent-line {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 .kinetic-card {
   position: relative;
   overflow: hidden;
+  transition:
+    transform 0.35s var(--ease-out-expo),
+    box-shadow 0.35s ease,
+    border-color 0.35s ease,
+    background-color 0.35s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .kinetic-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--glass-shadow);
+    border-color: color-mix(in srgb, var(--accent) 20%, var(--border));
+  }
+}
+
+.accent-hover-card {
+  border: 1px solid var(--border);
+  background: var(--surface-elevated);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .accent-hover-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+    background: color-mix(in srgb, var(--accent) 5%, var(--surface-elevated));
+  }
+
+  .accent-hover-card:hover .step-number {
+    color: color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kinetic-card:hover {
+    transform: none;
+  }
 }
 
 .kinetic-card::after {
@@ -736,15 +853,15 @@
   }
 }
 
-/* Stagger helpers */
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
-.delay-500 { animation-delay: 500ms; }
-.delay-600 { animation-delay: 600ms; }
-.delay-700 { animation-delay: 700ms; }
-.delay-800 { animation-delay: 800ms; }
+/* Stagger helpers — offsets include a small base pause before motion starts */
+.delay-100 { animation-delay: 220ms; }
+.delay-200 { animation-delay: 320ms; }
+.delay-300 { animation-delay: 420ms; }
+.delay-400 { animation-delay: 520ms; }
+.delay-500 { animation-delay: 620ms; }
+.delay-600 { animation-delay: 720ms; }
+.delay-700 { animation-delay: 820ms; }
+.delay-800 { animation-delay: 920ms; }
 
 /* ── CTA section ── */
 .cta-band {
@@ -761,33 +878,321 @@
   opacity: 0.85;
 }
 
-.cta-section-glow {
-  background:
-    radial-gradient(
-      ellipse 70% 55% at 50% 100%,
-      color-mix(in srgb, var(--accent) 9%, transparent),
-      transparent 68%
-    ),
-    radial-gradient(
-      ellipse 45% 35% at 50% 0%,
-      rgb(255 255 255 / 0.04),
-      transparent 72%
-    );
+@keyframes cta-bottom-breathe {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: translateX(-50%) scale(1, 1);
+  }
+  50% {
+    opacity: 0.92;
+    transform: translateX(-50%) scale(1.06, 1.14);
+  }
+}
+
+.cta-bottom-breathe {
+  overflow: hidden;
+}
+
+.cta-bottom-breathe::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -35%;
+  width: 150%;
+  height: 75%;
+  transform: translateX(-50%);
+  transform-origin: 50% 100%;
+  background: radial-gradient(
+    ellipse 75% 85% at 50% 100%,
+    color-mix(in srgb, var(--accent) 28%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 10%, transparent) 42%,
+    transparent 72%
+  );
+  animation: cta-bottom-breathe 6s ease-in-out infinite;
 }
 
 .cta-primary-button {
+  box-shadow: 0 6px 24px color-mix(in srgb, var(--accent) 22%, transparent);
   transition:
     transform 0.2s ease,
-    opacity 0.2s ease;
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .cta-primary-button:hover {
   transform: translateY(-2px);
   opacity: 0.92;
+  box-shadow: 0 10px 32px color-mix(in srgb, var(--accent) 32%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-bottom-breathe::before {
+    animation: none;
+    opacity: 0.65;
+  }
 }
 
 .footer-band {
   background: var(--brand-footer-surface);
+}
+
+/* ── Home showcase (horizontal scroll runway) ── */
+.section-build--runway {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.section-build--runway .showcase-sticky-viewport {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.showcase-sticky-inner {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding-top: 7rem;
+  padding-bottom: 2rem;
+  box-sizing: border-box;
+}
+
+@media (min-width: 769px) {
+  .showcase-sticky-inner {
+    padding-top: 8.5rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+.showcase-stage {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+.showcase-slide {
+  will-change: transform, opacity;
+}
+
+.section-build-card__glow {
+  background:
+    radial-gradient(
+      130% 90% at 0% 0%,
+      color-mix(in srgb, var(--accent) 11%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      80% 70% at 100% 20%,
+      color-mix(in srgb, var(--accent) 6%, transparent),
+      transparent 60%
+    );
+}
+
+.showcase-panel {
+  width: 100%;
+}
+
+.showcase-card {
+  /* Opaque so stacked cards cleanly cover the one beneath. */
+  background:
+    radial-gradient(
+      130% 130% at 0% 0%,
+      color-mix(in srgb, var(--accent) 9%, transparent),
+      transparent 52%
+    ),
+    var(--brand-obsidian-elevated);
+  box-shadow: 0 24px 70px rgb(0 0 0 / 0.5);
+  overflow: visible;
+  transition:
+    transform 0.45s var(--ease-out-expo),
+    box-shadow 0.45s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .showcase-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 28px 80px rgb(0 0 0 / 0.55);
+  }
+}
+
+.showcase-card-glow {
+  background: radial-gradient(
+    ellipse 55% 50% at 92% 8%,
+    var(--accent-soft),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase-card {
+    box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
+  }
+}
+
+/* ── Marquee (tech strip) ── */
+/* Soft ambient accent glow behind the heading */
+.tech-stack-glow {
+  background: radial-gradient(
+    58% 120% at 50% 0%,
+    color-mix(in srgb, var(--accent) 13%, transparent),
+    transparent 70%
+  );
+}
+
+.tech-marquee {
+  overflow: hidden;
+  width: 100%;
+  padding-block: 0.85rem;
+  /* Fade pills into the background at both edges instead of a hard cut. */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 7%,
+    #000 93%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 7%,
+    #000 93%,
+    transparent
+  );
+}
+
+.tech-marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-scroll var(--marquee-duration) linear infinite;
+}
+
+.tech-marquee-track--reverse {
+  animation-direction: reverse;
+}
+
+.tech-marquee-group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.9rem;
+  padding-right: 0.9rem;
+}
+
+.tech-marquee-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+@media (min-width: 768px) {
+  .tech-marquee-rows {
+    gap: 1.25rem;
+  }
+
+  .tech-marquee-group {
+    gap: 1.1rem;
+    padding-right: 1.1rem;
+  }
+}
+
+/* Frosted glass tech pill */
+.tech-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  white-space: nowrap;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  padding: 0.5rem 1.1rem 0.5rem 0.6rem;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--text-primary) 4%, transparent);
+  transition:
+    transform 0.3s var(--ease-out-expo),
+    border-color 0.3s var(--ease-out-expo),
+    box-shadow 0.3s var(--ease-out-expo),
+    background 0.3s var(--ease-out-expo);
+}
+
+.tech-pill:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  background: var(--surface-elevated);
+  box-shadow: 0 10px 22px -12px color-mix(in srgb, var(--accent) 34%, transparent);
+}
+
+.tech-pill__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+}
+
+.tech-pill__label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text-secondary);
+  transition: color 0.3s var(--ease-out-expo);
+}
+
+.tech-pill:hover .tech-pill__label {
+  color: var(--text-primary);
+}
+
+.tech-marquee:hover .tech-marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tech-marquee {
+    padding-block: 0;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .tech-marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: auto;
+  }
+
+  /* Clones exist only to loop the animation; drop them in the static layout. */
+  .tech-marquee-group--clone {
+    display: none;
+  }
+
+  .tech-marquee-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tech-marquee-rows {
+    width: auto;
+    margin-left: 0;
+  }
+
+  .tech-pill:hover {
+    transform: none;
+  }
 }
 
 /* ── Header ── */
@@ -875,14 +1280,29 @@
   transform: scale(1.12);
 }
 
-/* Hero eyebrow — yellow line above (one accent per section) */
+/* Hero eyebrow — yellow line underneath (mobile only) */
 .hero-eyebrow::before {
+  content: "";
+  display: none;
+  width: 2rem;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.hero-eyebrow::after {
   content: "";
   display: block;
   width: 2rem;
   height: 2px;
   background: var(--accent);
-  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .hero-eyebrow::after {
+    display: none;
+  }
 }
 
 /* Hero visual grid */
@@ -899,7 +1319,7 @@
     transform: translateX(0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translateX(-33.3333%);
   }
 }
 
@@ -911,7 +1331,16 @@
   display: flex;
   width: max-content;
   gap: 0.75rem;
-  animation: marquee-scroll 28s linear infinite;
+  animation: hero-marquee-scroll 28s linear infinite;
+}
+
+@keyframes hero-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -922,14 +1351,22 @@
   }
 }
 
-/* ── Accent heading line ── */
+/* ── Accent heading line (under eyebrow label) ── */
 .heading-accent::before {
+  display: none;
+}
+
+.heading-accent__eyebrow::after,
+p.heading-accent::after {
   content: "";
   display: block;
   width: 2rem;
   height: 2px;
   background: var(--accent);
+  margin-top: 0.75rem;
   margin-bottom: 1rem;
+  margin-left: 0;
+  margin-right: auto;
 }
 
 /* ── Base ── */

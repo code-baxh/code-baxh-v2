@@ -13,7 +13,7 @@ const CATEGORY_LABEL: Record<ServiceCategory, string> = {
 
 export function ServiceCard({ title, description, category }: ServiceCardProps) {
   return (
-    <article className="kinetic-card h-full rounded-2xl border border-border bg-surface-elevated p-7 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[var(--glass-shadow)] md:p-8">
+    <article className="kinetic-card h-full rounded-2xl border border-border bg-surface-elevated p-7 md:p-8">
       <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-text-muted">
         {CATEGORY_LABEL[category]}
       </p>
