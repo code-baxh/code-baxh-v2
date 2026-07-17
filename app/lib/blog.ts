@@ -1621,6 +1621,666 @@ export const BLOG_POSTS: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: "postgresql-vs-mongodb",
+    title: "PostgreSQL vs MongoDB: which database should your SaaS use?",
+    metaTitle: "PostgreSQL vs MongoDB: Which for Your SaaS? (2026)",
+    metaDescription:
+      "PostgreSQL vs MongoDB compared for SaaS: data model, transactions, scaling, and JSON support — plus when each genuinely wins, from a team that ships on both.",
+    excerpt:
+      "For most SaaS, PostgreSQL is the safer default — but MongoDB genuinely wins in a few cases. Here's the honest comparison and how to choose based on your data, not hype.",
+    datePublished: "2026-07-02",
+    readingTime: "8 min read",
+    category: "Backend",
+    serviceSlug: "api-backend-development",
+    sections: [
+      {
+        paragraphs: [
+          "For most SaaS, **PostgreSQL is the right default**: relational integrity, real transactions, and — crucially — it now handles JSON well enough to cover most \"flexible schema\" needs. **MongoDB wins** when your data is genuinely document-shaped, your schema varies a lot between records, or you need horizontal write scaling early. The choice is about the shape of your data, not which one is newer.",
+          "Both are excellent, production-grade databases. The mistake is picking on hype instead of your actual access patterns.",
+        ],
+      },
+      {
+        heading: "The core difference",
+        bullets: [
+          "**PostgreSQL** is relational: data lives in tables of rows and columns, with a defined schema, foreign keys, joins, and ACID transactions. It's strict by design, which protects data integrity.",
+          "**MongoDB** is document-oriented: data lives in flexible JSON-like documents that can vary between records and embed related data inline. It trades some integrity guarantees for schema flexibility and easy horizontal sharding.",
+        ],
+      },
+      {
+        heading: "PostgreSQL vs MongoDB at a glance",
+        table: {
+          headers: ["Factor", "PostgreSQL", "MongoDB"],
+          rows: [
+            ["Data model", "Relational tables", "JSON-like documents"],
+            ["Schema", "Defined, enforced", "Flexible, per-document"],
+            ["Transactions", "Full ACID, mature", "Supported (multi-document since 4.x)"],
+            ["Joins / relations", "First-class", "Limited; favors embedding"],
+            ["Scaling", "Vertical, read replicas, partitioning", "Native horizontal sharding"],
+            ["JSON support", "Strong (`jsonb`, indexes on JSON)", "Native — it is the model"],
+            ["Best for", "Relational, transactional SaaS", "Document-heavy, variable-schema data"],
+          ],
+          caption: "Both scale far past where most SaaS ever reaches — pick for data shape first.",
+        },
+      },
+      {
+        heading: "When PostgreSQL wins",
+        bullets: [
+          "Your data is relational — users, teams, subscriptions, invoices that reference each other.",
+          "You need transactions you can trust (billing, ledgers, anything money-adjacent).",
+          "You want one dependable default and a huge ecosystem (including [Supabase](/blog/saas-tech-stack-2026) and Prisma).",
+          "You'll run analytics and reporting with joins and aggregates.",
+        ],
+      },
+      {
+        heading: "When MongoDB wins",
+        bullets: [
+          "Your records are genuinely document-shaped and vary a lot (CMS content, event payloads, product catalogs with wildly different attributes).",
+          "You want to embed related data and read it in one shot, avoiding joins.",
+          "You expect very high write throughput and want horizontal sharding built in from the start.",
+          "Your schema is still moving fast and you value flexibility over enforcement early on.",
+        ],
+      },
+      {
+        callout: {
+          title: "\"Postgres does JSON\" is the point most teams miss",
+          body: "PostgreSQL's `jsonb` columns give you document-style flexibility **inside** a relational database — so you can keep strict schemas where they matter and flexible JSON where they don't. That combination means you rarely need MongoDB just because \"some fields vary.\"",
+        },
+      },
+      {
+        heading: "The same data, two ways",
+        code: {
+          language: "text",
+          caption: "A subscription modeled relationally in Postgres vs embedded in a Mongo document.",
+          code: "-- PostgreSQL: a subscription row that references the user\nCREATE TABLE subscription (\n  id         uuid PRIMARY KEY,\n  user_id    uuid REFERENCES users(id),\n  plan       text NOT NULL,\n  status     text NOT NULL\n);\n\n// MongoDB: the subscription embedded in the user document\n{\n  _id: ObjectId(),\n  email: \"a@acme.com\",\n  subscription: { plan: \"pro\", status: \"active\" }\n}",
+        },
+      },
+      {
+        heading: "What about scaling?",
+        paragraphs: [
+          "Both scale well past the point most SaaS ever reaches. Postgres scales with read replicas, connection pooling, and table partitioning; Mongo scales writes horizontally with native sharding. The common mistake is picking Mongo \"to scale\" before you have any scale to speak of — premature sharding adds complexity you don't need yet. Get [your tenancy model](/blog/how-to-build-a-multi-tenant-saas) and [hosting](/blog/where-to-host-saas-aws-vercel-render) right first; the database is rarely the first bottleneck.",
+        ],
+      },
+      {
+        heading: "How we choose for clients",
+        paragraphs: [
+          "We default to PostgreSQL for transactional SaaS and reach for MongoDB when the data is truly document-shaped — and we're comfortable running either in production. We pick based on your access patterns, not fashion. See our [API & backend development service](/services/api-backend-development) or [book a free discovery call](/contact) to talk it through.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "Is PostgreSQL or MongoDB better for a SaaS?",
+        a: "For most SaaS, PostgreSQL — relational integrity, transactions, and strong JSON support cover the majority of cases. MongoDB is the better fit when your data is genuinely document-shaped or you need horizontal write scaling early.",
+      },
+      {
+        q: "Can PostgreSQL handle flexible JSON data like MongoDB?",
+        a: "Yes. PostgreSQL's jsonb columns store and index JSON, giving you document-style flexibility inside a relational database — so you rarely need MongoDB just because some fields vary between records.",
+      },
+      {
+        q: "Which is faster, PostgreSQL or MongoDB?",
+        a: "It depends on the workload. Mongo can be faster for single-document reads of embedded data; Postgres is faster and safer for relational queries and transactions. Neither is universally faster — match it to your access patterns.",
+      },
+      {
+        q: "Is MongoDB bad for transactions?",
+        a: "Not anymore. MongoDB has supported multi-document ACID transactions since version 4.x. That said, Postgres's transaction model is more mature, so for money-critical data most teams still prefer it.",
+      },
+      {
+        q: "Can I use both in one product?",
+        a: "Yes. It's common to run Postgres for core relational/transactional data and Mongo (or another store) for a document-heavy subsystem. Just weigh the operational cost of running two databases against the benefit.",
+      },
+      {
+        q: "Does Supabase or Prisma change the decision?",
+        a: "Both lean toward PostgreSQL — Supabase is Postgres-based, and Prisma has its most mature support there. If you want that ecosystem (auth, realtime, type-safe queries) out of the box, Postgres is the natural choice.",
+      },
+    ],
+  },
+  {
+    slug: "answer-engine-optimization-aeo",
+    title: "Answer Engine Optimization (AEO): how to get cited by AI search",
+    metaTitle: "Answer Engine Optimization (AEO): Get Cited by AI (2026)",
+    metaDescription:
+      "AEO explained: how to structure content and pages so ChatGPT, Perplexity, and Google AI Overviews cite you — direct answers, structured data, and crawlable HTML.",
+    excerpt:
+      "SEO gets you ranked; AEO gets you quoted. As AI search grows, here's how to structure content and build pages so answer engines cite your site — not just index it.",
+    datePublished: "2026-07-08",
+    readingTime: "9 min read",
+    category: "Web development",
+    serviceSlug: "nextjs-development",
+    sections: [
+      {
+        paragraphs: [
+          "**Answer Engine Optimization (AEO)** is optimizing your content so AI answer engines — ChatGPT, Perplexity, Google AI Overviews, Claude — quote and cite it when they answer a user's question. The core moves: **give a direct answer up front, structure content so machines can extract it, ship crawlable server-rendered HTML, and add structured data.**",
+          "AEO is an extension of good SEO, not a replacement. The same pages that rank well are the ones that get cited — but AEO adds a bias toward extractable, question-shaped, factual content.",
+        ],
+      },
+      {
+        heading: "AEO vs SEO — what's actually different",
+        table: {
+          headers: ["", "SEO", "AEO"],
+          rows: [
+            ["Goal", "Rank in the list of blue links", "Get quoted in the AI's answer"],
+            ["Unit of value", "A ranking position", "A citation / mention"],
+            ["Rewards", "Relevance, authority, links", "Direct answers, structure, extractability"],
+            ["Content shape", "Comprehensive pages", "Comprehensive pages with clear, quotable answers"],
+          ],
+          caption: "AEO doesn't replace SEO — it layers extractability on top of it.",
+        },
+      },
+      {
+        heading: "The AEO content checklist",
+        bullets: [
+          "**Answer first (inverted pyramid):** open each section with a one- or two-sentence direct answer, then expand. Engines quote the answer, not the wind-up.",
+          "**Use question-shaped headings** that match how people actually ask (\"How much does X cost?\"), so your section maps to a query.",
+          "**Write extractable statements:** short, self-contained, factual sentences an engine can lift without surrounding context.",
+          "**Add an FAQ block** of real questions and concise answers — one of the most-cited formats.",
+          "**Use tables and lists** for comparisons and steps; they're easy to parse and quote.",
+          "**Be explicit about entities** (names, tools, numbers) instead of vague pronouns.",
+          "**Show freshness and expertise:** a visible author, and a `dateModified` so engines trust it's current.",
+        ],
+      },
+      {
+        heading: "The technical foundations",
+        paragraphs: [
+          "Great content only gets cited if machines can actually read it. This is where the build matters:",
+        ],
+        bullets: [
+          "**Server-render the content you want cited** — client-only rendering can leave your text invisible to crawlers. Choose the [right rendering strategy per route](/blog/ssr-vs-ssg-vs-isr-nextjs).",
+          "**Ship fast Core Web Vitals** so pages are fully crawled — see our [Next.js SEO checklist](/blog/nextjs-seo-checklist).",
+          "**Add JSON-LD structured data** (`Article`, `FAQPage`, `BreadcrumbList`) so engines understand the page's role.",
+          "**Write clean, semantic HTML** with a sane heading hierarchy.",
+          "**Allow AI crawlers** in `robots.txt` for the content you want surfaced.",
+        ],
+      },
+      {
+        heading: "Structured data engines can read",
+        code: {
+          language: "json",
+          caption: "A minimal FAQPage JSON-LD block — one of the most citation-friendly schemas.",
+          code: "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [{\n    \"@type\": \"Question\",\n    \"name\": \"What is Answer Engine Optimization?\",\n    \"acceptedAnswer\": {\n      \"@type\": \"Answer\",\n      \"text\": \"AEO is optimizing content so AI answer engines cite it when answering a question.\"\n    }\n  }]\n}",
+        },
+      },
+      {
+        callout: {
+          title: "Crawlable HTML is non-negotiable",
+          body: "If your key content only renders client-side in the browser, many crawlers and AI bots may never see it — so it can't be cited no matter how good it is. Server-render anything you want quoted. (This site is built exactly that way.)",
+        },
+      },
+      {
+        heading: "How to measure AEO",
+        paragraphs: [
+          "AEO is harder to measure than rankings, but not impossible. Watch for referral traffic from AI sources in your analytics, search for your brand and key questions in the engines to see whether you're cited, and track which of your question-shaped pages get surfaced. Treat it as a trend, not a single number.",
+        ],
+      },
+      {
+        heading: "How we build AEO-ready sites",
+        paragraphs: [
+          "We build on server-rendered [Next.js](/services/nextjs-development) with structured data, question-shaped content, and green Core Web Vitals baked in — the same approach behind this blog. Want your site structured to get cited? [Book a free discovery call](/contact).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "What is Answer Engine Optimization (AEO)?",
+        a: "AEO is the practice of structuring content and pages so AI answer engines — like ChatGPT, Perplexity, and Google AI Overviews — quote and cite your site when answering users' questions, rather than just listing it as a link.",
+      },
+      {
+        q: "Is AEO different from SEO?",
+        a: "It's an extension of SEO, not a replacement. SEO aims for a ranking position; AEO aims to be the cited answer. The same authoritative pages tend to win both, but AEO rewards direct answers, structure, and extractability more heavily.",
+      },
+      {
+        q: "Should I allow or block AI crawlers?",
+        a: "If you want to be cited in AI answers, allow the relevant AI crawlers in robots.txt for that content. Block them only if you specifically don't want your content used — that also removes your chance of being cited.",
+      },
+      {
+        q: "Does structured data help with AI citations?",
+        a: "Yes. JSON-LD schemas like FAQPage and Article help engines understand what a page is and extract clean answers from it, which makes citation more likely.",
+      },
+      {
+        q: "Will optimizing for AEO hurt my Google ranking?",
+        a: "No — done well, it helps both. Direct answers, clean structure, structured data, and fast, crawlable pages are good for traditional SEO and AEO at the same time.",
+      },
+      {
+        q: "How do I know if AEO is working?",
+        a: "Look for referral traffic from AI engines in analytics, check whether the engines cite you for your target questions, and monitor which question-shaped pages get surfaced. It's a trend to watch rather than a single ranking number.",
+      },
+    ],
+  },
+  {
+    slug: "reduce-llm-api-costs",
+    title: "How to estimate and cut your LLM API costs",
+    metaTitle: "How to Estimate & Cut LLM API Costs (2026 Guide)",
+    metaDescription:
+      "A practical guide to LLM cost control: how token pricing works, how to estimate monthly spend, and the levers — routing, caching, context trimming — that cut the bill.",
+    excerpt:
+      "AI features are cheap to prototype and surprising to run at scale. Here's how token pricing actually works and the levers that reliably cut the monthly bill.",
+    datePublished: "2026-07-11",
+    readingTime: "8 min read",
+    category: "AI integration",
+    serviceSlug: "ai-integration",
+    sections: [
+      {
+        paragraphs: [
+          "LLM cost is driven by **tokens** — the input you send plus the output you get back — priced per million tokens. You estimate spend as roughly *requests × tokens per request × price*. At scale, the bill is dominated by a handful of levers: **model choice, context size, caching, and routing.** Getting those right often cuts costs by more than half with no drop in quality.",
+          "The good news: you rarely need to optimize until you're actually at volume — but you should measure from day one so you know where the money goes.",
+        ],
+      },
+      {
+        heading: "How token pricing works",
+        bullets: [
+          "A token is roughly ¾ of a word; \"hello world\" is about 2 tokens.",
+          "You pay for **input tokens** (your prompt plus any context you attach) and **output tokens** (the model's response).",
+          "Providers price per million tokens, and **output is usually more expensive than input.**",
+          "Long context inflates cost fast — big system prompts and lots of [retrieved RAG chunks](/blog/building-a-rag-pipeline) are billed as input on every call.",
+        ],
+      },
+      {
+        heading: "Estimating your monthly cost",
+        paragraphs: [
+          "Before optimizing, get a rough number. The formula is simple:",
+        ],
+        code: {
+          language: "javascript",
+          caption: "A back-of-the-envelope monthly LLM cost estimate.",
+          code: "// Prices are per 1M tokens — plug in your provider's current rates.\nconst inputPrice = /* $ per 1M input tokens */;\nconst outputPrice = /* $ per 1M output tokens */;\n\nconst requestsPerMonth = 100_000;\nconst avgInputTokens = 1_200;   // prompt + retrieved context\nconst avgOutputTokens = 400;\n\nconst monthlyCost =\n  (requestsPerMonth * avgInputTokens / 1_000_000) * inputPrice +\n  (requestsPerMonth * avgOutputTokens / 1_000_000) * outputPrice;",
+        },
+      },
+      {
+        heading: "The levers that actually cut cost",
+        bullets: [
+          "**Right-size the model:** route easy requests to a cheaper, faster model and reserve the top-tier model for hard ones — see [choosing between LLM providers](/blog/openai-vs-anthropic-claude).",
+          "**Cache repeated work:** cache answers to common questions, and use provider prompt caching for the static part of your prompt.",
+          "**Trim the context:** retrieve fewer, tighter chunks and keep system prompts lean — every token of context is billed on every call.",
+          "**Cap output:** set a sensible max on output tokens so responses don't run long unnecessarily.",
+          "**Batch and pre-compute** where latency allows, instead of calling the model live for everything.",
+        ],
+      },
+      {
+        callout: {
+          title: "Prompt caching is the underrated win",
+          body: "Many providers cache a repeated prompt prefix (your system prompt, instructions, few-shot examples) at a steep discount on subsequent calls. Structure your prompt so the large static part comes first and the small dynamic part comes last, and input costs can drop dramatically at scale.",
+        },
+      },
+      {
+        heading: "Don't optimize prematurely",
+        paragraphs: [
+          "The most expensive mistake is optimizing before you measure. Log tokens per request and cost per feature first, find the one or two lines that dominate the bill, and fix those. A dashboard of token spend by feature is worth more than a dozen micro-optimizations. This is exactly the observability we build into [production AI features](/services/ai-integration).",
+        ],
+      },
+      {
+        heading: "How we keep AI features affordable",
+        paragraphs: [
+          "We measure token spend per feature, route each request to the cheapest model that clears the quality bar, cache aggressively, and keep context tight — the same approach behind our [AI chatbot builds](/blog/cost-to-build-ai-chatbot). [Book a free discovery call](/contact) to size and control your AI costs.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "How much do LLM APIs cost?",
+        a: "They're priced per million tokens, separately for input and output, and rates vary widely by model tier. Your bill is roughly requests × tokens per request × price, so it scales with both traffic and how much context you send.",
+      },
+      {
+        q: "What is a token?",
+        a: "A token is a chunk of text — roughly three-quarters of a word on average. You pay for the tokens in your prompt and context (input) plus the tokens in the model's response (output).",
+      },
+      {
+        q: "How do I estimate my monthly AI bill?",
+        a: "Multiply expected monthly requests by average input and output tokens per request, divide by a million, and multiply by your provider's per-million input and output prices. Add the two together for a rough monthly figure.",
+      },
+      {
+        q: "What's the single biggest cost lever?",
+        a: "Model choice. Routing easy requests to a cheaper, faster model and reserving the top-tier model for genuinely hard ones typically cuts cost the most — often by more than half — with no meaningful quality loss.",
+      },
+      {
+        q: "Does using a cheaper model hurt quality?",
+        a: "Not if you route by difficulty and measure against an evaluation set. Many requests are easy and a cheaper model handles them perfectly; you only pay for the top-tier model where it actually earns its keep.",
+      },
+      {
+        q: "What is prompt caching?",
+        a: "It's a provider feature that caches a repeated prompt prefix so you're charged a large discount for it on later calls. Putting your static instructions first and dynamic input last maximizes the savings.",
+      },
+    ],
+  },
+  {
+    slug: "prompt-engineering-vs-fine-tuning-vs-rag",
+    title: "Prompt engineering vs fine-tuning vs RAG: which do you need?",
+    metaTitle: "Prompt Engineering vs Fine-Tuning vs RAG (2026)",
+    metaDescription:
+      "Prompt engineering, fine-tuning, and RAG compared: what each does, what it costs, and how to choose the right one — or combination — for your AI feature.",
+    excerpt:
+      "Three ways to make an LLM do what you want — and teams reach for the expensive one first. Here's what each is actually for, and the order to try them.",
+    datePublished: "2026-07-14",
+    readingTime: "8 min read",
+    category: "AI integration",
+    serviceSlug: "ai-integration",
+    sections: [
+      {
+        paragraphs: [
+          "**Prompt engineering** shapes the model's behavior with instructions and examples. **RAG** gives the model your knowledge at query time by retrieving relevant content. **Fine-tuning** changes the model's weights to bake in a consistent style, format, or narrow skill. Reach for them **in that order** — most needs are solved by prompting plus RAG, and fine-tuning is rarely the first answer.",
+          "The costly mistake is jumping straight to fine-tuning for a problem that a better prompt or retrieval would have solved in an afternoon.",
+        ],
+      },
+      {
+        heading: "What each one actually does",
+        bullets: [
+          "**Prompt engineering:** carefully written instructions, examples, and structure in the prompt. Cheapest, fastest, and often enough on its own.",
+          "**RAG (retrieval-augmented generation):** fetch relevant documents from your data and pass them to the model so it answers from your knowledge, with citations.",
+          "**Fine-tuning:** train the base model on your examples so it internalizes a style, tone, or narrow task — changing the model itself, not the prompt.",
+        ],
+      },
+      {
+        heading: "At a glance",
+        table: {
+          headers: ["", "Prompt engineering", "RAG", "Fine-tuning"],
+          rows: [
+            ["Best for", "Behavior, format, reasoning", "Answering from your knowledge", "Consistent style / narrow skill"],
+            ["Changes the model?", "No", "No", "Yes (weights)"],
+            ["Uses your data?", "A little (examples)", "Yes, at query time", "Yes, as training data"],
+            ["Effort / cost", "Low", "Medium", "High"],
+            ["Updating info", "Instant", "Re-index content", "Re-train"],
+          ],
+          caption: "Try them top-to-bottom; most production systems combine the first two.",
+        },
+      },
+      {
+        heading: "When to use prompt engineering",
+        bullets: [
+          "You need a specific output format, tone, or reasoning approach.",
+          "You can steer the model with a few good examples (few-shot).",
+          "You're still iterating — prompts change in seconds, models don't.",
+        ],
+      },
+      {
+        heading: "When to use RAG",
+        bullets: [
+          "The model needs to answer from your documents, product data, or knowledge base.",
+          "Your information changes and must stay current — re-index instead of re-train.",
+          "You need citations and grounding to [reduce hallucinations](/blog/reduce-llm-hallucinations). This is the backbone of most [grounded chatbots](/blog/ai-agents-vs-chatbots-vs-rag).",
+        ],
+      },
+      {
+        heading: "When to use fine-tuning",
+        bullets: [
+          "You need a consistent style, tone, or output format at scale that prompting can't reliably hold.",
+          "You have a narrow, repetitive task (classification, extraction) where a smaller tuned model is cheaper and faster.",
+          "You have a solid set of high-quality training examples — fine-tuning is only as good as its data.",
+        ],
+      },
+      {
+        callout: {
+          title: "The most common mistake",
+          body: "Teams fine-tune to \"teach the model our information.\" Fine-tuning teaches form, not facts — and facts that change will go stale in the weights. For knowledge that must be current and citable, use RAG. Fine-tune for how it answers, not what it knows.",
+        },
+      },
+      {
+        heading: "They combine",
+        paragraphs: [
+          "Real systems layer these: a well-engineered prompt, RAG for knowledge, and — only if needed — a fine-tuned model for a specific style or task. Start simple, measure, and add complexity only when a cheaper approach stops clearing the bar. That's how we [add AI to existing products](/blog/add-ai-to-existing-app).",
+        ],
+      },
+      {
+        heading: "How we choose",
+        paragraphs: [
+          "We start with prompting, add RAG when the model needs your knowledge, and fine-tune only when there's a clear, measured reason — always against an evaluation set. See our [AI integration service](/services/ai-integration) or [book a free discovery call](/contact).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "What's the difference between fine-tuning and RAG?",
+        a: "RAG gives the model your knowledge at query time by retrieving documents, so information stays current and citable. Fine-tuning changes the model's weights to bake in a style or skill. Use RAG for facts, fine-tuning for form.",
+      },
+      {
+        q: "Which is cheaper — prompting, RAG, or fine-tuning?",
+        a: "Prompt engineering is cheapest and fastest, RAG is moderate, and fine-tuning is the most expensive and involved. That's also the order in which you should try them.",
+      },
+      {
+        q: "Can I use RAG and fine-tuning together?",
+        a: "Yes — it's common. Fine-tune for a consistent format or tone, and use RAG to supply current, citable knowledge. They solve different problems and compose well.",
+      },
+      {
+        q: "Does fine-tuning add knowledge to a model?",
+        a: "Not reliably. Fine-tuning teaches patterns, style, and format, but facts baked into weights go stale and can't be cited. For knowledge, use RAG instead.",
+      },
+      {
+        q: "When is prompt engineering enough on its own?",
+        a: "When you need a specific format, tone, or reasoning approach and the model already has the knowledge. A good prompt with a few examples solves a surprising share of use cases with zero extra infrastructure.",
+      },
+      {
+        q: "Do I need to fine-tune to reduce hallucinations?",
+        a: "Usually not. Grounding the model in your data with RAG, plus guardrails and evaluation, reduces hallucinations more reliably than fine-tuning — and keeps answers current and citable.",
+      },
+    ],
+  },
+  {
+    slug: "web-app-vs-mobile-app-vs-pwa",
+    title: "Web app, mobile app, or PWA: which should you build first?",
+    metaTitle: "Web App vs Mobile App vs PWA: Which First? (2026)",
+    metaDescription:
+      "Web app vs native mobile vs PWA compared: reach, cost, capabilities, and distribution — how to choose what to build first for your product and budget.",
+    excerpt:
+      "You rarely need all three on day one. Here's how reach, device features, budget, and distribution decide whether to start with web, native, or a PWA.",
+    datePublished: "2026-07-16",
+    readingTime: "8 min read",
+    category: "Mobile",
+    serviceSlug: "mobile-app-development",
+    sections: [
+      {
+        paragraphs: [
+          "**Start with a web app** if you need reach, fast iteration, and low cost. **Go native (React Native)** when you need deep device features, reliable offline, push notifications, or an app-store presence. **Choose a PWA** when you want app-like install and offline behavior on a web budget. Most products should start with one of these — not all three.",
+          "The right first choice comes down to four things: who you need to reach, what device capabilities you need, your budget, and whether app-store distribution matters.",
+        ],
+      },
+      {
+        heading: "The three options",
+        bullets: [
+          "**Web app:** runs in the browser, instantly accessible via a URL, nothing to install. Widest reach, fastest to ship and update.",
+          "**Native / cross-platform:** installed from the app stores. We build these with [React Native](/blog/react-native-vs-flutter) so one codebase ships to iOS and Android.",
+          "**PWA (Progressive Web App):** a web app that can be installed to the home screen and work offline — app-like, without the app store.",
+        ],
+      },
+      {
+        heading: "At a glance",
+        table: {
+          headers: ["Factor", "Web app", "PWA", "Native (React Native)"],
+          rows: [
+            ["Reach", "Widest (any browser)", "Wide", "App-store users"],
+            ["Install", "None", "Optional, from browser", "From App Store / Play"],
+            ["Offline", "Limited", "Yes", "Full"],
+            ["Device features", "Limited", "Growing, but partial", "Full (camera, sensors, etc.)"],
+            ["App store presence", "No", "No", "Yes"],
+            ["Relative cost", "Lowest", "Low", "Higher"],
+            ["Iteration speed", "Instant deploys", "Instant deploys", "Store review cycles"],
+          ],
+          caption: "Reach and speed favor web; capabilities and store presence favor native.",
+        },
+      },
+      {
+        heading: "Start with a web app if...",
+        bullets: [
+          "You need the widest possible reach with zero install friction.",
+          "You're validating fast and want to ship and update in minutes, not review cycles.",
+          "Your features live comfortably in the browser (dashboards, SaaS, content, tools).",
+          "Budget is tight and you want the most product per dollar.",
+        ],
+      },
+      {
+        heading: "Go native if...",
+        bullets: [
+          "You need deep device features — camera, Bluetooth, background location, sensors.",
+          "Reliable offline use and rich push notifications are core to the experience.",
+          "Being in the App Store and Play Store matters for trust or discovery.",
+          "The experience must feel fully native and high-performance (gestures, animations).",
+        ],
+      },
+      {
+        heading: "Choose a PWA if...",
+        bullets: [
+          "You want an installable, offline-capable app-like experience on a web budget.",
+          "App-store distribution isn't essential to your audience.",
+          "Your device-feature needs are modest and covered by modern browser APIs.",
+        ],
+      },
+      {
+        callout: {
+          title: "You can share more than you think",
+          body: "With a web app plus a React Native app, you can share business logic, types, and APIs across both — and one team can build the backend once. That makes \"web now, native later\" far cheaper than two separate builds. See our breakdown of [mobile app cost](/blog/cost-to-build-mobile-app).",
+        },
+      },
+      {
+        heading: "How we help you decide",
+        paragraphs: [
+          "We help you pick the smallest thing that proves the product, then expand — often web first, native when the capabilities or distribution justify it. See our [mobile app development service](/services/mobile-app-development) or [book a free discovery call](/contact) to map the right path for your product.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "Should I build a web app or a mobile app first?",
+        a: "For most products, start with a web app: widest reach, lowest cost, and instant iteration. Build native when you need deep device features, reliable offline, push notifications, or an app-store presence.",
+      },
+      {
+        q: "What is a PWA?",
+        a: "A Progressive Web App is a web app that can be installed to the home screen and work offline, giving an app-like experience without going through the app stores. It's a middle ground between web and native.",
+      },
+      {
+        q: "Can a PWA replace a native app?",
+        a: "For many use cases, yes — if your device-feature needs are modest and app-store distribution isn't essential. For camera-heavy, sensor-heavy, or fully offline experiences, native is still the stronger choice.",
+      },
+      {
+        q: "Is a web app or native app cheaper?",
+        a: "A web app is typically cheaper to build and much cheaper to iterate on, since there are no app-store review cycles. Native costs more but unlocks device features and store distribution.",
+      },
+      {
+        q: "Do I need to be in the app store?",
+        a: "Only if your audience discovers or trusts products there, or you need capabilities that require a native app. Plenty of successful products are web-only — don't pay for store presence you don't need.",
+      },
+      {
+        q: "Can I reuse code across web and mobile?",
+        a: "Yes. With a web app and a React Native app you can share business logic, types, and APIs, and build the backend once. That makes starting on web and adding native later much more economical than two separate builds.",
+      },
+    ],
+  },
+  {
+    slug: "supabase-vs-firebase",
+    title: "Supabase vs Firebase: which backend should your app use?",
+    metaTitle: "Supabase vs Firebase: Which Backend? (2026 Guide)",
+    metaDescription:
+      "What Supabase is, when to use it, and how it compares to Firebase — Postgres vs Firestore, auth, realtime, self-hosting, and lock-in, from a team that ships on both.",
+    excerpt:
+      "Supabase is the open-source, Postgres-based answer to Firebase. Here's what you actually get, when it wins, and when Firebase is still the better call.",
+    datePublished: "2026-07-17",
+    readingTime: "8 min read",
+    category: "Backend",
+    serviceSlug: "api-backend-development",
+    sections: [
+      {
+        paragraphs: [
+          "**Supabase is an open-source backend-as-a-service built on PostgreSQL.** It gives you a real Postgres database plus authentication, row-level security, realtime subscriptions, file storage, edge functions, and auto-generated APIs — the same batteries-included experience as Firebase, but on a standard relational database you can query with SQL and take with you.",
+          "The short version: **choose Supabase when you want a Postgres-backed backend that ships fast without locking you into a proprietary database.** Choose Firebase when you want Google's mature, deeply-integrated mobile ecosystem and your data is comfortable in a NoSQL document store.",
+        ],
+      },
+      {
+        heading: "What you get with Supabase",
+        bullets: [
+          "**A full PostgreSQL database** — real SQL, joins, constraints, and transactions, not a proprietary store.",
+          "**Auth** — email/password, magic links, and social/OAuth providers out of the box.",
+          "**Row-Level Security (RLS)** — database-enforced access rules, ideal for [multi-tenant SaaS](/blog/multi-tenant-saas-auth-rbac).",
+          "**Realtime** — subscribe to database changes over websockets.",
+          "**Storage** — S3-style file storage with access policies.",
+          "**Edge Functions** — serverless functions for custom backend logic.",
+          "**Auto-generated REST and GraphQL APIs** plus a Studio dashboard and great client libraries.",
+        ],
+      },
+      {
+        heading: "Supabase vs Firebase at a glance",
+        table: {
+          headers: ["Factor", "Supabase", "Firebase"],
+          rows: [
+            ["Database", "PostgreSQL (relational)", "Firestore / RTDB (NoSQL)"],
+            ["Queries", "Full SQL, joins, transactions", "NoSQL queries, limited joins"],
+            ["Relational data", "First-class", "Awkward (denormalize)"],
+            ["Access control", "Row-Level Security (in DB)", "Security Rules (in Firebase)"],
+            ["Realtime", "Yes (Postgres changes)", "Yes (core strength)"],
+            ["Open source / self-host", "Yes", "No (proprietary)"],
+            ["Vendor lock-in", "Low — it's just Postgres", "Higher — proprietary APIs"],
+            ["Best for", "Relational, SQL-friendly apps", "Mobile-first, document data"],
+          ],
+          caption: "Both are excellent — the deciding factor is usually your data model and lock-in tolerance.",
+        },
+      },
+      {
+        heading: "When Supabase wins",
+        bullets: [
+          "Your data is relational — the norm for most SaaS — and you want SQL, joins, and transactions. (See [PostgreSQL vs MongoDB](/blog/postgresql-vs-mongodb) for why relational is usually the default.)",
+          "You want to avoid lock-in: Supabase is open source and you can self-host or export your Postgres database anytime.",
+          "You're building multi-tenant SaaS and want database-enforced isolation via Row-Level Security.",
+          "Your team already knows SQL and Postgres tooling (Prisma, Drizzle, psql).",
+        ],
+      },
+      {
+        heading: "When Firebase wins",
+        bullets: [
+          "You're building a mobile-first app and want Google's mature SDKs, analytics, crash reporting, and push in one ecosystem.",
+          "Your data is naturally document-shaped and you don't need relational joins.",
+          "You want the longest-established, most battle-tested realtime BaaS and don't mind the proprietary model.",
+        ],
+      },
+      {
+        callout: {
+          title: "Row-Level Security is the multi-tenant killer feature",
+          body: "Because Supabase runs on Postgres, you can enforce tenant isolation in the database itself with RLS — so a query bug in your app can't leak one customer's data to another. That's a strong backstop for [multi-tenant SaaS](/blog/how-to-build-a-multi-tenant-saas), and it's harder to replicate cleanly in Firebase's model.",
+        },
+      },
+      {
+        heading: "Tenant isolation, enforced in the database",
+        code: {
+          language: "sql",
+          caption: "A Supabase RLS policy so each tenant only ever sees its own rows.",
+          code: "-- Row-Level Security: each tenant only sees its own rows\nALTER TABLE projects ENABLE ROW LEVEL SECURITY;\n\nCREATE POLICY \"tenant_isolation\" ON projects\n  FOR ALL\n  USING (tenant_id = (auth.jwt() ->> 'tenant_id'));",
+        },
+      },
+      {
+        heading: "Is Supabase production-ready?",
+        paragraphs: [
+          "Yes, for the large majority of SaaS. Under the hood it's standard PostgreSQL, which is as production-proven as databases get, and Supabase is used by plenty of real companies. The caveats are practical, not fundamental: it's younger than Firebase so the ecosystem is smaller; self-hosting is possible but non-trivial to operate; you must write your RLS policies carefully (a missing policy is a data leak); and for serverless deployments you'll want connection pooling to avoid exhausting Postgres connections.",
+          "None of these are blockers — they're the normal considerations of running Postgres, which is exactly why we're comfortable shipping it.",
+        ],
+      },
+      {
+        heading: "How we use Supabase",
+        paragraphs: [
+          "We reach for Supabase when a project wants Postgres with auth, realtime, and storage ready on day one — it's part of our standard [SaaS tech stack](/blog/saas-tech-stack-2026). We design the schema and RLS policies up front so tenant isolation is enforced in the database, not just the app. See our [API & backend development service](/services/api-backend-development) or [book a free discovery call](/contact).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "What is Supabase?",
+        a: "Supabase is an open-source backend-as-a-service built on PostgreSQL. It bundles a Postgres database, authentication, row-level security, realtime subscriptions, file storage, edge functions, and auto-generated APIs — a Firebase-style experience on a standard relational database.",
+      },
+      {
+        q: "Is Supabase better than Firebase?",
+        a: "Neither is universally better. Supabase wins for relational, SQL-friendly apps and teams that want to avoid lock-in, since it's open source and built on Postgres. Firebase wins for mobile-first apps with document-shaped data and Google's integrated ecosystem.",
+      },
+      {
+        q: "Is Supabase production-ready?",
+        a: "Yes, for most SaaS. It runs on standard PostgreSQL, which is highly production-proven. Just write your Row-Level Security policies carefully, use connection pooling in serverless setups, and be aware the ecosystem is younger than Firebase's.",
+      },
+      {
+        q: "Is Supabase really just PostgreSQL?",
+        a: "At its core, yes — your data lives in a real Postgres database you can query with SQL, connect to with any Postgres tool, and export anytime. Supabase adds auth, realtime, storage, and APIs on top of it.",
+      },
+      {
+        q: "Can I self-host Supabase?",
+        a: "Yes. Supabase is open source and can be self-hosted, which is a major difference from the proprietary Firebase. Most teams start on the hosted version and keep self-hosting as an option, since there's no lock-in.",
+      },
+      {
+        q: "Does Supabase lock me in?",
+        a: "Much less than a proprietary BaaS. Because it's open source and your data is standard PostgreSQL, you can self-host or migrate your database elsewhere without rewriting your data layer — unlike Firebase's proprietary stores.",
+      },
+    ],
+  },
 ];
 
 export function getPost(slug: string): BlogPost | undefined {

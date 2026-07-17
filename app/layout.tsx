@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono, Nunito } from "next/font/google";
 import { Providers } from "./providers";
 import { SITE, SITE_URL, SOCIALS } from "./lib/site";
@@ -92,6 +93,18 @@ export default function RootLayout({
           data={graph(organizationSchema(), websiteSchema(), personSchema())}
         />
         <Providers>{children}</Providers>
+
+        {/* Google Analytics (gtag.js) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-0ZK9N00Q90"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0ZK9N00Q90');`}
+        </Script>
       </body>
     </html>
   );
