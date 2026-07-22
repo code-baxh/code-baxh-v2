@@ -2,10 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { IntroCodeTyping } from "./IntroCodeTyping";
-import { IntroCursor } from "./IntroCursor";
 import { IntroMorphLoader } from "./IntroMorphLoader";
 import {
-  runIntroSequence,
+  MAX_INTRO_MS,
   runLoadingPhase,
   type IntroPhase,
 } from "./useIntroSequence";
@@ -14,67 +13,40 @@ type IntroWindowProps = {
   onComplete: () => void;
 };
 
-type CursorPosition = {
-  x: number;
-  y: number;
-  opacity: number;
-  scale: number;
-};
-
+/**
+ * Brief branded interstitial: a fixed, compact "IDE window" that types a few
+ * lines of studio.ts, then fades out. Constraints that must hold (they came
+ * out of a Core Web Vitals audit — don't regress them):
+ *
+ * - The overlay is mounted client-side only (see IntroProvider), so the hero
+ *   underneath paints immediately and is measured as LCP.
+ * - Everything animates with opacity ONLY. The window never moves or
+ *   resizes — the old compact→fullscreen expand morph animated
+ *   top/left/width/height and scored ~0.39 CLS on its own.
+ * - Hard-capped at MAX_INTRO_MS; any user intent (click, key, scroll, touch)
+ *   skips instantly.
+ */
 export function IntroWindow({ onComplete }: IntroWindowProps) {
-  const greenRef = useRef<HTMLSpanElement>(null);
-  const [phase, setPhase] = useState<IntroPhase>("idle");
-  const [expanded, setExpanded] = useState(false);
-  const [cursor, setCursor] = useState<CursorPosition>({
-    x: 0,
-    y: 0,
-    opacity: 0,
-    scale: 1,
-  });
-  const [overlayOpacity, setOverlayOpacity] = useState(1);
-  const [bgWhite, setBgWhite] = useState(true);
-  const [waitingDots, setWaitingDots] = useState(1);
-  const startPos = useRef({ x: 0, y: 0 });
+  const [phase, setPhase] = useState<IntroPhase>("code");
+  const [overlayOpacity, setOverlayOpacity] = useState(0);
   const finishedRef = useRef(false);
 
   const finishIntro = useCallback(() => {
-    // Idempotent: the sequence completing and a user skip can both fire.
+    // Idempotent: the cap, the sequence completing, and a user skip can all fire.
     if (finishedRef.current) return;
     finishedRef.current = true;
     setOverlayOpacity(0);
     window.setTimeout(onComplete, 450);
   }, [onComplete]);
 
+  // Fade in on mount; hard-cap the whole intro.
   useEffect(() => {
-    startPos.current = {
-      x: window.innerWidth * 0.72,
-      y: window.innerHeight * 0.65,
+    const raf = window.requestAnimationFrame(() => setOverlayOpacity(1));
+    const capTimer = window.setTimeout(finishIntro, MAX_INTRO_MS);
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(capTimer);
     };
-    setCursor({
-      x: startPos.current.x,
-      y: startPos.current.y,
-      opacity: 0,
-      scale: 1,
-    });
-
-    const cancelSequence = runIntroSequence({
-      onPhase: (next) => {
-        setPhase(next);
-        if (next === "cursor-in") {
-          setCursor({
-            x: startPos.current.x,
-            y: startPos.current.y,
-            opacity: 1,
-            scale: 1,
-          });
-        }
-      },
-      onExpand: () => setExpanded(true),
-      onBackgroundDark: () => setBgWhite(false),
-      onComplete: finishIntro,
-    });
-
-    return cancelSequence;
   }, [finishIntro]);
 
   // Never block the user: any intent to move on (Escape, click/tap, scroll,
@@ -96,22 +68,6 @@ export function IntroWindow({ onComplete }: IntroWindowProps) {
     };
   }, [finishIntro]);
 
-  useEffect(() => {
-    if (phase !== "cursor-move" && phase !== "click") return;
-
-    const green = greenRef.current;
-    if (!green) return;
-
-    const rect = green.getBoundingClientRect();
-
-    setCursor({
-      x: rect.left + rect.width / 2 - 4,
-      y: rect.top + rect.height / 2 - 4,
-      opacity: 1,
-      scale: phase === "click" ? 0.88 : 1,
-    });
-  }, [phase]);
-
   const handleCodeComplete = useCallback(() => {
     setPhase("loading");
   }, []);
@@ -124,37 +80,11 @@ export function IntroWindow({ onComplete }: IntroWindowProps) {
     });
   }, [phase, finishIntro]);
 
-  const showWaiting =
-    phase === "idle" ||
-    phase === "cursor-in" ||
-    phase === "cursor-move" ||
-    phase === "click";
-  const showCursor =
-    phase === "cursor-in" || phase === "cursor-move" || phase === "click";
-  const showCode = phase === "code" || phase === "loading";
   const showLoader = phase === "loading";
-
-  useEffect(() => {
-    if (!showWaiting) return;
-
-    const resetTimer = window.setTimeout(() => {
-      setWaitingDots(1);
-    }, 0);
-    const interval = window.setInterval(() => {
-      setWaitingDots((count) => (count % 3) + 1);
-    }, 500);
-
-    return () => {
-      window.clearTimeout(resetTimer);
-      window.clearInterval(interval);
-    };
-  }, [showWaiting]);
 
   return (
     <div
-      className={`intro-overlay fixed inset-0 z-[300] transition-[background,opacity] duration-700 ${
-        bgWhite ? "intro-overlay--paper theme-paper" : "intro-overlay--obsidian theme-obsidian"
-      }`}
+      className="intro-overlay intro-overlay--obsidian theme-obsidian fixed inset-0 z-[300] transition-opacity duration-500"
       style={{ opacity: overlayOpacity }}
       aria-hidden={overlayOpacity === 0}
       role="presentation"
@@ -170,22 +100,12 @@ export function IntroWindow({ onComplete }: IntroWindowProps) {
       >
         Skip intro
       </button>
-      <div
-        className={`intro-window theme-obsidian overflow-hidden border border-border bg-surface shadow-2xl ${
-          expanded ? "intro-window--expanded" : "intro-window--compact"
-        }`}
-      >
+      <div className="intro-window intro-window--compact theme-obsidian overflow-hidden border border-border bg-surface shadow-2xl">
         <div className="intro-window-chrome flex items-center gap-3 border-b border-border px-4 py-3">
           <div className="flex items-center gap-2">
             <span className="intro-dot intro-dot-red" aria-hidden />
             <span className="intro-dot intro-dot-yellow" aria-hidden />
-            <span
-              ref={greenRef}
-              className={`intro-dot intro-dot-green ${
-                phase === "click" ? "intro-dot-green--active" : ""
-              }`}
-              aria-hidden
-            />
+            <span className="intro-dot intro-dot-green" aria-hidden />
           </div>
           <span className="truncate font-mono text-xs text-text-muted">
             studio.ts
@@ -193,29 +113,18 @@ export function IntroWindow({ onComplete }: IntroWindowProps) {
         </div>
 
         <div className="intro-window-body flex flex-col p-5 md:p-8">
-          {showWaiting ? (
-            <p className="font-mono text-sm text-text-muted" aria-live="polite">
-              # waiting
-              <span className="inline-block w-[1.5ch]">
-                {".".repeat(waitingDots)}
-              </span>
-            </p>
-          ) : null}
-
-          {showCode ? (
-            <div
-              className={
-                showLoader ? "opacity-40 transition-opacity duration-500" : ""
-              }
-            >
-              <IntroCodeTyping
-                active={phase === "code"}
-                charDelayMs={7}
-                charsPerTick={1.2}
-                onComplete={handleCodeComplete}
-              />
-            </div>
-          ) : null}
+          <div
+            className={
+              showLoader ? "opacity-40 transition-opacity duration-500" : ""
+            }
+          >
+            <IntroCodeTyping
+              active={phase === "code"}
+              charDelayMs={7}
+              charsPerTick={1.2}
+              onComplete={handleCodeComplete}
+            />
+          </div>
 
           {showLoader ? (
             <>
@@ -230,16 +139,6 @@ export function IntroWindow({ onComplete }: IntroWindowProps) {
           ) : null}
         </div>
       </div>
-
-      {showCursor ? (
-        <IntroCursor
-          x={cursor.x}
-          y={cursor.y}
-          opacity={cursor.opacity}
-          scale={cursor.scale}
-          clicking={phase === "click"}
-        />
-      ) : null}
     </div>
   );
 }

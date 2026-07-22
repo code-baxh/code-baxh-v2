@@ -5,6 +5,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -26,7 +27,7 @@ export function useIntroReady() {
 
 function shouldPlayIntro(pathname: string) {
   if (typeof window === "undefined") {
-    return pathname === "/";
+    return false;
   }
 
   const reducedMotion = window.matchMedia(
@@ -40,9 +41,17 @@ function shouldPlayIntro(pathname: string) {
 
 export function IntroProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const [showOverlay, setShowOverlay] = useState(() =>
-    shouldPlayIntro(pathname),
-  );
+  // Client-only: the overlay is never in the server HTML, so the hero paints
+  // (and is measured as LCP) immediately; the intro fades in after hydration
+  // for first-time visitors only.
+  const [showOverlay, setShowOverlay] = useState(false);
+  const playedRef = useRef(false);
+
+  useEffect(() => {
+    if (playedRef.current) return;
+    playedRef.current = true;
+    if (shouldPlayIntro(pathname)) setShowOverlay(true);
+  }, [pathname]);
 
   useEffect(() => {
     if (!showOverlay) return;
