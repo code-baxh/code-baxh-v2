@@ -303,7 +303,12 @@ export default async function ServicePage({
           </div>
         </section>
 
-        <FaqSection faqs={service.faqs} title={`${service.navLabel} — FAQs`} />
+        {/* FAQPage schema already emitted in this page's @graph — don't double-emit */}
+        <FaqSection
+          faqs={service.faqs}
+          title={`${service.navLabel} — FAQs`}
+          emitSchema={false}
+        />
       </main>
       <CtaSection />
       <FooterSection />

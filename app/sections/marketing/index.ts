@@ -9,5 +9,4 @@ export { TechStackStrip } from "./TechStackStrip";
 export { ServicesGrid } from "./ServicesGrid";
 export { CaseStudyCard } from "./CaseStudyCard";
 export { FounderSection } from "./FounderCard";
-export { Testimonials } from "./Testimonials";
 export { BookingEmbed } from "./BookingEmbed";

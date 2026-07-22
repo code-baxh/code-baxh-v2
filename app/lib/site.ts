@@ -11,7 +11,7 @@
 
 // Prefer an env override so the domain can change without a code edit.
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.codebaxh.com"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://codebaxh.com"
 ).replace(/\/$/, "");
 
 /**
@@ -41,7 +41,7 @@ export const SITE = {
   timezoneNote: "Flexible timezone overlap · async-first · fluent English",
   logo: "/logo/complete-logo.png",
   logoMark: "/logo/shortLogo.png",
-  ogImage: "/og.png", // TODO: add a 1200×630 OG image at public/og.png
+  ogImage: "/og.png", // 1200×630, lives at public/og.png
 } as const;
 
 export const FOUNDER = {
