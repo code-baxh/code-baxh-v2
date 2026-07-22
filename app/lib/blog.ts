@@ -53,7 +53,13 @@ export type BlogPost = {
   faqs?: { q: string; a: string }[];
 };
 
-export const BLOG_POSTS: BlogPost[] = [
+/**
+ * Reading time is DERIVED from real content below (see BLOG_POSTS export) —
+ * the literal `readingTime` values in this array are ignored. Keeping the
+ * badge honest matters: a "6 min read" label on a 300-word post reads as
+ * fake to users and quality raters alike.
+ */
+const RAW_BLOG_POSTS: BlogPost[] = [
   {
     slug: "how-to-build-a-multi-tenant-saas",
     title: "How to build a multi-tenant SaaS architecture",
@@ -2282,6 +2288,41 @@ export const BLOG_POSTS: BlogPost[] = [
     ],
   },
 ];
+
+function countWords(text: string | undefined): number {
+  if (!text) return 0;
+  return text.split(/\s+/).filter(Boolean).length;
+}
+
+/** Word count across everything a reader actually reads on the post page. */
+function postWordCount(post: BlogPost): number {
+  let words = countWords(post.title) + countWords(post.excerpt);
+  for (const s of post.sections) {
+    words += countWords(s.heading);
+    for (const p of s.paragraphs ?? []) words += countWords(p);
+    for (const b of s.bullets ?? []) words += countWords(b);
+    if (s.table) {
+      words += countWords(s.table.caption);
+      words += countWords(s.table.headers.join(" "));
+      for (const row of s.table.rows) words += countWords(row.join(" "));
+    }
+    if (s.code) words += countWords(s.code.code) + countWords(s.code.caption);
+    if (s.callout) words += countWords(s.callout.title) + countWords(s.callout.body);
+  }
+  for (const f of post.faqs ?? []) words += countWords(f.q) + countWords(f.a);
+  return words;
+}
+
+/** ~220 wpm prose reading speed; minimum 1 minute. */
+function computeReadingTime(post: BlogPost): string {
+  const minutes = Math.max(1, Math.round(postWordCount(post) / 220));
+  return `${minutes} min read`;
+}
+
+export const BLOG_POSTS: BlogPost[] = RAW_BLOG_POSTS.map((post) => ({
+  ...post,
+  readingTime: computeReadingTime(post),
+}));
 
 export function getPost(slug: string): BlogPost | undefined {
   return BLOG_POSTS.find((p) => p.slug === slug);

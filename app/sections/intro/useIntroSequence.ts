@@ -15,8 +15,11 @@ type SequenceCallbacks = {
   onComplete: () => void;
 };
 
-const LOADING_MS = 1200;
-const SAFETY_MS = 18000;
+const LOADING_MS = 300;
+// Hard cap on the whole intro: whatever phase is showing fades out at this
+// point. Keeps the branded flourish without gating LCP/CLS on mobile
+// (measured 7.3s LCP / 0.466 CLS with the previous ~8-10s sequence).
+const MAX_INTRO_MS = 1500;
 
 function sleep(ms: number) {
   return new Promise<void>((resolve) => {
@@ -28,38 +31,38 @@ export function runIntroSequence(callbacks: SequenceCallbacks) {
   let cancelled = false;
 
   const run = async () => {
-    await sleep(400);
+    await sleep(150);
     if (cancelled) return;
     callbacks.onPhase("cursor-in");
 
-    await sleep(500);
+    await sleep(250);
     if (cancelled) return;
     callbacks.onPhase("cursor-move");
 
-    await sleep(700);
+    await sleep(300);
     if (cancelled) return;
     callbacks.onPhase("click");
 
-    await sleep(200);
+    await sleep(150);
     if (cancelled) return;
     callbacks.onPhase("expand");
     callbacks.onExpand();
     callbacks.onBackgroundDark();
 
-    await sleep(850);
+    await sleep(350);
     if (cancelled) return;
     callbacks.onPhase("code");
   };
 
-  const safetyTimer = window.setTimeout(() => {
+  const capTimer = window.setTimeout(() => {
     if (!cancelled) callbacks.onComplete();
-  }, SAFETY_MS);
+  }, MAX_INTRO_MS);
 
   run();
 
   return () => {
     cancelled = true;
-    window.clearTimeout(safetyTimer);
+    window.clearTimeout(capTimer);
   };
 }
 

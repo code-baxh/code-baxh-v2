@@ -10,7 +10,6 @@ import {
   FounderSection,
   FaqSection,
 } from "./sections/marketing";
-import { InteractiveTestimonials } from "./sections/interactive-testimonials";
 import { HomeStackedSections } from "./sections/home/HomeStackedSections";
 
 const HOME_FAQS = [
@@ -76,7 +75,6 @@ export default function Home() {
         {/* Process overview */}
         <ProcessSteps />
         <TechStackStrip />
-        <InteractiveTestimonials />
         <FounderSection />
 
         <FaqSection faqs={HOME_FAQS} title="Common questions" />
