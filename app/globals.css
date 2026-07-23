@@ -288,13 +288,19 @@
   }
 }
 
-/* ── Reveal group (staggered scroll-in, one-shot) ── */
+/* ── Reveal group (staggered scroll-in, one-shot) ──
+   Items are VISIBLE by default: the server HTML must never hide content
+   (pre-hydration opacity-0 gated article LCP at ~8s on throttled mobile).
+   RevealGroup adds --pending after hydration only for below-viewport groups. */
 .reveal-item {
-  opacity: 0;
-  transform: translateY(0.85rem) scale(0.985);
   transition:
     opacity 0.75s var(--ease-out-expo),
     transform 0.75s var(--ease-out-expo);
+}
+
+.reveal-group--pending .reveal-item {
+  opacity: 0;
+  transform: translateY(0.85rem) scale(0.985);
 }
 
 .reveal-group--visible .reveal-item {

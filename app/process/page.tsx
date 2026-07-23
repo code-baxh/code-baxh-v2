@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "../lib/metadata";
 import { Compass, PenTool, RefreshCw, Rocket, Check } from "lucide-react";
 import { CtaSection } from "../sections/cta";
 import { FooterSection } from "../sections/footer";
@@ -14,6 +15,11 @@ export const metadata: Metadata = {
   description:
     "How CodeBaxh runs engagements: discovery, design & architecture, build in short loops, then deploy & support — with weekly demos and async updates.",
   alternates: { canonical: "/process" },
+  openGraph: pageOpenGraph({
+    url: "/process",
+    title: "Our Process — From Discovery to Launch",
+    description: "How CodeBaxh runs engagements: discovery, design & architecture, build in short loops, then deploy & support — with weekly demos and async updates.",
+  }),
 };
 
 /**

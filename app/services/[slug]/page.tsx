@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "../../lib/metadata";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Check } from "lucide-react";
@@ -21,6 +22,7 @@ import {
 } from "../../lib/schema";
 import { SERVICES, getService } from "../../lib/services";
 import { getCaseStudy } from "../../lib/work";
+import { BLOG_POSTS } from "../../lib/blog";
 
 export function generateStaticParams() {
   return SERVICES.map((s) => ({ slug: s.slug }));
@@ -38,11 +40,11 @@ export async function generateMetadata({
     title: { absolute: service.metaTitle },
     description: service.metaDescription,
     alternates: { canonical: `/services/${service.slug}` },
-    openGraph: {
+    openGraph: pageOpenGraph({
       title: service.metaTitle,
       description: service.metaDescription,
       url: `/services/${service.slug}`,
-    },
+    }),
   };
 }
 
@@ -58,6 +60,14 @@ export default async function ServicePage({
   const caseStudy = service.caseStudySlug
     ? getCaseStudy(service.caseStudySlug)
     : undefined;
+
+  // Hub→spoke links: every post already links UP to its service page, but
+  // service pages linked DOWN to zero of their cluster posts (audit finding).
+  const relatedGuides = BLOG_POSTS.filter(
+    (p) => p.serviceSlug === service.slug,
+  )
+    .sort((a, b) => +new Date(b.datePublished) - +new Date(a.datePublished))
+    .slice(0, 3);
 
   const crumbs = [
     { name: "Home", path: "/" },
@@ -302,6 +312,38 @@ export default async function ServicePage({
             </p>
           </div>
         </section>
+
+        {/* Related guides — hub→spoke internal links into this service's cluster */}
+        {relatedGuides.length > 0 && (
+          <section className="theme-paper border-t border-border bg-surface py-16 md:py-24">
+            <div className="mx-auto max-w-5xl px-5 sm:px-8">
+              <SectionHeading eyebrow="From the blog" title="Related guides" />
+              <div className="mt-10 grid gap-4 md:grid-cols-3">
+                {relatedGuides.map((post) => (
+                  <Reveal key={post.slug} className="h-full">
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      className="flex h-full flex-col rounded-2xl border border-border bg-surface-elevated p-6 transition-colors hover:border-accent/40"
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-text-muted">
+                        {post.category}
+                      </p>
+                      <h3 className="mt-3 text-base font-semibold leading-snug text-text-primary">
+                        {post.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+                        {post.excerpt}
+                      </p>
+                      <span className="mt-auto pt-4 text-xs text-text-muted">
+                        {post.readingTime}
+                      </span>
+                    </Link>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* FAQPage schema already emitted in this page's @graph — don't double-emit */}
         <FaqSection

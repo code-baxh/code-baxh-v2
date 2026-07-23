@@ -1,7 +1,7 @@
 "use client";
 
 import type { ElementType, ReactNode } from "react";
-import { useInView } from "./useInView";
+import { useScrollReveal } from "./useInView";
 
 type RevealGroupProps = {
   as?: ElementType;
@@ -11,6 +11,11 @@ type RevealGroupProps = {
   threshold?: number;
 };
 
+/**
+ * Staggered scroll-in for a group of RevealItems. Items are visible in the
+ * server HTML; the group only hides items ("--pending") after hydration when
+ * it is still below the viewport (see useScrollReveal — LCP-critical).
+ */
 export function RevealGroup({
   as: Component = "div",
   children,
@@ -18,13 +23,19 @@ export function RevealGroup({
   id,
   threshold = 0.12,
 }: RevealGroupProps) {
-  const { ref, inView } = useInView<HTMLElement>(threshold);
+  const { ref, phase } = useScrollReveal<HTMLElement>(threshold);
+  const phaseClass =
+    phase === "hidden"
+      ? "reveal-group--pending"
+      : phase === "revealed"
+        ? "reveal-group--visible"
+        : "";
 
   return (
     <Component
       ref={ref}
       id={id}
-      className={["reveal-group", inView ? "reveal-group--visible" : "", className]
+      className={["reveal-group", phaseClass, className]
         .filter(Boolean)
         .join(" ")}
     >

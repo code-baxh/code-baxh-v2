@@ -4,56 +4,45 @@ import { SERVICES } from "./lib/services";
 import { CASE_STUDIES } from "./lib/work";
 import { BLOG_POSTS } from "./lib/blog";
 
+/**
+ * No changeFrequency/priority: Google ignores both fields, they just add
+ * noise. lastModified is the only hint crawlers act on — stable constant for
+ * evergreen pages (see CONTENT_LAST_UPDATED), real dates for blog posts.
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
-  // Stable across builds (see CONTENT_LAST_UPDATED); blog posts use their own
-  // publish dates below so real content freshness is still signalled.
   const lastModified = CONTENT_LAST_UPDATED;
 
-  const staticRoutes: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }[] = [
-    { path: "", priority: 1, changeFrequency: "weekly" },
-    { path: "/services", priority: 0.9, changeFrequency: "monthly" },
-    { path: "/work", priority: 0.9, changeFrequency: "monthly" },
-    { path: "/about", priority: 0.7, changeFrequency: "monthly" },
-    { path: "/process", priority: 0.6, changeFrequency: "yearly" },
-    { path: "/engagement", priority: 0.7, changeFrequency: "monthly" },
-    { path: "/tech-stack", priority: 0.5, changeFrequency: "yearly" },
-    { path: "/blog", priority: 0.8, changeFrequency: "weekly" },
-    { path: "/contact", priority: 0.8, changeFrequency: "yearly" },
-    { path: "/policy", priority: 0.2, changeFrequency: "yearly" },
-    { path: "/tos", priority: 0.2, changeFrequency: "yearly" },
+  const staticPaths = [
+    "",
+    "/services",
+    "/work",
+    "/about",
+    "/process",
+    "/engagement",
+    "/tech-stack",
+    "/blog",
+    "/contact",
+    "/policy",
+    "/tos",
   ];
 
-  const entries: MetadataRoute.Sitemap = staticRoutes.map((r) => ({
-    url: `${SITE_URL}${r.path}`,
+  const entries: MetadataRoute.Sitemap = staticPaths.map((path) => ({
+    url: `${SITE_URL}${path}`,
     lastModified,
-    changeFrequency: r.changeFrequency,
-    priority: r.priority,
   }));
 
   for (const s of SERVICES) {
-    entries.push({
-      url: `${SITE_URL}/services/${s.slug}`,
-      lastModified,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    });
+    entries.push({ url: `${SITE_URL}/services/${s.slug}`, lastModified });
   }
 
   for (const c of CASE_STUDIES) {
-    entries.push({
-      url: `${SITE_URL}/work/${c.slug}`,
-      lastModified,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    });
+    entries.push({ url: `${SITE_URL}/work/${c.slug}`, lastModified });
   }
 
   for (const p of BLOG_POSTS) {
     entries.push({
       url: `${SITE_URL}/blog/${p.slug}`,
       lastModified: new Date(p.dateModified ?? p.datePublished),
-      changeFrequency: "monthly",
-      priority: 0.6,
     });
   }
 

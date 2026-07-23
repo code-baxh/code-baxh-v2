@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "../lib/metadata";
 import { CtaSection } from "../sections/cta";
 import { FooterSection } from "../sections/footer";
 import { HeaderSection } from "../sections/header";
@@ -19,6 +20,11 @@ export const metadata: Metadata = {
   description:
     "CodeBaxh's services: SaaS development, AI integration, Next.js & web development, React Native apps, cloud/DevOps, Stripe integration, and more. Book a free call.",
   alternates: { canonical: "/services" },
+  openGraph: pageOpenGraph({
+    url: "/services",
+    title: "Software Development Services — Web, SaaS & AI",
+    description: "CodeBaxh's services: SaaS development, AI integration, Next.js & web development, React Native apps, cloud/DevOps, Stripe integration, and more. Book a free call.",
+  }),
 };
 
 const SERVICES_FAQS = [

@@ -10,13 +10,16 @@ const WEBSITE_ID = `${SITE_URL}/#website`;
 const FOUNDER_ID = `${SITE_URL}/#founder`;
 
 /**
- * Lead with Organization (most robust / future-proof entity type per 2025-26
- * guidance), layering ProfessionalService for the "real service business" signal.
+ * Organization only — NOT ProfessionalService. That type is a LocalBusiness
+ * subtype meant for physical/storefront businesses; pairing it with
+ * areaServed: "Worldwide", no street address, and no local intent sends
+ * mixed signals. priceRange was dropped for the same reason (a retail
+ * convention that doesn't map to custom-quoted B2B work).
  */
 export function organizationSchema() {
   return {
     "@context": "https://schema.org",
-    "@type": ["Organization", "ProfessionalService"],
+    "@type": "Organization",
     "@id": ORG_ID,
     name: SITE.name,
     legalName: SITE.legalName,
@@ -34,7 +37,6 @@ export function organizationSchema() {
       areaServed: "Worldwide",
       availableLanguage: ["English"],
     },
-    priceRange: "$$",
     areaServed: "Worldwide",
     address: {
       "@type": "PostalAddress",

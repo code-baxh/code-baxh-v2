@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "../lib/metadata";
 import { CtaSection } from "../sections/cta";
 import { FooterSection } from "../sections/footer";
 import { HeaderSection } from "../sections/header";
@@ -12,6 +13,11 @@ export const metadata: Metadata = {
   description:
     "The tools CodeBaxh builds with: Next.js, React, React Native, TypeScript, Node.js, NestJS, PostgreSQL, AWS, Stripe, OpenAI, and Anthropic.",
   alternates: { canonical: "/tech-stack" },
+  openGraph: pageOpenGraph({
+    url: "/tech-stack",
+    title: "Our Tech Stack — Next.js, Node.js, AWS, AI",
+    description: "The tools CodeBaxh builds with: Next.js, React, React Native, TypeScript, Node.js, NestJS, PostgreSQL, AWS, Stripe, OpenAI, and Anthropic.",
+  }),
 };
 
 const STACK_GROUPS = [

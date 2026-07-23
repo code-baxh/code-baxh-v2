@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "../lib/metadata";
 import { Check } from "lucide-react";
 import { CtaSection } from "../sections/cta";
 import { FooterSection } from "../sections/footer";
@@ -13,6 +14,11 @@ export const metadata: Metadata = {
   description:
     "Work with CodeBaxh your way: fixed-scope projects, monthly retainers, or staff augmentation. Transparent estimates after a free discovery call.",
   alternates: { canonical: "/engagement" },
+  openGraph: pageOpenGraph({
+    url: "/engagement",
+    title: "Engagement Models & Pricing",
+    description: "Work with CodeBaxh your way: fixed-scope projects, monthly retainers, or staff augmentation. Transparent estimates after a free discovery call.",
+  }),
 };
 
 const MODELS = [

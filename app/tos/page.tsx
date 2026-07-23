@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "../lib/metadata";
 import { CtaSection } from "../sections/cta";
 import { FooterSection } from "../sections/footer";
 import { HeaderSection } from "../sections/header";
@@ -10,6 +11,11 @@ export const metadata: Metadata = {
   description:
     "Terms and conditions for using the CodeBaxh website and services.",
   alternates: { canonical: "/tos" },
+  openGraph: pageOpenGraph({
+    url: "/tos",
+    title: "Terms of Service",
+    description: "Terms and conditions for using the CodeBaxh website and services.",
+  }),
 };
 
 export default function TermsPage() {
