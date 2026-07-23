@@ -1,0 +1,16 @@
+# Security headers for all routes (Netlify serves prerendered pages from the
+# CDN, so next.config headers() would not reliably cover them).
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+    # includeSubDomains added after verifying no http-only subdomains exist.
+    # Add `preload` + submit to hstspreload.org once you're sure — it's a
+    # hard commitment that is slow to undo.
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    # Report-Only first: watch the browser console / reports for violations,
+    # then move to Content-Security-Policy once it's proven quiet.
+    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://www.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"

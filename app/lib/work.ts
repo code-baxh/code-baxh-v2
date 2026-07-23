@@ -42,7 +42,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     category: "PropTech SaaS",
     metaTitle: "Zoneomics PropTech SaaS Case Study | GIS & Stripe | CodeBaxh",
     metaDescription:
-      "How CodeBaxh built Zoneomics — a GIS-powered real-estate zoning SaaS with Stripe billing and map-based search — cutting property research from days to minutes at 10,000+ users.",
+      "How CodeBaxh built Zoneomics — a GIS zoning SaaS with Stripe billing and map search that cut property research from days to minutes at 10,000+ users.",
     summary:
       "A GIS-based real-estate zoning platform that turned days of manual appraisal research into instant, map-based reports — scaled to 10,000+ users.",
     overview: [

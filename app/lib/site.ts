@@ -32,6 +32,11 @@ export const SITE = {
   tagline: "Web, Mobile, SaaS & AI development agency",
   description:
     "CodeBaxh is a software development agency. Our team delivers web and mobile apps, multi-tenant SaaS, and AI products with Next.js, React, React Native, Node.js, Python, and more — for startups and companies worldwide.",
+  // ≤155 chars — used for <meta name="description"> and og:description on the
+  // homepage. The longer `description` above stays for schema/llms.txt, where
+  // there is no SERP truncation.
+  metaDescription:
+    "CodeBaxh is a software development agency building web and mobile apps, multi-tenant SaaS, and AI products with Next.js, React, and Node.js — worldwide.",
   email: "code.baxh@gmail.com",
   phone: "+923435527709",
   phoneDisplay: "+92 343 552 7709",

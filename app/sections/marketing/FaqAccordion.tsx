@@ -16,6 +16,10 @@ export function FaqAccordion({
 
         return (
           <div key={faq.q} className="py-1">
+            {/* Real <h3> so the question exists in the heading outline (for
+                crawlers/AI extraction), not only in the FAQPage JSON-LD. The
+                heading wraps the button — the valid nesting for this. */}
+            <h3 className="m-0 text-base font-normal">
             <button
               type="button"
               aria-expanded={isOpen}
@@ -38,6 +42,7 @@ export function FaqAccordion({
                 +
               </span>
             </button>
+            </h3>
 
             <div
               className="grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"

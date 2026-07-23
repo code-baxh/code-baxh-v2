@@ -1,7 +1,7 @@
 "use client";
 
 import type { ElementType, ReactNode } from "react";
-import { useInView } from "./useInView";
+import { useScrollReveal } from "./useInView";
 
 type RevealVariant = "fade-up" | "pop-in";
 
@@ -15,6 +15,11 @@ type RevealProps = {
   variant?: RevealVariant;
 };
 
+/**
+ * Scroll-in animation wrapper. Server HTML renders content fully visible;
+ * only elements below the viewport at hydration get hidden and animated in
+ * (see useScrollReveal for why — this is LCP-critical).
+ */
 export function Reveal({
   as: Component = "div",
   children,
@@ -24,13 +29,15 @@ export function Reveal({
   threshold = 0.16,
   variant = "fade-up",
 }: RevealProps) {
-  const { ref, inView } = useInView<HTMLElement>(threshold);
+  const { ref, phase } = useScrollReveal<HTMLElement>(threshold);
   const delayClass = delay > 0 ? `delay-${delay}` : "";
   const hiddenClass =
     variant === "pop-in"
       ? "translate-y-4 scale-[0.985] opacity-0"
       : "translate-y-5 opacity-0";
   const visibleClass = variant === "pop-in" ? "animate-pop-in" : "animate-fade-up";
+  const phaseClass =
+    phase === "hidden" ? hiddenClass : phase === "revealed" ? visibleClass : "";
 
   return (
     <Component
@@ -38,8 +45,8 @@ export function Reveal({
       id={id}
       className={[
         "reveal-motion",
-        inView ? visibleClass : hiddenClass,
-        delayClass,
+        phaseClass,
+        phase === "static" ? "" : delayClass,
         className,
       ]
         .filter(Boolean)

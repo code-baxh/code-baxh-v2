@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "../../lib/metadata";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
@@ -28,12 +29,12 @@ export async function generateMetadata({
     title: { absolute: study.metaTitle },
     description: study.metaDescription,
     alternates: { canonical: `/work/${study.slug}` },
-    openGraph: {
+    openGraph: pageOpenGraph({
       type: "article",
       title: study.metaTitle,
       description: study.metaDescription,
       url: `/work/${study.slug}`,
-    },
+    }),
   };
 }
 

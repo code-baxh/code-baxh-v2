@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "../lib/metadata";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { CtaSection } from "../sections/cta";
@@ -15,6 +16,11 @@ export const metadata: Metadata = {
   description:
     "First-hand engineering guides from CodeBaxh on building SaaS, AI/RAG systems, and Next.js apps — plus practical advice for founders.",
   alternates: { canonical: "/blog" },
+  openGraph: pageOpenGraph({
+    url: "/blog",
+    title: "Blog — SaaS, AI & Next.js Engineering",
+    description: "First-hand engineering guides from CodeBaxh on building SaaS, AI/RAG systems, and Next.js apps — plus practical advice for founders.",
+  }),
 };
 
 function formatDate(iso: string) {

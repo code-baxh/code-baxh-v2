@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "../../lib/metadata";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
@@ -29,13 +30,14 @@ export async function generateMetadata({
     title: post.metaTitle,
     description: post.metaDescription,
     alternates: { canonical: `/blog/${post.slug}` },
-    openGraph: {
+    openGraph: pageOpenGraph({
       type: "article",
       title: post.metaTitle,
       description: post.metaDescription,
       url: `/blog/${post.slug}`,
       publishedTime: post.datePublished,
-    },
+      modifiedTime: post.dateModified ?? post.datePublished,
+    }),
   };
 }
 

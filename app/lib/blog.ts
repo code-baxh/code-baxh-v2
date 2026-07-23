@@ -1008,7 +1008,7 @@ const RAW_BLOG_POSTS: BlogPost[] = [
   {
     slug: "headless-cms-nextjs-comparison",
     title: "Headless CMS for Next.js: Strapi vs Sanity vs Contentful",
-    metaTitle: "Best Headless CMS for Next.js: Strapi vs Sanity vs Contentful",
+    metaTitle: "Headless CMS for Next.js: Strapi vs Sanity vs Contentful",
     metaDescription:
       "Strapi vs Sanity vs Contentful for Next.js: open-source vs managed, content modeling, and which headless CMS to choose for your site.",
     excerpt:
@@ -1016,7 +1016,7 @@ const RAW_BLOG_POSTS: BlogPost[] = [
     datePublished: "2026-04-16",
     readingTime: "7 min read",
     category: "Web development",
-    serviceSlug: "web-development",
+    serviceSlug: "nextjs-development",
     sections: [
       {
         paragraphs: [

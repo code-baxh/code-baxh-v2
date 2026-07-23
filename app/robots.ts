@@ -26,7 +26,8 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: "*", allow: "/" },
       ...aiCrawlers.map((ua) => ({ userAgent: ua, allow: "/" })),
     ],
+    // No `host` directive: it's a legacy Yandex-only extension that Google
+    // and Bing ignore; the canonical host is enforced by redirects + canonicals.
     sitemap: `${SITE_URL}/sitemap.xml`,
-    host: SITE_URL,
   };
 }

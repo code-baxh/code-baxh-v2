@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "../lib/metadata";
 import { CtaSection } from "../sections/cta";
 import { FooterSection } from "../sections/footer";
 import { HeaderSection } from "../sections/header";
@@ -16,8 +17,13 @@ import { SITE } from "../lib/site";
 export const metadata: Metadata = {
   title: "About Us — Software Development Agency",
   description:
-    "CodeBaxh is a software development agency led by Bilal Khursheed. Our team delivers web and mobile apps, SaaS, and AI products for startups and companies worldwide. Upwork Top Rated Plus.",
+    "CodeBaxh is a software development agency led by Bilal Khursheed — web and mobile apps, SaaS, and AI products for clients worldwide. Upwork Top Rated Plus.",
   alternates: { canonical: "/about" },
+  openGraph: pageOpenGraph({
+    url: "/about",
+    title: "About Us — Software Development Agency",
+    description: "CodeBaxh is a software development agency led by Bilal Khursheed — web and mobile apps, SaaS, and AI products for clients worldwide. Upwork Top Rated Plus.",
+  }),
 };
 
 const VALUES = [

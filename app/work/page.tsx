@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "../lib/metadata";
 import { CtaSection } from "../sections/cta";
 import { FooterSection } from "../sections/footer";
 import { HeaderSection } from "../sections/header";
@@ -13,6 +14,11 @@ export const metadata: Metadata = {
   description:
     "Case studies from CodeBaxh: a GIS PropTech SaaS scaled to 10,000+ users, a legal-contract RAG pipeline, an omnichannel messaging platform, FinTech, mobile, and more production web, SaaS, and AI work.",
   alternates: { canonical: "/work" },
+  openGraph: pageOpenGraph({
+    url: "/work",
+    title: "Our Work — SaaS, AI & Web Case Studies",
+    description: "Case studies from CodeBaxh: a GIS PropTech SaaS scaled to 10,000+ users, a legal-contract RAG pipeline, an omnichannel messaging platform, FinTech, mobile, and more production web, SaaS, and AI work.",
+  }),
 };
 
 export default function WorkPage() {

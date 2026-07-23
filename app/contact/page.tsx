@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "../lib/metadata";
 import { Mail, MapPin, Phone, Clock } from "lucide-react";
 import { CtaSection } from "../sections/cta";
 import { FooterSection } from "../sections/footer";
@@ -14,6 +15,11 @@ export const metadata: Metadata = {
   description:
     "Book a free, no-obligation discovery call with CodeBaxh, or reach us by email. We build web, SaaS, and AI products for startups and companies worldwide.",
   alternates: { canonical: "/contact" },
+  openGraph: pageOpenGraph({
+    url: "/contact",
+    title: "Contact — Book a Free Discovery Call",
+    description: "Book a free, no-obligation discovery call with CodeBaxh, or reach us by email. We build web, SaaS, and AI products for startups and companies worldwide.",
+  }),
 };
 
 export default function ContactPage() {
