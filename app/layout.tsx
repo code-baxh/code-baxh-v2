@@ -94,12 +94,14 @@ export default function RootLayout({
         />
         <Providers>{children}</Providers>
 
-        {/* Google Analytics (gtag.js) */}
+        {/* Google Analytics (gtag.js) — lazyOnload keeps the 42%-unused GTM
+            bundle out of the hydration window (mobile INP/TBT risk); pageview
+            still fires once the page is idle. */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-0ZK9N00Q90"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());

@@ -26,6 +26,7 @@ export function FooterLogo({ centered = false }: FooterLogoProps) {
           src={LOGO_SRC}
           alt="CodeBaxh"
           fill
+          unoptimized
           sizes="(max-width: 640px) 160px, 176px"
           className={`object-contain ${centered ? "object-center" : "object-left"}`}
         />

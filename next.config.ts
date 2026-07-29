@@ -34,6 +34,13 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["*.ngrok-free.app", "*.ngrok.app", "*.ngrok.io"],
   // Don't advertise the stack in response headers.
   poweredByHeader: false,
+  experimental: {
+    // Inline the (Tailwind, atomic) CSS as a <style> tag instead of a
+    // render-blocking <link> — removes a full RTT before first paint on
+    // slow connections. Trade-off: returning visitors lose stylesheet
+    // caching; first-visit LCP matters more for this site.
+    inlineCss: true,
+  },
   async headers() {
     return [
       {

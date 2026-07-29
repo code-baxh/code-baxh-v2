@@ -24,6 +24,7 @@ export function HeaderLogo({ introReady }: HeaderLogoProps) {
           alt="CodeBaxh"
           fill
           priority
+          unoptimized
           sizes="(max-width: 640px) 26vw, 192px"
           className="object-contain object-left"
         />
