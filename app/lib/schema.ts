@@ -81,7 +81,7 @@ export function personSchema() {
     url: FOUNDER.url,
     description: FOUNDER.bio,
     worksFor: { "@id": ORG_ID },
-    sameAs: [FOUNDER.url].filter(Boolean),
+    sameAs: FOUNDER.sameAs,
   } as const;
 }
 
