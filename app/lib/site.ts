@@ -78,7 +78,7 @@ export const FOUNDER = {
  */
 export const SOCIALS = {
   linkedin: "https://www.linkedin.com/company/code-baxh/",
-  upwork: "", // company Upwork profile URL if one is created (founder's freelancer profile lives on the Person entity)
+  upwork: "https://www.upwork.com/agencies/1746999947359457280/",
   facebook: "", // TODO: Facebook page URL
   instagram: "", // TODO: Instagram profile URL
   github: "https://github.com/code-baxh",
