@@ -2,8 +2,9 @@ import { SITE } from "../../lib/site";
 import { PRIMARY_CTA } from "../../lib/site";
 import { FOOTER_NAV, LEGAL_LINKS } from "../../lib/nav";
 
-export const LOGO_SRC = "/logo/complete-logo.png";
-export const LOGO_COMPACT_SRC = "/logo/shortLogo.png";
+// Pre-sized assets — see app/sections/header/constants.ts for why.
+export const LOGO_SRC = "/logo/complete-logo-header.png";
+export const LOGO_COMPACT_SRC = "/logo/shortLogo-small.png";
 
 export const COMPANY = {
   name: SITE.name,
