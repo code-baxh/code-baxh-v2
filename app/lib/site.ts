@@ -53,6 +53,17 @@ export const FOUNDER = {
   name: "Bilal Khursheed",
   role: "Founder & Principal Engineer",
   url: "https://bilalkhursheed.com",
+  /**
+   * Person-entity sameAs — the disambiguation signal search/AI engines use
+   * to tell THIS Bilal Khursheed apart from same-named people (Google's
+   * entity graph was mixing in an unrelated namesake's LinkedIn content).
+   */
+  sameAs: [
+    "https://www.linkedin.com/in/bilal-khursheed/",
+    "https://github.com/Bilal-Khursheed",
+    "https://www.upwork.com/freelancers/bilalkhursheedwebdeveloper",
+    "https://bilalkhursheed.com",
+  ],
   upworkBadge: "Top Rated Plus",
   // Honest framing: Zoneomics is where Bilal works as a full-stack developer
   // (employment), not a CodeBaxh client deliverable — kept as a light credential
@@ -67,10 +78,10 @@ export const FOUNDER = {
  */
 export const SOCIALS = {
   linkedin: "https://www.linkedin.com/company/code-baxh/",
-  upwork: "", // TODO: company/freelancer Upwork profile URL
+  upwork: "", // company Upwork profile URL if one is created (founder's freelancer profile lives on the Person entity)
   facebook: "", // TODO: Facebook page URL
   instagram: "", // TODO: Instagram profile URL
-  github: "", // optional: GitHub org URL
+  github: "https://github.com/code-baxh",
   x: "", // TODO: X/Twitter handle e.g. "@codebaxh" — powers the Twitter card
 } as const;
 
