@@ -53,6 +53,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      // Legacy URL from the domain's previous (pre-2026) site — still being
+      // crawled per GSC. 301 to the homepage instead of 404 to recover any
+      // external-link equity it accumulated.
+      { source: "/home", destination: "/", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;
