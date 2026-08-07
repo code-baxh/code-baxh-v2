@@ -22,10 +22,14 @@ const securityHeaders = [
   },
   // Report-Only first: watch the browser console for violations, then move to
   // Content-Security-Policy once it's proven quiet.
+  // GA4 endpoints per observed traffic + Google's CSP guidance: gtag also
+  // beacons to www.google.com/g/collect (Google signals) and regional
+  // *.analytics.google.com hosts — missing those would break analytics the
+  // day this policy is enforced.
   {
     key: "Content-Security-Policy-Report-Only",
     value:
-      "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://www.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+      "default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.googletagmanager.com https://*.google-analytics.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://www.google.com https://*.g.doubleclick.net; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
   },
 ];
 
@@ -47,6 +51,14 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         headers: securityHeaders,
       },
+    ];
+  },
+  async redirects() {
+    return [
+      // Legacy URL from the domain's previous (pre-2026) site — still being
+      // crawled per GSC. 301 to the homepage instead of 404 to recover any
+      // external-link equity it accumulated.
+      { source: "/home", destination: "/", permanent: true },
     ];
   },
 };
