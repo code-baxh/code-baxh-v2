@@ -2287,6 +2287,292 @@ const RAW_BLOG_POSTS: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: "how-long-to-build-ai-chatbot",
+    title: "How long does it take to build an AI chatbot?",
+    metaTitle: "How Long Does It Take to Build an AI Chatbot? (2026)",
+    metaDescription:
+      "Realistic AI chatbot timelines: 1–2 weeks for a prototype, 4–6 weeks for a production RAG assistant, 8–10+ for multi-system automation — and what changes them.",
+    excerpt:
+      "A scoped prototype takes a week or two. A production assistant grounded in your data takes four to six. Here's the week-by-week breakdown, what slows builds down, and how to compress the timeline.",
+    datePublished: "2026-08-08",
+    readingTime: "8 min read",
+    category: "AI chatbots",
+    serviceSlug: "ai-chatbot-development",
+    sections: [
+      {
+        paragraphs: [
+          "A production AI chatbot grounded in your own data typically takes **4–6 weeks** to ship. A scoped prototype you can click through takes **1–2 weeks**. A multi-system assistant that takes actions across your tools — with human handoff, guardrails, and evaluation — runs **8–10+ weeks**. The spread comes almost entirely from three things: the state of your data, how many systems the bot must touch, and how much proof you need that it won't say something wrong to a customer.",
+          "This is the timeline companion to our cost breakdown — if you're budgeting rather than scheduling, read [how much an AI chatbot costs](/blog/cost-to-build-ai-chatbot) alongside this.",
+        ],
+      },
+      {
+        heading: "What are the realistic timeline tiers?",
+        table: {
+          headers: ["Tier", "Timeline", "What you get", "Right for"],
+          rows: [
+            [
+              "Scoped prototype",
+              "1–2 weeks",
+              "A working chat UI over one model with a slice of your real docs; enough to test answer quality on your actual questions",
+              "Validating the idea before committing budget",
+            ],
+            [
+              "Production RAG assistant",
+              "4–6 weeks",
+              "Retrieval over your full knowledge base with citations, brand-safe prompting, analytics, one channel (web widget or Slack), and an evaluation set",
+              "Customer support, internal Q&A, sales assist",
+            ],
+            [
+              "Multi-system agent",
+              "8–10+ weeks",
+              "Everything above plus actions (create tickets, update CRM, trigger workflows), human handoff, role-based access, and audit logging",
+              "Automation where the bot does work, not just answers",
+            ],
+          ],
+          caption: "Chatbot delivery timelines we quote, assuming API access and source content exist on day one.",
+        },
+      },
+      {
+        heading: "Where do the weeks actually go?",
+        paragraphs: [
+          "Here's the week-by-week shape of a typical 5-week production build — the middle tier above. The model integration is the fast part; the work that makes it trustworthy is what takes time.",
+        ],
+        bullets: [
+          "**Week 1 — discovery and data audit.** Define the questions the bot must answer, the ones it must refuse, and where the truth lives (help docs, PDFs, Notion, tickets). Messy or contradictory source content found here is the single most common cause of delay.",
+          "**Week 2 — retrieval pipeline.** Ingest, chunk, and index the content; wire retrieval-augmented generation (RAG) so answers come from your data with citations rather than the model's imagination. Our [RAG pipeline guide](/blog/building-a-rag-pipeline) covers this architecture in detail.",
+          "**Week 3 — answer quality.** Build an evaluation set of real questions with known-correct answers, then iterate on chunking, retrieval, and prompting until accuracy holds. This is the step teams skip when a chatbot embarrasses them later.",
+          "**Week 4 — integration and guardrails.** Embed the widget or connect the channel, add refusal behavior for out-of-scope and sensitive topics, rate limiting, and abuse handling; wire analytics so you can see what users actually ask.",
+          "**Week 5 — hardening and launch.** Load testing, fallback behavior when the model API degrades, human-handoff path, and a soft launch to a subset of users before full rollout.",
+        ],
+      },
+      {
+        heading: "What makes a chatbot build take longer?",
+        bullets: [
+          "**Source content that disagrees with itself.** If your pricing page and your help docs give different answers, the bot will too. Cleanup adds 1–2 weeks and is worth every day.",
+          "**Waiting on API access.** Every system the bot reads from or writes to needs credentials, and enterprise approval loops for those regularly cost more calendar time than the engineering.",
+          "**Compliance review.** Legal or security sign-off for what the bot may say and log — common in fintech and health — can add weeks that have nothing to do with code.",
+          "**Fine-tuning when you don't need it.** Most business chatbots need retrieval, not fine-tuning; training custom models adds weeks and rarely improves grounded accuracy. Our [prompting vs fine-tuning vs RAG comparison](/blog/prompt-engineering-vs-fine-tuning-vs-rag) explains when each applies.",
+        ],
+      },
+      {
+        heading: "How do you compress the timeline?",
+        paragraphs: [
+          "The builds that ship fastest share three decisions: they start with **one channel** (a web widget, not web + WhatsApp + Slack at once), **one job** (support Q&A, not support plus sales plus onboarding), and **existing content** (docs that already answer the questions, so week one isn't spent writing them). Widening scope later is cheap; starting wide is how six weeks becomes twelve.",
+          "Model choice barely moves the schedule — swapping between [OpenAI](https://openai.com/api/pricing/) and [Anthropic](https://www.anthropic.com/pricing) models is a configuration change in a well-built pipeline, so you can defer that decision without cost. Pick per task later; see our [OpenAI vs Claude comparison](/blog/openai-vs-anthropic-claude) for how we choose.",
+        ],
+        callout: {
+          title: "From our own builds",
+          body: "We shipped a [conversational AI business consultant](/work/ai-business-consultant-chatbot) and RAG systems that analyze 500–1,000-page legal contracts ([case study](/work/legal-contract-ai)). The pattern held both times: the model was never the bottleneck — data quality and integration approvals were.",
+        },
+      },
+      {
+        heading: "When should you not build a custom chatbot?",
+        paragraphs: [
+          "If you handle under a few hundred support conversations a month, an off-the-shelf tool or a well-organized FAQ page usually beats a custom build on cost — revisit custom when volume, integration needs, or answer quality outgrow it. An honest agency should tell you this in the first call; it's one of the questions in our [guide to vetting development agencies](/blog/questions-to-ask-software-development-agency).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "How fast can we have something to try?",
+        a: "A clickable prototype over a slice of your real content takes one to two weeks. It won't be production-ready, but it answers the key question — is the answer quality good enough on your data — before you commit a full budget.",
+      },
+      {
+        q: "Can the chatbot use our internal documents?",
+        a: "Yes — that's retrieval-augmented generation (RAG): the bot retrieves relevant passages from your docs and answers from them with citations, rather than from the model's general training. It's the default architecture for business chatbots.",
+      },
+      {
+        q: "Do we need to fine-tune a model?",
+        a: "Usually not. Fine-tuning helps with tone and format, not facts; retrieval handles facts. Most production business chatbots ship with a stock model, good retrieval, and careful prompting.",
+      },
+      {
+        q: "What does an AI chatbot cost to run after launch?",
+        a: "Ongoing costs are model API usage (typically modest at support-ticket volumes), hosting, and periodic content re-indexing. Budget for a monthly review of unanswered questions — that's what keeps quality improving.",
+      },
+    ],
+  },
+  {
+    slug: "questions-to-ask-software-development-agency",
+    title: "12 questions to ask before hiring a software development agency",
+    metaTitle: "12 Questions to Ask a Software Development Agency (2026)",
+    metaDescription:
+      "The 12 questions that separate agencies that ship from agencies that bill — what good answers sound like, and the red flags founders miss until it's too late.",
+    excerpt:
+      "Who actually writes the code? Who owns the IP? What happens when scope changes? The answers to twelve questions predict a project's outcome better than any portfolio page.",
+    datePublished: "2026-08-08",
+    readingTime: "9 min read",
+    category: "Decision guides",
+    serviceSlug: "mvp-development",
+    sections: [
+      {
+        paragraphs: [
+          "Before hiring a software development agency, ask who will actually write your code, how you'll see progress, who owns the work, and what happens after launch. The answers separate agencies that ship working products from agencies that bill hours — and you can get all twelve answered in a single discovery call.",
+          "We're an agency, so read this knowing where we stand: these are the questions we'd want our own clients to ask us and every competitor, because they reward the way good teams already work. If you're still deciding between an agency, a freelancer, or hiring in-house, start with [that comparison](/blog/agency-vs-freelancer-vs-in-house) first.",
+        ],
+      },
+      {
+        heading: "Team and process: questions 1–4",
+        bullets: [
+          "**1. Who will actually write my code?** Good answer: named engineers, with the person you're talking to close to the work. Red flag: a sales engineer closes the deal, then the project moves to a team you never met — quality and context both leak at that handoff.",
+          "**2. Who is my point of contact, and how many layers sit between me and the engineers?** Good answer: zero or one. Red flag: an account manager relaying messages to a project manager relaying to developers. Every layer adds delay and translation error.",
+          "**3. How will I see progress?** Good answer: a working build you can click, on a schedule — weekly demos are the healthy default. Red flag: status reports and slide decks instead of software. Documents can look on-track while the product isn't.",
+          "**4. What does a typical week look like?** Good answer: a concrete rhythm — planning, demo day, async updates you can read on your schedule. Vague answers here predict vague weeks later.",
+        ],
+      },
+      {
+        heading: "Technical: questions 5–8",
+        bullets: [
+          "**5. What stack would you use for my product, and why?** Good answer: a boring-in-a-good-way default (for us: Next.js, TypeScript, Node.js, PostgreSQL — see [our stack and why](/tech-stack)) with reasons tied to your product, hiring market, and hosting costs. Red flag: whatever's trendy, or a proprietary framework only they can maintain.",
+          "**6. How do you handle security and scaling?** Good answer: specifics — auth patterns, least-privilege data access, what they'd do before your first traffic spike. They should mention things you didn't ask about, like row-level security or rate limiting.",
+          "**7. How do you test, and what's your definition of done?** Good answer: automated tests on critical paths, staging environments, and 'done' meaning deployed and verified — not merely code-complete.",
+          "**8. Where does the code live from day one, and who owns it?** Good answer: a repository under **your** account, with IP assignment on payment written into the contract. Red flag: code in their repo 'for convenience' with handover 'at the end' — that's leverage, not convenience.",
+        ],
+      },
+      {
+        heading: "Commercial: questions 9–11",
+        bullets: [
+          "**9. How do you price, and what happens when scope changes?** Good answer: fixed milestones or a transparent retainer, with a written process for changes — new estimate, your approval, then work. Red flag: open-ended hourly with no cap and no definition of the deliverable. Our [engagement models](/engagement) page shows what transparent structuring looks like.",
+          "**10. What is explicitly not included?** Good answer: a clear list — app store submissions, third-party service fees, content, ongoing maintenance — before you sign. Surprises here are the most common source of budget conflict.",
+          "**11. What happens after launch?** Good answer: a maintenance option you can choose (not a lock-in you can't leave), documentation, and a clean handover path to your own team if you'd rather take it in-house.",
+        ],
+      },
+      {
+        heading: "Proof: question 12",
+        paragraphs: [
+          "**12. Show me a comparable product you shipped — and let me talk to that client.** A portfolio page is marketing; a reference call is evidence. Ask the past client three things: did it ship on schedule, what broke after launch and how fast was it fixed, and would they hire the team again. Verify what you can independently: [Clutch](https://clutch.co) reviews are attributable to real companies, and an [Upwork agency profile](https://www.upwork.com/agencies/1746999947359457280/) shows a work history with ratings the agency can't edit.",
+          "Any agency doing real work can point to something like a [production SaaS serving 10,000+ users](/work/zoneomics-proptech-saas) or an [MVP shipped in 11 weeks](/work/saas-mvp-11-weeks) — and should be comfortable putting you in front of the people who paid for it.",
+        ],
+      },
+      {
+        heading: "How should you run the evaluation?",
+        paragraphs: [
+          "Talk to two or three agencies, ask all twelve questions, and compare answers side by side. The pattern to watch isn't polish — it's specificity. Teams that ship answer with numbers, names, and examples; teams that bill answer with adjectives. Then start small: a discovery engagement or a tightly-scoped first milestone tells you more in three weeks than a proposal document ever will.",
+        ],
+        callout: {
+          title: "Our answers, for the record",
+          body: "Founder-led delivery with no account-manager layer, weekly demos of working software, code in your repo from day one with IP assignment on payment, milestone pricing after a free discovery call, and post-launch support you can opt into — or a documented handover if you'd rather own it. Details on [how we work](/process).",
+        },
+      },
+    ],
+    faqs: [
+      {
+        q: "How many agencies should I evaluate?",
+        a: "Two or three seriously. Fewer gives you no baseline for comparing answers; more turns evaluation into its own project. Ask each the same twelve questions so differences are visible.",
+      },
+      {
+        q: "What's the single biggest red flag?",
+        a: "Code kept in the agency's repository with handover promised 'at the end.' Combined with vague scope-change pricing, it gives the agency all the leverage in every future disagreement.",
+      },
+      {
+        q: "Should I pick the cheapest quote?",
+        a: "Compare what's included, not the number. A low quote that excludes testing, deployment, and post-launch fixes usually costs more by launch day. Ask each agency what's not in their price and re-compare.",
+      },
+      {
+        q: "How long should vetting take?",
+        a: "About one to two weeks: intro calls, the twelve questions, one reference call each, and a comparison of written proposals. If an agency pressures you to skip references or sign faster, treat that as data.",
+      },
+    ],
+  },
+  {
+    slug: "cost-of-custom-api-integration",
+    title: "How much does a custom API integration cost?",
+    metaTitle: "Custom API Integration Cost: Real Ranges & Drivers (2026)",
+    metaDescription:
+      "What custom API integrations really cost: low four figures for a simple one-way connection, four to five figures for bidirectional sync — and the six drivers.",
+    excerpt:
+      "A simple one-way integration is a four-figure, one-to-two-week job. Bidirectional sync with webhooks and error handling is a different animal. Here's what moves the number.",
+    datePublished: "2026-08-08",
+    readingTime: "8 min read",
+    category: "Backend",
+    serviceSlug: "api-backend-development",
+    sections: [
+      {
+        paragraphs: [
+          "A straightforward custom API integration — one external system, standard authentication, data flowing one direction — typically costs in the **low four figures** and ships in **one to two weeks**. Bidirectional sync with webhooks, retries, and error handling runs **four to five figures over 2–4 weeks**. Multi-system orchestration where several tools must stay consistent is a **five-figure, 4–8 week** project. The honest answer to 'how much' is always 'what happens when it fails?' — because production-grade failure handling, not the happy path, is where most of the budget goes.",
+        ],
+      },
+      {
+        heading: "What are the typical cost tiers?",
+        table: {
+          headers: ["Tier", "Scope", "Typical cost", "Timeline"],
+          rows: [
+            [
+              "Simple one-way",
+              "Read or write to one API on a schedule or trigger; standard OAuth/key auth; basic logging",
+              "Low four figures",
+              "1–2 weeks",
+            ],
+            [
+              "Bidirectional sync",
+              "Two systems staying consistent: webhooks, retries, conflict rules, idempotency, monitoring",
+              "Four to five figures",
+              "2–4 weeks",
+            ],
+            [
+              "Multi-system orchestration",
+              "3+ systems, a system of record, transformation layer, queueing, alerting, admin visibility",
+              "Five figures",
+              "4–8 weeks",
+            ],
+          ],
+          caption: "Ranges assume sandbox access and API documentation exist; we give fixed estimates after a discovery call.",
+        },
+      },
+      {
+        heading: "What actually drives the cost?",
+        bullets: [
+          "**Direction of data flow.** Reading from an API is cheap; keeping two systems mutually consistent is not. Bidirectional sync forces conflict resolution rules — which system wins when both changed the same record?",
+          "**Webhook reliability.** Providers deliver webhooks out of order, twice, or occasionally not at all. Production integrations need idempotency keys, replay handling, and reconciliation jobs — [Stripe's webhook best-practices docs](https://docs.stripe.com/webhooks) are a good picture of what robust handling involves.",
+          "**Auth complexity.** An API key is an afternoon; OAuth with refresh tokens, per-user connections, and scope management is days.",
+          "**Rate limits and data volume.** Syncing 500 records is a loop; syncing 5 million means batching, backoff, and progress tracking that survives restarts.",
+          "**Legacy or undocumented systems.** SOAP endpoints, CSV drops, or an internal API with no docs can double a timeline before any business logic is written.",
+          "**Compliance.** If the data is payments or health records, logging, encryption, and access-control requirements add real work.",
+        ],
+      },
+      {
+        heading: "Should you build custom or use Zapier?",
+        paragraphs: [
+          "If the job is 'when X happens, do Y' at low volume with standard apps, don't hire anyone — [Zapier](https://zapier.com/pricing) or Make will do it for a subscription fee, today. Custom integration earns its cost when one of four things is true: volume makes per-task pricing worse than engineering, the logic between systems is genuinely custom, latency matters (webhooks vs polling), or the connection is core product rather than internal plumbing — you can't build your product's key feature on a no-code automation you don't control.",
+          "A useful pattern: prototype the workflow in Zapier to prove the value, then build custom when it proves out and volume grows. The Zapier bill becomes your business case.",
+        ],
+      },
+      {
+        heading: "Why do production integrations cost more than demos?",
+        paragraphs: [
+          "A demo integration moves data when everything works. A production integration keeps working when the API is down for an hour, a webhook arrives twice, a token expires mid-sync, or the provider ships a breaking change. That gap — retries with backoff, idempotency, dead-letter queues, alerting, and a reconciliation path — is routinely half the engineering effort, and it's precisely the half that's invisible in a proposal from a team that hasn't operated integrations in production.",
+          "It's the same lesson as billing: the edge cases are the product. We wrote about this pattern in [Stripe subscription billing](/blog/stripe-subscription-billing-saas), and it shaped how we built an [omnichannel messaging platform](/work/omnichannel-messaging-saas) that unifies Facebook, Instagram, SMS, and web chat — an integration-heavy product where webhook handling *is* the core feature.",
+        ],
+      },
+      {
+        heading: "How do you keep the cost down?",
+        bullets: [
+          "**Have sandbox access and API credentials ready on day one.** Waiting on access approvals is the most common non-technical delay.",
+          "**Nominate one system of record per data type.** Half of sync complexity disappears when 'who wins' is decided upfront.",
+          "**Write the field mapping before engineering starts.** A spreadsheet mapping fields between systems — including the awkward ones that don't map — surfaces the hard decisions while they're still cheap.",
+          "**Start one-way if you can.** Push data in the direction that delivers value first; add the reverse path once the first direction is proven.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "How long does a custom API integration take?",
+        a: "One to two weeks for a simple one-way integration, two to four for bidirectional sync with proper error handling, four to eight for multi-system orchestration — assuming API access exists on day one.",
+      },
+      {
+        q: "What information do you need for an accurate quote?",
+        a: "Which systems, which data, which direction it flows, roughly how many records per day, and what should happen when something fails. With those five answers we can give a fixed estimate after a discovery call.",
+      },
+      {
+        q: "Can you work with an API that has poor documentation?",
+        a: "Yes — it's common, especially with internal or legacy systems. Expect discovery time to reverse-engineer behavior, and treat the timeline ranges above as starting points rather than commitments until that's done.",
+      },
+      {
+        q: "Who maintains the integration after launch?",
+        a: "Your choice: we hand over documented, monitored code your team owns, or keep maintaining it under a support arrangement. Either way you own the code and the accounts from day one.",
+      },
+    ],
+  },
 ];
 
 function countWords(text: string | undefined): number {
