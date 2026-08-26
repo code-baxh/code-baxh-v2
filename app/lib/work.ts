@@ -5,8 +5,15 @@
  * real, shipped work.
  *
  * NAMING: entries whose source was marked "Client: Confidential" are kept
- * generic (Legal-tech, etc.). Publicly named products/brands (Zoneomics,
- * Alive5, HomeRoyaltie, RedeemX, Snippetz, etc.) are named directly.
+ * generic (Legal-tech, etc.). Publicly named products/brands (Alive5,
+ * HomeRoyaltie, RedeemX, Snippetz, etc.) are named directly.
+ *
+ * ⚠️ Do NOT put a third party's brand in a case-study slug/metaTitle unless
+ * they are a CodeBaxh CLIENT. The GIS zoning entry used to be slugged and
+ * titled with its brand; GSC (Aug 2026) showed it pulling 41% of all US
+ * impressions from people searching for THAT company — 0% CTR, since they
+ * were never looking for us. De-branded to target the capability instead.
+ * The founder's employment history stays on /about, where it belongs.
  */
 
 export type CaseStudy = {
@@ -36,17 +43,17 @@ export type CaseStudy = {
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
-    slug: "zoneomics-proptech-saas",
-    client: "Zoneomics",
+    slug: "gis-zoning-saas",
+    client: "PropTech zoning platform",
     title: "A GIS-powered zoning SaaS that scaled to 10,000+ users",
     category: "PropTech SaaS",
-    metaTitle: "Zoneomics PropTech SaaS Case Study | GIS & Stripe | CodeBaxh",
+    metaTitle: "GIS Zoning SaaS Case Study | Mapbox & Stripe | CodeBaxh",
     metaDescription:
-      "How CodeBaxh built Zoneomics — a GIS zoning SaaS with Stripe billing and map search that cut property research from days to minutes at 10,000+ users.",
+      "How we built a GIS zoning SaaS with Stripe billing and parcel-level map search that cut property research from days to minutes at 10,000+ users.",
     summary:
       "A GIS-based real-estate zoning platform that turned days of manual appraisal research into instant, map-based reports — scaled to 10,000+ users.",
     overview: [
-      "Zoneomics set out to disrupt an outdated appraisal workflow. Real-estate professionals were visiting multiple city planning websites, queuing at government offices, and paying for each property report by hand. We built a GIS-integrated SaaS that aggregates, processes, and visualizes zoning and land-use data instantly.",
+      "This PropTech platform set out to disrupt an outdated appraisal workflow. Real-estate professionals were visiting multiple city planning websites, queuing at government offices, and paying for each property report by hand. We built a GIS-integrated SaaS that aggregates, processes, and visualizes zoning and land-use data instantly.",
       "We led the engineering effort end to end — from architecture and interactive mapping to secure payments and cloud deployment — and the platform scaled past 10,000 users with zoning coverage across 50+ cities.",
     ],
     problem:

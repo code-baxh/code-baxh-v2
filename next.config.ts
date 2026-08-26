@@ -59,6 +59,15 @@ const nextConfig: NextConfig = {
       // crawled per GSC. 301 to the homepage instead of 404 to recover any
       // external-link equity it accumulated.
       { source: "/home", destination: "/", permanent: true },
+      // Case-study URL de-branded 2026-08-27: the old slug carried a third
+      // party's brand name and pulled 41% of US impressions from people
+      // searching for THEM (0% CTR — they never wanted us). The page now
+      // targets the capability ("gis saas") that actually converted.
+      {
+        source: "/work/zoneomics-proptech-saas",
+        destination: "/work/gis-zoning-saas",
+        permanent: true,
+      },
     ];
   },
 };
