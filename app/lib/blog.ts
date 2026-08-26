@@ -838,7 +838,7 @@ const RAW_BLOG_POSTS: BlogPost[] = [
     datePublished: "2026-05-22",
     readingTime: "7 min read",
     category: "AI integration",
-    serviceSlug: "ai-integration",
+    serviceSlug: "ai-agent-development",
     sections: [
       {
         paragraphs: [
@@ -2292,7 +2292,7 @@ const RAW_BLOG_POSTS: BlogPost[] = [
     title: "How long does it take to build an AI chatbot?",
     metaTitle: "How Long Does It Take to Build an AI Chatbot? (2026)",
     metaDescription:
-      "Realistic AI chatbot timelines: 1–2 weeks for a prototype, 4–6 weeks for a production RAG assistant, 8–10+ for multi-system automation — and what changes them.",
+      "How long it takes to create, develop, or train a chatbot: 1–2 weeks for a prototype, 4–6 weeks for a production RAG assistant, 8–10+ for multi-system automation.",
     excerpt:
       "A scoped prototype takes a week or two. A production assistant grounded in your data takes four to six. Here's the week-by-week breakdown, what slows builds down, and how to compress the timeline.",
     datePublished: "2026-08-08",
@@ -2347,6 +2347,18 @@ const RAW_BLOG_POSTS: BlogPost[] = [
         ],
       },
       {
+        heading: "How long does it take to train a chatbot?",
+        paragraphs: [
+          "For most business chatbots, **zero** \u2014 because they are never trained. This is the single most common misconception in chatbot scoping, and it changes the schedule dramatically once you understand it.",
+          "Retrieval-augmented generation looks your content up at question time and answers from the passages it retrieves. There is no training run, so \"updating the bot\" means re-indexing documents \u2014 minutes, not weeks. A stock model plus good retrieval is what ships in the overwhelming majority of production business chatbots.",
+          "Actual fine-tuning \u2014 adjusting a model's weights on your examples \u2014 adds **2\u20134 weeks** once you count assembling a labelled dataset, running training, and evaluating the result against the stock model. It is worth it for consistent tone or a rigid output format. It is not worth it for facts: fine-tuning teaches style, retrieval teaches truth. Teams who fine-tune hoping to fix wrong answers usually end up with a model that is confidently wrong in a more on-brand voice.",
+        ],
+        callout: {
+          title: "The practical rule",
+          body: "If your goal is \"the bot should know our products, policies, and docs\", you need retrieval, and your chatbot development time does not include any training at all. Only reach for fine-tuning after retrieval is working and a specific tone or format problem remains.",
+        },
+      },
+      {
         heading: "What makes a chatbot build take longer?",
         bullets: [
           "**Source content that disagrees with itself.** If your pricing page and your help docs give different answers, the bot will too. Cleanup adds 1–2 weeks and is worth every day.",
@@ -2389,6 +2401,18 @@ const RAW_BLOG_POSTS: BlogPost[] = [
       {
         q: "What does an AI chatbot cost to run after launch?",
         a: "Ongoing costs are model API usage (typically modest at support-ticket volumes), hosting, and periodic content re-indexing. Budget for a monthly review of unanswered questions — that's what keeps quality improving.",
+      },
+      {
+        q: "How long does it take to make a simple chatbot?",
+        a: "One to two weeks for something real. A simple chatbot over a single source of content — one help centre, one product manual — needs a chat interface, an indexed copy of that content, and refusal behaviour for anything outside it. What pushes a simple bot past two weeks is almost never the model; it is discovering that the source content contradicts itself and has to be cleaned first.",
+      },
+      {
+        q: "Can you build a chatbot in a week?",
+        a: "Yes, as a prototype. In a week we can put a working chat interface over a slice of your real documents so you can test answer quality on your own questions. What a week does not buy is production hardening: evaluation against a scored question set, guardrails for sensitive topics, human handoff, load testing, and analytics. Those are what separate a demo from something you put in front of customers, and they are most of the 4-to-6-week timeline.",
+      },
+      {
+        q: "What is a realistic chatbot development time for a small business?",
+        a: "Four to six weeks for a production support assistant, assuming your help content already exists and you start with one channel. Small businesses ship fastest when they resist the urge to launch on web, WhatsApp, and Slack simultaneously — one channel first, then widen. If your support volume is under a few hundred conversations a month, price an off-the-shelf tool before commissioning a custom build; it often wins on cost at that scale.",
       },
     ],
   },
@@ -2441,7 +2465,7 @@ const RAW_BLOG_POSTS: BlogPost[] = [
         heading: "Proof: question 12",
         paragraphs: [
           "**12. Show me a comparable product you shipped — and let me talk to that client.** A portfolio page is marketing; a reference call is evidence. Ask the past client three things: did it ship on schedule, what broke after launch and how fast was it fixed, and would they hire the team again. Verify what you can independently: [Clutch](https://clutch.co) reviews are attributable to real companies, and an [Upwork agency profile](https://www.upwork.com/agencies/1746999947359457280/) shows a work history with ratings the agency can't edit.",
-          "Any agency doing real work can point to something like a [production SaaS serving 10,000+ users](/work/zoneomics-proptech-saas) or an [MVP shipped in 11 weeks](/work/saas-mvp-11-weeks) — and should be comfortable putting you in front of the people who paid for it.",
+          "Any agency doing real work can point to something like a [production SaaS serving 10,000+ users](/work/gis-zoning-saas) or an [MVP shipped in 11 weeks](/work/saas-mvp-11-weeks) — and should be comfortable putting you in front of the people who paid for it.",
         ],
       },
       {
@@ -2570,6 +2594,334 @@ const RAW_BLOG_POSTS: BlogPost[] = [
       {
         q: "Who maintains the integration after launch?",
         a: "Your choice: we hand over documented, monitored code your team owns, or keep maintaining it under a support arrangement. Either way you own the code and the accounts from day one.",
+      },
+    ],
+  },
+  {
+    slug: "how-long-to-build-ai-agent",
+    title: "How long does it take to build an AI agent?",
+    metaTitle: "How Long Does It Take to Build an AI Agent? (2026)",
+    metaDescription:
+      "Realistic AI agent timelines: 2 weeks for a prototype, 6–10 weeks for a production agent with approval gates, 12+ weeks for multi-system automation — and what moves them.",
+    excerpt:
+      "A prototype agent takes about a fortnight. One you can safely point at production systems takes six to ten weeks — and integration approvals, not engineering, usually set the date.",
+    datePublished: "2026-08-27",
+    readingTime: "9 min read",
+    category: "AI agents",
+    serviceSlug: "ai-agent-development",
+    sections: [
+      {
+        paragraphs: [
+          "A production AI agent — one that reads from your systems, decides what to do next, and takes actions you can audit — typically takes **6–10 weeks** to ship. A prototype that proves the loop on real data takes about **2 weeks**. An agent spanning several systems with approval gates, role-based access, and audit requirements runs **12+ weeks**.",
+          "The thing that surprises most teams: unlike a chatbot build, an agent's schedule is set less by engineering than by how long it takes to get credentials and sign-off for every system it touches. We have seen the code finish in week five and the launch wait until week nine on a single API approval.",
+          "If you are still deciding whether you need an agent at all, read [AI agents vs chatbots vs RAG](/blog/ai-agents-vs-chatbots-vs-rag) first. Picking the wrong one is the most expensive scheduling mistake in this category — an agent takes roughly twice as long as the [chatbot timeline](/blog/how-long-to-build-ai-chatbot) for the same subject matter.",
+        ],
+      },
+      {
+        heading: "What are the realistic AI agent timeline tiers?",
+        table: {
+          headers: ["Tier", "Timeline", "What you get", "Right for"],
+          rows: [
+            [
+              "Prototype",
+              "~2 weeks",
+              "The agent loop running against real inputs with one or two read-only tools; enough to see whether it makes sensible decisions on your actual data",
+              "Proving the concept before committing integration effort",
+            ],
+            [
+              "Production agent",
+              "6–10 weeks",
+              "Scoped tool access, human approval gates on consequential actions, step-level audit logging, an evaluation task set, and cost and step caps",
+              "One well-defined workflow you want run reliably",
+            ],
+            [
+              "Multi-system agent",
+              "12+ weeks",
+              "Everything above across several systems, with role-based access, richer escalation paths, and the compliance evidence that unlocks write access",
+              "Automation that replaces a recurring multi-tool process",
+            ],
+          ],
+          caption: "Agent delivery timelines we quote, assuming API access is granted on day one — which it rarely is.",
+        },
+      },
+      {
+        heading: "Where do the weeks actually go?",
+        paragraphs: [
+          "Here is the shape of a typical 8-week production agent build. Note how little of it is model work: the loop itself is often running by week three, and everything after that is making it safe to trust.",
+        ],
+        bullets: [
+          "**Weeks 1–2 — scope and permissions.** Map the workflow, decide which actions the agent may take unsupervised, which need human approval, and which it must refuse. Start the credential requests now; they are the long pole and they do not parallelise.",
+          "**Week 3 — tools and the loop.** Define the exact functions the agent can call and get it planning and executing against read-only versions first. This is the fast part, and its speed is misleading.",
+          "**Weeks 4–5 — evaluation.** Build a fixed task set with known-correct outcomes, including the malformed and edge-case inputs, then iterate until the agent scores consistently. Teams that skip this ship an agent that worked in the demo and fails on week-one reality.",
+          "**Week 6 — guardrails and cost control.** Step caps, per-run token budgets, refusal cases, and step-level logging. Enforced in code, not requested in a prompt — a prompt is a suggestion, and an agent under pressure will route around it.",
+          "**Week 7 — write access behind approval.** Turn on the actions that change state, every one gated behind human approval, and watch what it proposes without letting it commit.",
+          "**Week 8 — supervised rollout.** Run on real work with a person approving each action, compare against how the task was done manually, then widen autonomy only where the evidence supports it.",
+        ],
+      },
+      {
+        heading: "What makes an AI agent build take longer?",
+        bullets: [
+          "**Integration approvals.** Every system the agent writes to needs credentials and a sign-off, and enterprise approval loops routinely cost more calendar time than the entire build. This is the single most common cause of a slipped agent launch.",
+          "**Scope that grows mid-build.** \"While it is in there, could it also…\" is how an 8-week agent becomes a 16-week one. Each new tool multiplies the states you must evaluate, not just adds to them.",
+          "**No definition of correct.** If nobody can say what the right outcome is for a given input, you cannot build an evaluation set, and without one you are shipping on vibes. Pinning this down is often a week of stakeholder work nobody budgeted.",
+          "**Compliance review for write access.** Letting software modify records in a regulated environment attracts scrutiny that a read-only assistant never does. Budget for it in fintech, health, and anything touching customer money.",
+          "**Reaching for multi-agent too early.** Splitting a coherent task across several agents adds coordination failure modes without adding capability. Start with one; split only where roles genuinely differ.",
+        ],
+      },
+      {
+        heading: "How do you compress the timeline?",
+        paragraphs: [
+          "The agent builds that ship fastest share three decisions: **one workflow** rather than a platform, **read-only first** so value arrives before the write-access approval lands, and **credential requests filed in week one** rather than when the code is ready for them.",
+          "The fourth lever is accepting a lower autonomy ceiling at launch. An agent that proposes every action for human approval delivers most of the time saving — the work is in the deciding, not the clicking — and it ships weeks earlier than one cleared to act alone. You can widen autonomy later, once the task-set scores and the audit log give you the evidence to justify it.",
+        ],
+        callout: {
+          title: "From our own builds",
+          body: "We built a production multi-agent pipeline that analyses 500–1,000-page legal contracts, with separate agents for document processing, retrieval, query understanding, and response ([case study](/work/legal-contract-ai)). The pattern held there and on every agent since: the model was never the bottleneck. Data access and approval loops were.",
+        },
+      },
+      {
+        heading: "When should you not build an AI agent?",
+        paragraphs: [
+          "If the task is a single lookup, you want retrieval or a chatbot, and you will have it in a third of the time. If the process is genuinely rigid with no exceptions, a plain script is cheaper, faster, and easier to debug than any agent. And if the work happens a handful of times a month, the engineering will not pay back — agents earn their cost on repetition.",
+          "An honest agency will tell you which of those you are looking at in the first call. It is one of the questions worth asking directly; see our [guide to vetting development agencies](/blog/questions-to-ask-software-development-agency).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "How fast can we see an AI agent working on our data?",
+        a: "About two weeks for a prototype. It runs the agent loop against your real inputs with one or two read-only tools, which is enough to answer the question that matters — does it make sensible decisions on your actual data — before you spend effort on integration approvals and guardrails.",
+      },
+      {
+        q: "Why does an AI agent take longer to build than a chatbot?",
+        a: "Because the failure mode is different. A chatbot's worst case is a wrong answer; an agent's worst case is a wrong action in a system of record. That difference is why most of an agent's schedule goes to permissions, approval gates, evaluation, and audit logging rather than conversation design. Expect roughly twice the timeline of an equivalent chatbot.",
+      },
+      {
+        q: "What is the longest pole in an AI agent project?",
+        a: "Integration access, almost every time. Every system the agent reads from or writes to needs credentials and organisational sign-off, and those approval loops run on their own calendar regardless of how fast the engineering goes. File the requests in week one — it is the cheapest schedule insurance available.",
+      },
+      {
+        q: "Can we launch with the agent only suggesting actions?",
+        a: "Yes, and it is usually the right call. An agent that proposes every action for human approval captures most of the time saving, because the work is in the deciding rather than the clicking. It also ships weeks earlier, since it sidesteps the write-access approvals, and it generates the audit trail you need to justify widening autonomy later.",
+      },
+      {
+        q: "How long does it take to add a new system to an existing agent?",
+        a: "Days of engineering, and however long your approval process takes. Once the agent framework, evaluation harness, and logging are in place, adding a tool is a contained change. The variable is access: a system with a clean API and a willing owner is a week, and one requiring a security review can be a month or more.",
+      },
+    ],
+  },
+  {
+    slug: "cost-to-build-ai-agent",
+    title: "How much does it cost to build an AI agent?",
+    metaTitle: "How Much Does It Cost to Build an AI Agent? (2026)",
+    metaDescription:
+      "AI agent development cost explained: the three tiers, why integrations and evaluation drive the price, build vs running cost, and how to stop an agent loop burning budget.",
+    excerpt:
+      "The model is the cheapest part of an AI agent. The price lives in integrations, evaluation, and the guardrails that make it safe to let software act on your systems.",
+    datePublished: "2026-08-27",
+    readingTime: "9 min read",
+    category: "AI agents",
+    serviceSlug: "ai-agent-development",
+    sections: [
+      {
+        paragraphs: [
+          "A prototype AI agent that proves the loop on your real data sits in the **low five figures (USD)**. A production agent for one well-defined workflow — scoped tools, approval gates, evaluation, audit logging — typically runs into the **five figures**. Multi-system agents with write access across several systems of record start in the **high five figures and up**.",
+          "Those ranges are wider than a chatbot's for one reason: an agent takes actions. The cost is driven by **integrations, evaluation, and the guardrails that make it safe to let software act on your systems** — not by the model, which is very often the smallest line on the invoice.",
+          "If you are weighing an agent against a simpler assistant, our [chatbot cost breakdown](/blog/cost-to-build-ai-chatbot) is the fair comparison. An agent is roughly double for the same subject matter, and the delta is almost entirely safety engineering.",
+        ],
+      },
+      {
+        heading: "The three tiers of AI agent",
+        paragraphs: [
+          "Quotes vary wildly because \"agent\" covers three very different things. Pinning your tier is the single biggest lever on cost:",
+        ],
+        table: {
+          headers: ["Tier", "What it does", "Typical build", "Best for"],
+          rows: [
+            ["Read-only agent", "Gathers, enriches, and summarises across systems; proposes but never commits", "Low five figures", "Triage, research, enrichment, drafting"],
+            ["Production agent", "Takes scoped actions in one workflow, with human approval on consequential steps", "Five figures", "One recurring multi-step process"],
+            ["Multi-system agent", "Acts across several systems of record with role-based access and audit evidence", "High five figures and up", "Replacing a process that spans teams and tools"],
+          ],
+          caption: "Ranges are directional; the factors below are what move your number inside them.",
+        },
+      },
+      {
+        heading: "What actually drives the cost",
+        bullets: [
+          "**Number of systems, not number of features.** Each system the agent touches adds credentials, an access review, error handling, and a new set of states to evaluate. Two systems is not twice one — it is closer to three times.",
+          "**Write access versus read access.** Reading is cheap. Writing attracts approval gates, reversibility design, audit logging, and usually a security review. The same agent costs substantially more the day it is allowed to change something.",
+          "**Evaluation.** Building a task set with known-correct outcomes is real engineering, and it is the line teams try to cut first. It is also the only thing separating an agent that works in a demo from one that works in week six — see [reducing LLM hallucinations](/blog/reduce-llm-hallucinations) for why unmeasured quality drifts.",
+          "**Exception handling.** Deciding what the agent does when it is unsure is often more work than the happy path, and it is what makes the difference between escalation and a confidently wrong action.",
+          "**Compliance evidence.** In regulated environments, the artefacts proving what the agent may do and did do can rival the build itself.",
+          "**Model choice barely matters.** Swapping between [OpenAI and Anthropic](/blog/openai-vs-anthropic-claude) models is a configuration change in a well-built pipeline, so it is not worth optimising early.",
+        ],
+      },
+      {
+        heading: "Build cost vs running cost",
+        paragraphs: [
+          "Budget two numbers. Agents differ from chatbots here in a way that catches teams out: a chatbot spends tokens per conversation, but an agent spends tokens per *step*, and a single task can be dozens of steps.",
+        ],
+        table: {
+          headers: ["Cost", "One-off (build)", "Ongoing (monthly)"],
+          rows: [
+            ["Engineering", "The bulk of the build", "Maintenance as your systems change"],
+            ["LLM usage", "—", "Per step, not per task — the multiplier that surprises people"],
+            ["Integrations", "Setup and approval per system", "Breakage when an upstream API changes"],
+            ["Evaluation", "Building the task set", "Re-running it after model or prompt changes"],
+            ["Oversight", "—", "Human review time, falling as autonomy widens"],
+          ],
+        },
+        callout: {
+          title: "The line item that runs away",
+          body: "An agent that retries on failure without a step cap can turn one task into hundreds of model calls. Cap steps and set a per-run token budget in code — not in the prompt, which is a suggestion the agent can route around. Our [guide to cutting LLM API costs](/blog/reduce-llm-api-costs) covers caching and model routing, both of which apply per step and so compound harder for agents than for chatbots.",
+        },
+      },
+      {
+        heading: "How to keep an AI agent affordable",
+        bullets: [
+          "**Start read-only.** You get most of the value before you pay for write-access approvals and reversibility design, and you learn whether the agent is any good at deciding before you let it act.",
+          "**One workflow, not a platform.** Agents earn back on repetition of a specific task. Building a general-purpose agent is how budgets disappear without a single process being automated.",
+          "**Route by difficulty.** Use a cheaper, faster model for routine steps and reserve the top-tier model for genuinely hard decisions. Because agents spend per step, this compounds far more than it does for a chatbot.",
+          "**Cache aggressively.** Agents re-read the same records constantly across a run; caching retrieval and tool results is often the single largest saving available.",
+          "**Cap and observe.** Step caps, per-run token budgets, and cost-per-run dashboards make a runaway loop impossible rather than merely unlikely.",
+        ],
+      },
+      {
+        heading: "When an AI agent is not worth the money",
+        paragraphs: [
+          "If the task runs a handful of times a month, the engineering will not pay back — agents earn on repetition. If the process is rigid with no exceptions, a plain script costs a fraction and is easier to debug. And if nobody can define what a correct outcome looks like, you cannot build the evaluation set, which means you cannot know whether the agent is working, which means you should not be paying for one yet.",
+          "We would rather tell you that on the first call than six weeks in. It is worth asking any agency the same question directly — our [guide to vetting development agencies](/blog/questions-to-ask-software-development-agency) has the rest of the list.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "Why does an AI agent cost more than a chatbot?",
+        a: "Because it acts rather than answers. A chatbot's worst failure is a wrong reply; an agent's is a wrong action in a system of record. Closing that gap means scoped tool permissions, human approval gates, reversibility design, step-level audit logging, and an evaluation harness — and that safety engineering, not the model, is the cost difference.",
+      },
+      {
+        q: "What is the cheapest useful AI agent we can build?",
+        a: "A read-only agent in the low five figures. It gathers, enriches, and summarises across your systems and proposes actions without committing them, so it skips write-access approvals and reversibility work entirely. Most teams find the proposal is the valuable part, because the effort was always in the deciding rather than the clicking.",
+      },
+      {
+        q: "How much does it cost to run an AI agent each month?",
+        a: "It depends on runs per month and steps per run, and the second number is the one people miss. Agents spend tokens per step rather than per task, so a single job can be dozens of model calls. With step caps, caching, and cheaper models routed to routine steps, running cost is usually modest against the labour replaced — without them it is unbounded.",
+      },
+      {
+        q: "Can we start small and expand the agent later?",
+        a: "Yes, and it is the pattern we recommend. Start with one workflow, read-only, behind human approval. Once the evaluation scores and audit log justify it, widen autonomy and add systems. Adding a tool to a working agent is a contained change; the framework, evaluation harness, and logging are already paid for.",
+      },
+      {
+        q: "Do we need to fine-tune a model for an AI agent?",
+        a: "Almost never. Agent quality comes from tool design, clear scoping, and evaluation, not from model weights. Fine-tuning adds weeks and cost while helping with tone and format rather than decisions — see [prompt engineering vs fine-tuning vs RAG](/blog/prompt-engineering-vs-fine-tuning-vs-rag) for when each actually applies.",
+      },
+    ],
+  },
+  {
+    slug: "ai-agents-vs-rpa",
+    title: "AI agents vs RPA: which should automate your workflow?",
+    metaTitle: "AI Agents vs RPA: Which to Use for Automation (2026)",
+    metaDescription:
+      "AI agents vs RPA compared: how each handles exceptions, what breaks them, what they cost to maintain, and a decision rule for picking one — or running both together.",
+    excerpt:
+      "RPA follows the steps you recorded. An agent decides what the step should be. The right choice comes down to one question: how often does your process hit something it has not seen before?",
+    datePublished: "2026-08-27",
+    readingTime: "9 min read",
+    category: "AI agents",
+    serviceSlug: "ai-agent-development",
+    sections: [
+      {
+        paragraphs: [
+          "**Use RPA when the process is stable and the steps never change. Use an AI agent when the process has exceptions that a recorded script cannot anticipate.** That is the whole decision, and most of the confusion around it comes from vendors selling one as a replacement for the other when they are better understood as different tools.",
+          "Robotic process automation follows a path someone defined in advance: click here, copy that field, paste it there. It is fast, cheap to run, and completely deterministic — and it breaks the moment reality departs from the recording. An AI agent decides what to do next from the situation in front of it, which is why it survives variation and why it needs guardrails that RPA never did.",
+        ],
+      },
+      {
+        heading: "AI agents vs RPA at a glance",
+        table: {
+          headers: ["", "RPA", "AI agent"],
+          rows: [
+            ["How it works", "Follows explicitly defined steps", "Plans and decides from context each run"],
+            ["Handles exceptions", "No — halts or does the wrong thing", "Yes, within the boundaries you set"],
+            ["Unstructured input", "Poor; needs fixed fields and layouts", "Strong; reads documents, email, free text"],
+            ["Determinism", "Same input, same output, every time", "Constrained by tools and evaluation, not guaranteed"],
+            ["Breaks when", "A UI or form layout changes", "The task moves outside its scoped tools"],
+            ["Running cost", "Very low per run", "Per step, so higher and worth capping"],
+            ["Maintenance", "Constant, as underlying screens change", "Lower per change, higher per new capability"],
+            ["Auditability", "Trivially auditable — the script is the record", "Needs step-level logging built in deliberately"],
+          ],
+          caption: "The trade is determinism against adaptability. Neither is strictly better.",
+        },
+      },
+      {
+        heading: "Where RPA still wins",
+        paragraphs: [
+          "RPA is not legacy technology, and replacing working RPA with an agent is a common and expensive mistake. If a process is high-volume, stable, and entirely structured — reconciling two systems with fixed fields, moving files on a schedule, rekeying a form that never changes — RPA does it more cheaply, more predictably, and with an audit story you get for free.",
+        ],
+        bullets: [
+          "**Determinism is a requirement, not a preference.** In regulated reporting, \"it usually does the right thing\" is not an acceptable property.",
+          "**The volume is enormous and the task is trivial.** Per-step model costs make agents a poor fit for millions of identical operations.",
+          "**The audit trail must be the specification.** With RPA the script is the record of what happened; an agent needs that engineered in.",
+        ],
+      },
+      {
+        heading: "Where AI agents win",
+        paragraphs: [
+          "Agents earn their extra cost precisely where RPA fails: when the input is unstructured, when the correct next step depends on judgement, and when the exception rate is high enough that a human currently has to babysit the automation.",
+        ],
+        bullets: [
+          "**The input is a document, an email, or a conversation.** Anything without fixed fields is where RPA needs brittle scaffolding and an agent simply reads it.",
+          "**The process has a long tail of exceptions.** If your RPA bot handles 70% of cases and a person picks up the rest, the remaining 30% is exactly what an agent is for.",
+          "**The steps depend on what was found.** \"If the contract has an auto-renewal clause, do X, otherwise Y\" is a decision, not a recorded path.",
+          "**The screens keep changing.** Agents working through APIs and semantics survive interface changes that break selector-based RPA weekly.",
+        ],
+        callout: {
+          title: "From our own builds",
+          body: "Our [legal contract analysis pipeline](/work/legal-contract-ai) is a clean example of the boundary. Extracting a value from a fixed field in a standard form is RPA work. Reading a 900-page contract with inconsistent structure, finding the clauses that matter, and citing them is not something you can record as a script — separate agents handle processing, retrieval, query understanding, and response.",
+        },
+      },
+      {
+        heading: "The hybrid pattern most teams end up with",
+        paragraphs: [
+          "In practice the strongest setups are not one or the other. RPA handles the deterministic spine of the process, and an agent is called in at the points where judgement is required — reading the attachment, deciding the routing, handling the case the script was never taught.",
+          "This is usually the cheapest path too, because you keep the RPA investment that already works and buy intelligence only where it is missing. A common shape: RPA moves records and triggers the workflow, the agent classifies and enriches the awkward ones, and anything either is unsure about escalates to a person with the context already gathered.",
+        ],
+      },
+      {
+        heading: "A decision rule you can apply today",
+        paragraphs: [
+          "Take one process and count. What share of runs complete without a human touching them? If it is above roughly 90% and the failures are caused by system outages rather than unexpected content, keep the RPA and fix the plumbing. If a person intervenes on a meaningful share of runs — and especially if they intervene because something needed reading or deciding — that intervention is the agent-shaped hole in your process.",
+          "Then check the second question before you build anything: can you say what the correct outcome is for each of those exceptions? If yes, that list is your evaluation set and you are ready to scope an agent. If no, that ambiguity is the actual problem, and no automation of either kind will resolve it.",
+        ],
+      },
+      {
+        heading: "What about agentic RPA from your existing vendor?",
+        paragraphs: [
+          "Every major RPA platform now ships an AI layer, and for straightforward document reading inside a process you already automate there, it is often the pragmatic choice — the integration is done and the governance already exists.",
+          "Where teams outgrow it is when the agent needs to reason across systems the platform does not own, when per-step costs need controlling at a level the platform does not expose, or when you need the evaluation harness and audit depth that a custom build gives you. Our [AI agents vs chatbots vs RAG](/blog/ai-agents-vs-chatbots-vs-rag) breakdown is the companion piece if you are still narrowing down which category of tool your problem actually needs.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "Will AI agents replace RPA?",
+        a: "No, and treating them as replacements leads to expensive rebuilds of automation that already works. RPA remains cheaper, faster, and more predictable for stable, structured, high-volume tasks. Agents handle the variation and unstructured input RPA cannot. Most organisations end up running both, with agents filling the exception paths where a human currently intervenes.",
+      },
+      {
+        q: "Can an AI agent work with our existing RPA platform?",
+        a: "Yes. The common pattern is RPA handling the deterministic spine of a process and calling an agent at the points needing judgement — reading an attachment, classifying an edge case, deciding routing. This keeps the RPA investment that already works and adds intelligence only where it is missing, which is usually the cheapest path to a higher automation rate.",
+      },
+      {
+        q: "Which is cheaper to run, an AI agent or RPA?",
+        a: "RPA, by a wide margin per run, because it is not paying a model on every step. Agents cost per step rather than per task, so a single job can be dozens of model calls. The fair comparison is not cost per run but cost per completed outcome including the human intervention each approach still requires — an RPA bot that needs a person on a third of runs is often the more expensive option.",
+      },
+      {
+        q: "Why does our RPA keep breaking?",
+        a: "Usually because it is bound to interfaces rather than meaning. Selector-based automation depends on screens staying where they were, so a layout change breaks it even though the underlying process has not changed. Agents working through APIs and semantics tolerate that variation, which is one of the strongest arguments for them in environments where the systems are actively developed.",
+      },
+      {
+        q: "How do we decide between them for a specific process?",
+        a: "Count how often a human currently intervenes and ask why. If interventions are rare and caused by outages, keep the RPA. If a person regularly steps in because something needed reading, interpreting, or deciding, that is the agent-shaped part of the process. Then confirm you can define the correct outcome for those exceptions — if you cannot, that ambiguity is the real problem and no automation will fix it.",
       },
     ],
   },

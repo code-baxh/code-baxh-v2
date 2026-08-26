@@ -16,7 +16,7 @@ export const NAV_CTA = {
 /** Footer link groups. */
 export const FOOTER_NAV: { heading: string; links: { href: string; label: string }[] }[] = [
   {
-    // All 10 services: half of them previously had NO sitewide internal links
+    // All 11 services: half of them previously had NO sitewide internal links
     // (only the /services index linked them), which starves them of crawl
     // priority and PageRank flow.
     heading: "Services",
@@ -25,6 +25,7 @@ export const FOOTER_NAV: { heading: string; links: { href: string; label: string
       { href: "/services/mvp-development", label: "MVP Development" },
       { href: "/services/ai-integration", label: "AI Integration" },
       { href: "/services/ai-chatbot-development", label: "AI Chatbots" },
+      { href: "/services/ai-agent-development", label: "AI Agents" },
       { href: "/services/web-development", label: "Web Development" },
       { href: "/services/nextjs-development", label: "Next.js Development" },
       { href: "/services/mobile-app-development", label: "Mobile Apps" },

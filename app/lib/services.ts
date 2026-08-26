@@ -160,7 +160,7 @@ export const SERVICES: Service[] = [
         body: "No hand-offs to juniors. The people scoping your build are the people writing the code.",
       },
     ],
-    caseStudySlug: "zoneomics-proptech-saas",
+    caseStudySlug: "gis-zoning-saas",
     faqs: [
       {
         q: "How long does it take to build a SaaS MVP?",
@@ -620,7 +620,7 @@ export const SERVICES: Service[] = [
     overview: [
       "Payments are unforgiving, so we implement Stripe end to end and build for the failure modes that quietly lose revenue: missed webhooks, proration bugs, failed-payment recovery, and reconciliation. Subscriptions, usage-based billing, the Customer Portal, trials, upgrades, and downgrades — done correctly, not just wired to the happy path.",
       "The parts that break in production are rarely the checkout page. They're the idempotent webhook handling, the retries, and keeping your database in sync with Stripe as the source of truth. We build those so a dropped or duplicated event never corrupts your billing state.",
-      "We've shipped subscription billing inside real multi-tenant SaaS — including Zoneomics' on-demand reports and subscriptions — not just one-off payment buttons.",
+      "We've shipped subscription billing inside real multi-tenant SaaS — including a GIS zoning platform's on-demand reports and subscriptions — not just one-off payment buttons.",
     ],
     problem:
       "Payments are unforgiving. Missed webhooks, proration bugs, failed-payment handling, and tax/compliance gaps quietly lose revenue. You want billing that's correct, tested, and reconciled.",
@@ -672,7 +672,7 @@ export const SERVICES: Service[] = [
         body: "We've shipped subscription billing inside real multi-tenant SaaS, not just one-off checkouts.",
       },
     ],
-    caseStudySlug: "zoneomics-proptech-saas",
+    caseStudySlug: "gis-zoning-saas",
     faqs: [
       {
         q: "Can you set up subscription billing with Stripe?",
@@ -877,6 +877,8 @@ export const SERVICES: Service[] = [
       "We build AI chatbots that actually know your business — grounded in your real content with RAG, not a generic model that confidently makes things up. Support assistants, sales bots, and internal knowledge tools that answer from your data or say they don't know, rather than hallucinating.",
       "A chatbot is only as good as its guardrails and its grounding. We keep answers sourced from your content, add tone control and escalation to humans when it matters, and evaluate answer quality so you can see and improve it over time.",
       "They live where your users already are — your website or app, Slack, WhatsApp, or Intercom — with analytics and content controls so you stay in charge of what the bot says.",
+      "Most chatbot projects land in one of three shapes: a scoped prototype in 1\u20132 weeks that proves answer quality on your real content, a production support or sales assistant in 4\u20136 weeks, or a multi-system agent that takes actions across your tools in 8\u201310+ weeks. We tell you which one your use case actually needs on the first call \u2014 including when the honest answer is that an off-the-shelf tool would serve you better than a custom build.",
+      "The builds we see most often: customer-support assistants that deflect the repetitive tickets and escalate the rest with full context, sales bots that qualify leads and book calls, and internal knowledge assistants that answer staff questions from docs, wikis, and tickets nobody can find.",
     ],
     problem:
       "Generic chatbots make things up and frustrate users. You want an assistant grounded in your real content — accurate, on-brand, and safe to put in front of customers.",
@@ -884,6 +886,9 @@ export const SERVICES: Service[] = [
       "You tried a generic chatbot and it confidently gave customers wrong answers.",
       "You want an assistant that knows your business, not the open internet.",
       "You're worried a bot will go off-brand or off-topic in front of customers.",
+      "Your support team answers the same twenty questions every single week.",
+      "Your knowledge is scattered across Notion, PDFs, and help articles, and nobody can find anything.",
+      "You've been quoted wildly different prices and can't tell what's realistic.",
     ],
     solutions: [
       {
@@ -897,6 +902,14 @@ export const SERVICES: Service[] = [
       {
         problem: "You can't tell if it's actually helping.",
         solution: "We add analytics and evaluation so you can see answer quality and improve it over time.",
+      },
+      {
+        problem: "The same questions consume your support team every week.",
+        solution: "We ground a support assistant in your help content so it deflects the repetitive tickets and escalates the rest to your team with full conversation context.",
+      },
+      {
+        problem: "Your knowledge lives in tools nobody searches.",
+        solution: "We ingest docs, wikis, PDFs, and past tickets into one retrieval layer, so staff and customers get the same consistent answer.",
       },
     ],
     processSteps: [
@@ -912,6 +925,10 @@ export const SERVICES: Service[] = [
       "Human handoff and escalation",
       "Analytics, guardrails, and content controls",
       "Ongoing tuning and evaluation",
+      "Retrieval pipeline over your docs, PDFs, wikis, and past tickets",
+      "An evaluation set that measures answer accuracy before you launch",
+      "Refusal behaviour for out-of-scope and sensitive questions",
+      "Multi-language answers where your customers need them",
     ],
     techStack: ["OpenAI", "Anthropic", "Next.js", "Node.js", "Supabase"],
     differentiators: [
@@ -927,6 +944,14 @@ export const SERVICES: Service[] = [
         title: "Measured quality",
         body: "Evaluation and analytics so you can see and improve answer quality over time.",
       },
+      {
+        title: "Model-agnostic by design",
+        body: "Swapping between OpenAI and Anthropic models is a config change, not a rebuild \u2014 so you are never locked to one vendor's pricing or roadmap.",
+      },
+      {
+        title: "We tell you when not to build",
+        body: "Under a few hundred conversations a month, an off-the-shelf tool usually beats a custom build. We say so on the first call rather than selling you a project.",
+      },
     ],
     caseStudySlug: "ai-business-consultant-chatbot",
     faqs: [
@@ -941,6 +966,150 @@ export const SERVICES: Service[] = [
       {
         q: "Can it hand off to a human?",
         a: "Yes. We build escalation paths so the bot hands complex or sensitive conversations to your team smoothly.",
+      },
+      {
+        q: "How long does it take to build an AI chatbot?",
+        a: "A production chatbot grounded in your own data typically takes 4 to 6 weeks. A scoped prototype you can click through takes 1 to 2 weeks, and a multi-system agent that takes actions across your tools runs 8 to 10 weeks or more. The spread comes from the state of your content, how many systems the bot must touch, and how much proof you need that it will not say something wrong to a customer.",
+      },
+      {
+        q: "How much does AI chatbot development cost?",
+        a: "Custom chatbot builds are quoted against scope rather than a fixed price list, because the same interface can sit on a single help centre or on six integrated systems. The three tiers above are the honest way to think about budget: a prototype proves answer quality cheaply, a production assistant is the common case, and multi-system automation costs more because the integrations and audit requirements are where the work is. We give you a fixed quote after a free discovery call.",
+      },
+      {
+        q: "Do you train the chatbot on our own data?",
+        a: "We ground it on your data rather than training a model on it, and the distinction matters. Retrieval-augmented generation looks your content up at question time and answers from the passages it finds, so there is no multi-week training run and updating the bot means re-indexing content, not retraining. Fine-tuning helps with tone and format, not facts, so most production business chatbots ship with a stock model, good retrieval, and careful prompting.",
+      },
+      {
+        q: "Is our data secure, and do you use it to train public models?",
+        a: "Your content stays yours and is not used to train public models. We use enterprise API tiers from OpenAI and Anthropic, which exclude API traffic from model training by default, and we keep your indexed content in infrastructure you own or control. Where you need it, we scope data retention, access logging, and regional hosting before the build starts.",
+      },
+      {
+        q: "Can the chatbot answer in more than one language?",
+        a: "Yes. Modern models handle multilingual conversation natively, so the bot can answer in the language a customer writes in even when your source documentation is only in English. Where accuracy in a specific language matters commercially, we add that language to the evaluation set so quality is measured rather than assumed.",
+      },
+      {
+        q: "Who maintains the chatbot after launch?",
+        a: "You can, or we can. We hand over a documented pipeline so your team can re-index content and adjust prompts without us. Most clients keep us on a light monthly retainer to review unanswered questions, refresh the index as documentation changes, and tune the answers that are scoring badly, which is the work that keeps quality improving after week one.",
+      },
+      {
+        q: "Should we build a custom chatbot or use an off-the-shelf tool?",
+        a: "If you handle under a few hundred support conversations a month, an off-the-shelf tool or a well-organised help centre usually beats a custom build on cost. Custom becomes worth it when volume, integration needs, or answer quality outgrow what a template product can do, particularly when the bot needs to read from systems only you have. We will tell you which side of that line you are on before you commit a budget.",
+      },
+    ],
+  },
+  {
+    slug: "ai-agent-development",
+    navLabel: "AI Agents",
+    title: "AI Agent Development Services",
+    keyword: "ai agent development services",
+    metaTitle: "AI Agent Development Company | Custom AI Agents | CodeBaxh",
+    metaDescription:
+      "Custom AI agents that take real actions across your systems \u2014 multi-step workflows, tool use, and human approval gates. CodeBaxh ships production agents. Book a call.",
+    eyebrow: "AI Agents",
+    summary:
+      "AI agents that do the work \u2014 multi-step, tool-using, and safe to run against real systems.",
+    heroSubhead:
+      "A chatbot answers questions. An agent does the job \u2014 reads your systems, decides the next step, and takes action with a human in the loop where it counts.",
+    overview: [
+      "An AI agent is a system that plans and executes multi-step work rather than replying to one message at a time. It reads from your tools, decides what to do next, calls the functions it needs, and either completes the task or escalates it. The difference from a chatbot is not intelligence \u2014 it is consequence: an agent writes to your systems, so the engineering that matters is control, not conversation.",
+      "We build agents that triage and route incoming work, enrich and qualify records across a CRM and third-party data, process documents end to end, and run recurring operational workflows that currently eat a person's morning. Each one ships with explicit boundaries on what it may touch.",
+      "The hard part of agent work is never the model. It is deciding what the agent is allowed to do unsupervised, what needs human approval, and what it must refuse \u2014 then proving it behaves that way before it runs against production data. We build that proof in from the first week: every action is scoped, logged, reversible where it can be, and gated where it cannot.",
+      "Agents are worth building when a task is repetitive, spans more than one system, and currently requires a person to copy information between tools. If the work is a single lookup, you want retrieval or a chatbot, and we will say so.",
+    ],
+    problem:
+      "Your team burns hours on multi-step work that moves data between systems \u2014 triage, enrichment, document processing, routine ops. It is too variable to script and too repetitive to keep doing by hand.",
+    painPoints: [
+      "Someone on your team spends every morning moving the same data between tools.",
+      "You tried an agent demo that worked once and fell apart on real inputs.",
+      "You want automation, but you cannot risk software writing to production systems unsupervised.",
+      "Your process has too many exceptions to capture in a rigid if-then script.",
+    ],
+    solutions: [
+      {
+        problem: "Agent demos work in a video and fail on your real data.",
+        solution: "We build against your actual inputs from week one, including the malformed and edge-case ones, and score the agent on a fixed task set before it goes anywhere near production.",
+      },
+      {
+        problem: "You cannot let software write to production unsupervised.",
+        solution: "We scope every tool the agent can call, gate consequential actions behind human approval, and log each step so you can audit exactly what it did and why.",
+      },
+      {
+        problem: "The process has too many exceptions for a rigid script.",
+        solution: "Agents handle variability that breaks if-then automation \u2014 and we define explicit escalation paths so genuine exceptions reach a person instead of being guessed at.",
+      },
+      {
+        problem: "Costs run away once an agent loops.",
+        solution: "We cap steps, budget tokens per run, cache aggressively, and add observability on cost and latency so a runaway loop is impossible rather than merely unlikely.",
+      },
+    ],
+    processSteps: [
+      { title: "Scope the task", body: "We map the workflow, the systems it touches, and the decisions that must stay with a human." },
+      { title: "Tools & guardrails", body: "We define the exact functions the agent may call, the approval gates, and the refusal cases." },
+      { title: "Build & evaluate", body: "We build against real inputs and score the agent on a fixed task set, including the edge cases." },
+      { title: "Ship with oversight", body: "We launch behind approval gates with full logging, then widen autonomy as the evidence supports it." },
+    ],
+    deliverables: [
+      "Custom AI agents scoped to your workflow",
+      "Tool and function calling against your real systems",
+      "Human-in-the-loop approval gates for consequential actions",
+      "Multi-agent pipelines where roles are genuinely separate",
+      "Evaluation harness that scores the agent on a fixed task set",
+      "Full step-level logging and audit trail",
+      "Cost, latency, and failure-rate observability",
+      "Escalation paths for exceptions the agent should not decide",
+    ],
+    techStack: ["OpenAI", "Anthropic", "Python", "FastAPI", "Node.js", "PostgreSQL", "Redis", "AWS"],
+    differentiators: [
+      {
+        title: "Shipped, not demoed",
+        body: "We have built a production multi-agent pipeline that analyses 500\u20131,000-page legal contracts with separate agents for processing, retrieval, query understanding, and response.",
+      },
+      {
+        title: "Control before autonomy",
+        body: "Every action is scoped and logged, and consequential ones are gated behind human approval until the evidence says otherwise.",
+      },
+      {
+        title: "Evaluated, not vibed",
+        body: "A fixed task set with known-correct outcomes scores the agent before launch and catches regressions after \u2014 the step most agent projects skip.",
+      },
+      {
+        title: "Cost-bounded by design",
+        body: "Step caps, per-run token budgets, and caching mean an agent loop cannot quietly turn into a five-figure API bill.",
+      },
+      {
+        title: "We tell you when an agent is overkill",
+        body: "Single-step lookups want retrieval, not an agent. Rigid, exception-free processes want a script. We recommend the cheaper thing when it is the right thing.",
+      },
+    ],
+    caseStudySlug: "legal-contract-ai",
+    faqs: [
+      {
+        q: "What is the difference between an AI agent and a chatbot?",
+        a: "A chatbot answers; an agent acts. A chatbot retrieves information and replies in conversation, so its worst failure is a wrong answer. An agent plans multi-step work and calls tools that change state in your systems, so its worst failure is a wrong action. That difference is why agent projects spend most of their engineering on permissions, approval gates, and audit logging rather than on conversation design.",
+      },
+      {
+        q: "How long does it take to build an AI agent?",
+        a: "Six to ten weeks for a production agent against real systems, and longer where approvals are involved. A single-workflow agent with two or three tools and a human approval gate is the common case at the shorter end. What extends it is integration access rather than engineering: every system the agent reads from or writes to needs credentials and sign-off, and those loops routinely cost more calendar time than the build.",
+      },
+      {
+        q: "Can we control what the agent is allowed to do?",
+        a: "Yes, and this is the core of the work rather than an add-on. The agent can only call functions we explicitly give it, so its capabilities are a whitelist rather than a boundary it might cross. Consequential actions sit behind human approval, every step is logged with its inputs and reasoning, and we define refusal cases for anything outside scope.",
+      },
+      {
+        q: "What stops an AI agent from looping and running up a huge bill?",
+        a: "Hard step caps and per-run token budgets, enforced in code rather than requested in a prompt. An agent that hits its ceiling stops and escalates instead of continuing. We add cost and latency observability per run, so an unusual pattern is visible the day it starts rather than at the end of the billing month.",
+      },
+      {
+        q: "Do we need multiple agents or just one?",
+        a: "Usually one, and multi-agent setups are oversold. Splitting into multiple agents helps when roles are genuinely distinct and each needs different tools or context \u2014 the way separate processing, retrieval, and response agents work in a document pipeline. Splitting a single coherent task across agents adds coordination failure modes without adding capability, so we start with one and split only where the evidence justifies it.",
+      },
+      {
+        q: "What happens when the agent gets something wrong?",
+        a: "It escalates rather than guesses, because we build the escalation path before we build the autonomy. Actions are reversible where the underlying system allows it, gated behind approval where it does not, and every step is logged so you can reconstruct what happened. During rollout the agent runs behind approval on everything, and we widen autonomy only where the task-set scores support it.",
+      },
+      {
+        q: "Can an agent work with our existing tools and internal systems?",
+        a: "Yes \u2014 anything with an API, and often things without one. Agents connect to CRMs, ticketing systems, databases, internal services, and third-party data providers through tools we define. Where a system has no API, we usually reach it through the database or an integration layer. Mapping this is the first thing we do in discovery, because integration access, not model capability, is what sets the timeline.",
       },
     ],
   },
@@ -966,6 +1135,7 @@ const SERVICE_ORDER = [
   "stripe-integration",
   "mvp-development",
   "ai-chatbot-development",
+  "ai-agent-development",
 ];
 
 export const ORDERED_SERVICES: Service[] = SERVICE_ORDER.map((slug) =>

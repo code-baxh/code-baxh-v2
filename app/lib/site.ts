@@ -65,10 +65,14 @@ export const FOUNDER = {
     "https://bilalkhursheed.com",
   ],
   upworkBadge: "Top Rated Plus",
-  // Honest framing: Zoneomics is where Bilal works as a full-stack developer
-  // (employment), not a CodeBaxh client deliverable — kept as a light credential
-  // only, with no client-logo claims attached to CodeBaxh.
-  bio: "Bilal Khursheed is the founder of CodeBaxh and an Upwork Top Rated Plus full-stack engineer with 6+ years building production web, SaaS, and AI products for international clients. His professional experience includes full-stack development on Zoneomics, a production geospatial SaaS.",
+  // Honest framing: the geospatial SaaS referenced here is where Bilal works as
+  // a full-stack developer (employment), not a CodeBaxh client deliverable.
+  // The employer is NOT named here because this bio renders in Person JSON-LD
+  // + FounderCard on 72 of 73 pages — naming them sitewide built a brand-entity
+  // association strong enough that GSC (Aug 2026) showed us absorbing THEIR
+  // branded search traffic at 0% CTR. The named, verifiable credential lives on
+  // /about only; the substance of the claim is unchanged.
+  bio: "Bilal Khursheed is the founder of CodeBaxh and an Upwork Top Rated Plus full-stack engineer with 6+ years building production web, SaaS, and AI products for international clients. His professional experience includes full-stack development on a production geospatial SaaS that scaled past 10,000 users.",
 } as const;
 
 /**
