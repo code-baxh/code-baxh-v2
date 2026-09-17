@@ -2925,6 +2925,346 @@ const RAW_BLOG_POSTS: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: "how-long-to-build-mobile-app",
+    title: "How long does it take to build a mobile app?",
+    metaTitle: "How Long Does It Take to Build a Mobile App? (2026)",
+    metaDescription:
+      "Realistic mobile app timelines: 5–7 weeks for an MVP, 10–16 weeks for a production app on iOS and Android, and what actually moves those dates.",
+    excerpt:
+      "An MVP on one platform takes five to seven weeks. A production app on both stores takes ten to sixteen. Here is where the weeks go — and why the backend, not the screens, usually sets the date.",
+    datePublished: "2026-09-17",
+    readingTime: "9 min read",
+    category: "Mobile",
+    serviceSlug: "mobile-app-development",
+    sections: [
+      {
+        paragraphs: [
+          "A production mobile app on **both iOS and Android** typically takes **10–16 weeks**. A focused MVP on a single platform takes **5–7 weeks**. An app with offline sync, payments, real-time features, or heavy third-party integration runs **20+ weeks**.",
+          "The number that surprises people: the screens are rarely the long pole. Most mobile timelines are set by the **backend the app talks to** and by how many states the UI has to handle — offline, slow network, expired session, permission denied. A design with twelve screens can hide forty states.",
+          "If you are budgeting rather than scheduling, read this alongside [how much a mobile app costs](/blog/cost-to-build-mobile-app). And if you have not settled the platform question, [React Native vs Flutter](/blog/react-native-vs-flutter) and [web app vs mobile app vs PWA](/blog/web-app-vs-mobile-app-vs-pwa) come first — that decision moves the timeline more than anything else here.",
+        ],
+      },
+      {
+        heading: "What are the realistic mobile app timeline tiers?",
+        table: {
+          headers: ["Tier", "Timeline", "What you get", "Right for"],
+          rows: [
+            [
+              "MVP, one platform",
+              "5–7 weeks",
+              "Core flow end to end, auth, a working backend, and a TestFlight or internal-track build real users can install",
+              "Validating the idea with actual users",
+            ],
+            [
+              "Production, both stores",
+              "10–16 weeks",
+              "Full feature set on iOS and Android, offline handling, push notifications, analytics, crash reporting, and store submission",
+              "A launch you will market and support",
+            ],
+            [
+              "Complex app",
+              "20+ weeks",
+              "Offline-first sync, in-app payments, real-time features, background location, or deep integration with systems you do not control",
+              "Products where the hard part is not the UI",
+            ],
+          ],
+          caption: "Cross-platform timelines using React Native. Two separate native codebases add roughly 40–60% to the build.",
+        },
+      },
+      {
+        heading: "Where do the weeks actually go?",
+        paragraphs: [
+          "Here is the shape of a typical 12-week production build on both platforms. Note how much lands after the app appears finished — that gap is where most first-time app projects lose a month.",
+        ],
+        bullets: [
+          "**Weeks 1–2 — scope, flows, and the data model.** Map the screens, but more importantly the states behind them. Decide what works offline, what happens on a dropped connection, and what the app does when a token expires at the worst moment.",
+          "**Weeks 3–4 — backend and API.** The app is a client; something has to serve it. If you have no backend, this is real work and it belongs on the critical path rather than being discovered in week eight.",
+          "**Weeks 5–8 — feature build.** Screens, navigation, state management, and the API wiring, with builds on real devices every week so the app is felt rather than reviewed in screenshots.",
+          "**Week 9 — device and edge-case testing.** Small Android phones, large tablets, older OS versions, slow networks, denied permissions. This is where a demo-quality app becomes a shippable one.",
+          "**Week 10 — store preparation.** Icons, screenshots for every required size, privacy labels, data-safety declarations, age ratings, and store copy. It is administrative, it is unavoidable, and teams routinely forget to budget for it.",
+          "**Weeks 11–12 — submission, review, and launch fixes.** Review itself is usually fast now, but a rejection costs a full cycle, and the first build of a new app draws more scrutiny than an update.",
+        ],
+      },
+      {
+        heading: "What makes a mobile app take longer?",
+        bullets: [
+          "**No backend yet.** If the app needs accounts, data, or notifications and none of that exists, you are building two products. This is the single most common cause of a doubled mobile timeline.",
+          "**Store rejections.** Common triggers are missing privacy disclosures, account deletion not offered in-app, payments routed around the store's billing where the rules require it, and login-walled demos reviewers cannot get past. Each rejection is days, not hours.",
+          "**Offline support added late.** Offline-first is an architecture, not a feature. Retrofitting sync and conflict resolution onto an app built assuming connectivity means rewriting the data layer.",
+          "**Design handed over screen by screen.** Building while design is still arriving produces rework on every shared component. Have the core flows settled before the build starts.",
+          "**Device fragmentation on Android.** A layout that is perfect on a recent flagship can break on a small-screen budget device your users actually own.",
+          "**Third-party SDKs you do not control.** Payments, mapping, and identity providers each bring their own approval steps, sandbox quirks, and version upgrades.",
+        ],
+      },
+      {
+        heading: "How do you compress the timeline?",
+        paragraphs: [
+          "The fastest mobile builds share four decisions: **one platform first**, **cross-platform by default** so one codebase serves both stores, **an existing backend or a deliberately minimal one**, and **a feature set cut to the single flow that proves the product**.",
+          "The highest-leverage cut is usually notifications, offline mode, or in-app purchases in v1. Each is a multi-week subsystem with its own review requirements, and each is far cheaper to add to a shipped app than to carry through an unshipped one. Ship the flow that matters, get it on real phones, and let usage tell you which of those three you actually need.",
+        ],
+        callout: {
+          title: "From our own builds",
+          body: "We have shipped a [wedding services platform](/work/mydasma-wedding-platform) and a [transit rewards app](/work/transit-rewards-app) to both stores. On each, the mobile UI came together faster than expected and the schedule was set by the backend and the store-readiness work — screenshots, privacy declarations, and edge-case handling on real devices.",
+        },
+      },
+      {
+        heading: "When should you not build a mobile app?",
+        paragraphs: [
+          "If your product works fine in a browser and does not need the camera, push notifications, offline use, or background location, a responsive web app or PWA ships in a fraction of the time and skips app review entirely. Install friction is real: a user who will not download an app will still open a link.",
+          "Build native or cross-platform when you genuinely need device capabilities, when your users are on mobile constantly and repeat usage justifies an icon on their home screen, or when store presence itself is part of the distribution plan. Otherwise the web is faster and cheaper — see [web app vs mobile app vs PWA](/blog/web-app-vs-mobile-app-vs-pwa) for the full comparison.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "How long does it take to build a simple mobile app?",
+        a: "Five to seven weeks for a genuinely simple app on one platform, assuming the backend exists or barely any is needed. Simple means one core flow, standard authentication, and no offline mode, payments, or real-time features. What pushes a simple app past that is almost always discovering it needs a backend nobody scoped.",
+      },
+      {
+        q: "How long does it take to build an app for both iOS and Android?",
+        a: "Ten to sixteen weeks using a cross-platform framework like React Native, where one codebase serves both stores and platform-specific work is limited to native modules and store submission. Two separate native codebases add roughly 40–60% for the same feature set, which is why we default to cross-platform unless something specific requires otherwise.",
+      },
+      {
+        q: "How long does App Store review take?",
+        a: "Usually under 24 hours for a straightforward submission, and Google Play is comparable. The risk is not the queue but rejection: missing privacy disclosures, no in-app account deletion, payment flows that bypass store billing where the rules require it, or a login wall the reviewer cannot get past. Each rejection costs a cycle, so budget for one on a first submission.",
+      },
+      {
+        q: "Can you build a mobile app in 4 weeks?",
+        a: "A prototype yes, a launchable app rarely. In four weeks you can get the core flow running on real devices for internal testing, which answers whether the concept works. What four weeks does not buy is edge-case handling across devices and OS versions, store-readiness assets and declarations, crash reporting, and the review cycle — and those are most of the difference between a demo and something you can market.",
+      },
+      {
+        q: "Does the backend affect the mobile app timeline?",
+        a: "More than any other single factor. The app is a client, so accounts, data, push notifications, and admin tooling all need something to talk to. Teams that already have a solid API ship in the ranges above; teams discovering in week eight that they are also building a backend typically see the schedule double. Scope the backend at the same time as the app, never after.",
+      },
+    ],
+  },
+  {
+    slug: "how-long-to-build-a-website",
+    title: "How long does it take to build a website?",
+    metaTitle: "How Long Does It Take to Build a Website? (2026)",
+    metaDescription:
+      "Realistic website timelines: 2–3 weeks for a landing page, 5–8 weeks for a marketing site, 10+ weeks for a web app — and why content, not code, usually sets the date.",
+    excerpt:
+      "A landing page takes two to three weeks. A full marketing site takes five to eight. The variable almost nobody budgets for is content — and it is the reason most website projects run late.",
+    datePublished: "2026-09-17",
+    readingTime: "9 min read",
+    category: "Web development",
+    serviceSlug: "web-development",
+    sections: [
+      {
+        paragraphs: [
+          "A custom **marketing website** typically takes **5–8 weeks** from kickoff to launch. A focused **landing page** takes **2–3 weeks**. A **web application** with accounts, dashboards, and its own data model runs **10+ weeks** and is a different kind of project entirely.",
+          "The thing that derails website timelines is almost never engineering. It is **content**: the copy, the photography, the case studies, the legal pages, and the internal approvals on all of it. A build can be finished and sitting on a staging URL for three weeks waiting on an About page nobody has written.",
+          "If you are sizing budget as well as schedule, read this with [how much a custom website costs](/blog/cost-to-build-custom-website).",
+        ],
+      },
+      {
+        heading: "What are the realistic website timeline tiers?",
+        table: {
+          headers: ["Tier", "Timeline", "What you get", "Right for"],
+          rows: [
+            [
+              "Landing page",
+              "2–3 weeks",
+              "One page, one conversion goal, responsive, fast, analytics wired, basic on-page SEO",
+              "Validating an offer or supporting a campaign",
+            ],
+            [
+              "Marketing site",
+              "5–8 weeks",
+              "8–15 pages, a blog or CMS, structured data, sitemap and metadata, Core Web Vitals in the green, contact and booking flows",
+              "Your main storefront — the common case",
+            ],
+            [
+              "Web application",
+              "10+ weeks",
+              "Accounts, roles, a real data model, dashboards, integrations, and the backend behind them",
+              "Software, not a brochure",
+            ],
+          ],
+          caption: "Assumes design is settled at kickoff and content arrives on schedule — the two assumptions that most often fail.",
+        },
+      },
+      {
+        heading: "Where do the weeks actually go?",
+        paragraphs: [
+          "The shape of a typical 6-week marketing site. Note that content collection starts in week one and runs in parallel — projects that treat it as a later step are the ones that slip.",
+        ],
+        bullets: [
+          "**Week 1 — discovery, sitemap, and the content kickoff.** Agree the page list, the primary conversion, and who owns each piece of copy with a date against it. Starting the content clock now is the highest-leverage thing in the whole project.",
+          "**Week 2 — design direction.** Key templates rather than every page: home, an inner page, a post. Once those are agreed the rest are compositions of the same components.",
+          "**Weeks 3–4 — build.** Components, pages, responsive behaviour, and CMS wiring so your team can edit without a developer. Real content goes in as it arrives; placeholder text hides layout problems.",
+          "**Week 5 — SEO, performance, and analytics.** Metadata, structured data, sitemap, redirects from any old URLs, image optimisation, and Core Web Vitals. Doing this at the end as a checklist is how sites launch with a month of avoidable technical debt.",
+          "**Week 6 — review, accessibility pass, and launch.** Cross-browser and mobile checks, keyboard and screen-reader basics, form testing, then DNS cutover with redirects in place from day one.",
+        ],
+      },
+      {
+        heading: "What makes a website take longer?",
+        bullets: [
+          "**Content that does not exist yet.** The most common cause, by a wide margin. If the copy has to be written during the build, add two to three weeks and assign an owner per page with a deadline.",
+          "**Approval by committee.** Every additional stakeholder with veto power adds a review round, and review rounds are calendar time, not engineering time.",
+          "**Design arriving page by page.** Building against a moving design means rebuilding shared components repeatedly. Settle the core templates before the build starts.",
+          "**A migration nobody scoped.** Moving an existing site means auditing old URLs and mapping redirects. Skipping that is how a redesign quietly destroys rankings the business already had — our [Next.js SEO checklist](/blog/nextjs-seo-checklist) covers what has to survive a migration.",
+          "**Integrations discovered late.** A CRM, a booking tool, a payment flow, or a mailing list each carry their own setup and testing.",
+          "**Bespoke animation.** Motion is fun to specify and slow to build, tune, and make accessible.",
+        ],
+      },
+      {
+        heading: "How do you compress the timeline?",
+        paragraphs: [
+          "Three levers, in order of impact. **Write the content first** — a site whose copy is ready at kickoff routinely ships two weeks early, and no engineering decision comes close to that. **Name one decision-maker** so reviews resolve in a day instead of a week. **Cut the page count for v1** and add pages after launch, since a live eight-page site earns more than a perfect twenty-page site three weeks later.",
+          "What is not worth cutting is the SEO and performance work in week five. It is a small share of the build, it is far more expensive to retrofit, and on a new domain it is the difference between a site that can eventually rank and one that cannot.",
+        ],
+        callout: {
+          title: "From our own builds",
+          body: "We have shipped an [admin dashboard](/work/redeemx-admin-dashboard), an [e-commerce storefront](/work/fika-wall-art-ecommerce), and a [marketplace](/work/prowire-marketplace) across this range. The pattern is consistent: the sites that launched on the original date were the ones whose content was ready in week one.",
+        },
+      },
+      {
+        heading: "Do you still need a custom website?",
+        paragraphs: [
+          "Not always, and it is worth being honest about. If you need a handful of pages, standard layouts, and no unusual integrations, a well-configured template on a mainstream platform gets you live in days for a fraction of the cost. That is genuinely the right answer for many small businesses.",
+          "Custom earns its keep when the site is a real acquisition channel — where performance, structured data, and page-level SEO control translate into traffic — when you need integrations a template cannot accommodate, or when the design itself is part of how you differentiate. If none of those apply, spend the money on the content instead.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "How long does it take to build a simple website?",
+        a: "Two to three weeks for a landing page, and four to five for a small multi-page site, assuming the copy is ready. Simple means standard layouts, no custom integrations, and one decision-maker. The word doing the work in that sentence is \"assuming the copy is ready\" — content readiness, not page count, is what separates a three-week site from a seven-week one.",
+      },
+      {
+        q: "Why do website projects run late?",
+        a: "Content, in most cases. Copy, images, case studies, and team bios have to be written and approved by people whose main job is something else, and that work is routinely left until the build is underway. The second cause is approval structure: each extra stakeholder with veto power adds review rounds that consume calendar time no amount of engineering speed recovers.",
+      },
+      {
+        q: "How long does it take to redesign an existing website?",
+        a: "Slightly longer than building fresh, which surprises people. You get existing content, which helps, but you also inherit a URL migration: every old URL has to be audited and mapped to a redirect, or the rankings and links the old site earned are lost at launch. Budget an extra week for that mapping and testing — it is the step that protects everything the current site is already earning.",
+      },
+      {
+        q: "Can you build a website in a week?",
+        a: "A single landing page, yes, if the copy exists and the design is straightforward. A multi-page site, no — not because the pages take that long individually, but because design review, content collection, and testing each need a turn and they cannot all happen in the same week. If the deadline is genuinely a week, ship one strong page rather than a rushed five.",
+      },
+      {
+        q: "What do you need from us to hit the timeline?",
+        a: "Content and a decision-maker. Specifically: final copy for each page with an owner and a date, brand assets and imagery, access to your domain and any tools we are integrating, and one person who can approve design without convening a committee. Teams that bring those to kickoff hit the ranges above consistently; teams that do not add two to three weeks regardless of how the build goes.",
+      },
+    ],
+  },
+  {
+    slug: "how-long-to-integrate-stripe",
+    title: "How long does it take to integrate Stripe?",
+    metaTitle: "How Long Does It Take to Integrate Stripe? (2026)",
+    metaDescription:
+      "Realistic Stripe integration timelines: 3–5 days for one-off payments, 2–3 weeks for subscriptions, 4–6 weeks for usage-based or marketplace billing — and what slows them.",
+    excerpt:
+      "Taking a single payment is a few days. Subscriptions that survive failed cards, plan changes, and refunds take two to three weeks — and webhooks are where the time actually goes.",
+    datePublished: "2026-09-17",
+    readingTime: "8 min read",
+    category: "Payments",
+    serviceSlug: "stripe-integration",
+    sections: [
+      {
+        paragraphs: [
+          "Taking a **one-off payment** with Stripe Checkout takes **3–5 days**. **Subscription billing** that holds up in production — plan changes, failed cards, proration, cancellations, refunds — takes **2–3 weeks**. **Usage-based or marketplace billing** with Connect runs **4–6 weeks**.",
+          "The gap between those numbers is not the payment form. Stripe makes charging a card genuinely easy. The work is everything that happens **after** the charge: reconciling webhooks, keeping your database in sync with Stripe's view of the world, and handling the dozen states a subscription can be in that are not \"active\".",
+          "If you have not chosen a provider yet, [Stripe vs Paddle vs Lemon Squeezy](/blog/stripe-vs-paddle-vs-lemonsqueezy) comes first — the merchant-of-record question changes who handles your sales tax, and that decision is far more consequential than integration time.",
+        ],
+      },
+      {
+        heading: "What are the realistic Stripe integration timelines?",
+        table: {
+          headers: ["Scope", "Timeline", "What it covers", "Right for"],
+          rows: [
+            [
+              "One-off payments",
+              "3–5 days",
+              "Stripe Checkout, success and cancel handling, one webhook to confirm fulfilment, test-mode coverage",
+              "Selling a product, a report, a single service",
+            ],
+            [
+              "Subscriptions",
+              "2–3 weeks",
+              "Plans, trials, upgrades and downgrades with proration, dunning for failed payments, the customer billing portal, and full webhook reconciliation",
+              "SaaS — the common case",
+            ],
+            [
+              "Usage-based or marketplace",
+              "4–6 weeks",
+              "Metering and usage reporting, or Stripe Connect with onboarding, split payments, and payouts to third parties",
+              "Consumption pricing or paying out sellers",
+            ],
+          ],
+          caption: "Assumes you have a working app with authentication and a database to attach billing to.",
+        },
+      },
+      {
+        heading: "Where does the time actually go?",
+        paragraphs: [
+          "For a typical 2–3 week subscription build, the payment form is roughly a day of it. Here is the rest:",
+        ],
+        bullets: [
+          "**Modelling the billing states.** Your database needs to know who is on what plan, whether they are in a trial, past due, cancelled-but-active-until-period-end, or fully lapsed. Getting these states wrong is what produces customers who paid and cannot log in.",
+          "**Webhooks, done properly.** Stripe is the source of truth and it tells you about changes asynchronously. Handlers must be idempotent, because events arrive more than once and out of order. This is the single largest chunk of the work and the part that separates a weekend integration from a production one.",
+          "**Plan changes and proration.** Upgrades, downgrades, and mid-cycle switches each have billing consequences your users will notice immediately and complain about loudly if they are wrong.",
+          "**Failed payments and dunning.** Cards expire constantly. Deciding retry cadence, what email goes out, and exactly when access is revoked is product design as much as engineering.",
+          "**Entitlements.** Connecting \"has an active subscription\" to \"can actually use this feature\" touches your authorisation layer, and in a multi-tenant product it touches it in several places — see [authentication and RBAC in a multi-tenant SaaS](/blog/multi-tenant-saas-auth-rbac).",
+          "**Testing the unhappy paths.** Stripe's test cards simulate declines, disputes, and authentication challenges. Working through them is a day well spent and the thing most rushed integrations skip.",
+        ],
+      },
+      {
+        heading: "What makes a Stripe integration take longer?",
+        bullets: [
+          "**Migrating existing subscribers.** Moving live customers from another processor or a legacy setup means preserving billing dates, proration, and payment methods without double-charging anyone. This can exceed the integration itself.",
+          "**Tax.** Stripe Tax is straightforward to enable, but deciding where you are registered is a business question, not an engineering one, and it routinely stalls launches. A merchant of record avoids it entirely, which is why the provider choice matters.",
+          "**Strong Customer Authentication.** European cards can require an additional authentication step mid-payment, which your flows must handle rather than treating as a failure.",
+          "**Custom invoicing and enterprise terms.** Purchase orders, net-30, manual invoices, and annual contracts sit outside the standard self-serve flow.",
+          "**Marketplace payouts.** Stripe Connect adds onboarding, identity verification, and payout scheduling for every seller — a genuinely larger project than accepting payments.",
+        ],
+      },
+      {
+        heading: "How do you compress the timeline?",
+        paragraphs: [
+          "Start with **Stripe Checkout and the hosted billing portal** rather than a custom payment UI. Both are maintained by Stripe, handle authentication challenges and card updates for you, and remove most of your PCI surface. A bespoke checkout looks better in a design review and costs a week you did not need to spend.",
+          "Then **launch with one plan.** Annual options, multiple tiers, add-ons, and coupons each multiply the state combinations you have to test. One monthly plan gets you taking revenue, and every extra option is far cheaper to add once webhooks are proven in production.",
+        ],
+        callout: {
+          title: "From our own builds",
+          body: "We built Stripe Checkout, subscriptions, and webhook handling into a [GIS zoning SaaS](/work/gis-zoning-saas) selling both on-demand reports and recurring plans, and shipped billing inside an [11-week multi-tenant SaaS MVP](/work/saas-mvp-11-weeks). In both, the payment form was a day and webhook reconciliation was the fortnight.",
+        },
+      },
+      {
+        heading: "Should you use Stripe Billing or build your own logic?",
+        paragraphs: [
+          "Use Stripe Billing. Teams who model subscriptions in their own database and treat Stripe as a dumb charging API end up rebuilding proration, dunning, and invoicing badly, then discovering the edge cases in production with real customers.",
+          "Keep Stripe as the source of truth for billing state, mirror only what you need for fast authorisation checks, and reconcile through webhooks. Your own logic belongs in entitlements — what a paying customer is allowed to do — not in working out what they owe.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "How long does it take to add Stripe payments to a website?",
+        a: "Three to five days for one-off payments using Stripe Checkout, including the success and cancellation flows, a webhook to confirm fulfilment, and testing against Stripe's test cards. That assumes an existing site with somewhere to record the order. Subscriptions are a different scope — two to three weeks — because recurring billing brings states that a single charge does not.",
+      },
+      {
+        q: "Why do Stripe subscriptions take longer than one-off payments?",
+        a: "Because a subscription has a lifecycle and a payment does not. Trials, upgrades, downgrades with proration, failed cards, dunning, cancellations that stay active until period end, and refunds are each a state your application must recognise and act on. Add asynchronous webhooks that arrive out of order and more than once, and the work is reconciliation rather than payment.",
+      },
+      {
+        q: "What is the hardest part of a Stripe integration?",
+        a: "Webhooks. Stripe is the source of truth and notifies you of changes asynchronously, so handlers must be idempotent and tolerate events arriving late, twice, or in the wrong order. Get this wrong and you get the failure modes users actually notice: paid customers locked out, cancelled customers still charged, or access that silently never revokes.",
+      },
+      {
+        q: "Can we migrate existing subscribers to Stripe?",
+        a: "Yes, and it is usually a project in its own right rather than part of the integration. Billing dates, proration, and payment methods have to carry across without anyone being double-charged or losing access, and it is typically run as a phased migration with a reconciliation period. Budget for it separately — on an existing subscriber base it can take longer than the integration itself.",
+      },
+      {
+        q: "Do we need Stripe Connect?",
+        a: "Only if you pay out to third parties. Connect is for marketplaces and platforms where money moves from a buyer to a seller who is not you, and it brings seller onboarding, identity verification, and payout scheduling — four to six weeks rather than two to three. If you are simply charging your own customers for your own product, standard Stripe Billing is what you want.",
+      },
+    ],
+  },
 ];
 
 function countWords(text: string | undefined): number {

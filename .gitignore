@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# claude code (local agent config — settings.local.json is per-machine)
+.claude/
+
+# seo audit artifacts (3MB of generated reports/screenshots, not source)
+codebaxh.com-audit/
