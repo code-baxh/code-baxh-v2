@@ -47,7 +47,9 @@ export function organizationSchema() {
     name: site.name,
     legalName: site.legal.entityName,
     url: site.url,
-    logo: { "@type": "ImageObject", url: abs("/logo/codebaxh-logo-light.png") },
+    // Square app icon (the CB mark): Google needs a logo of at least 112×112, so the wide
+    // 322×84 wordmark doesn't qualify for the logo in search results.
+    logo: { "@type": "ImageObject", url: abs("/icon.png"), width: 512, height: 512 },
     image: abs("/opengraph-image"),
     description: site.description,
     slogan: site.tagline,

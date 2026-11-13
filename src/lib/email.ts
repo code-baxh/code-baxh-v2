@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import { Resend } from "resend";
 import { site } from "@/config/site";
 import type { ContactData, MessageData } from "./contact-schema";
+import { abs } from "./seo";
 
 type Mail = { to: string; subject: string; html: string; text: string; replyTo?: string };
 
@@ -40,8 +41,7 @@ function shell(title: string, body: string) {
   return `<!doctype html><html><body style="margin:0;background:#06080d;font-family:Arial,Helvetica,sans-serif;color:#eef0f5">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#0c1018;border:1px solid #232a38;border-radius:16px">
-<tr><td style="padding:28px 32px;border-bottom:1px solid #232a38"><span style="display:inline-block;background:#fab81e;color:#171001;font-weight:700;border-radius:8px;padding:6px 10px">CB</span>
-<span style="font-weight:700;letter-spacing:3px;margin-left:10px">CODEBAXH</span></td></tr>
+<tr><td style="padding:28px 32px;border-bottom:1px solid #232a38"><a href="${esc(site.url)}" style="text-decoration:none"><img src="${esc(abs("/logo/codebaxh-logo-dark.png"))}" width="161" height="42" alt="CodeBaxh" style="display:block;border:0;outline:none;width:161px;height:42px;color:#ffffff;font-size:20px;font-weight:700"></a></td></tr>
 <tr><td style="padding:32px"><h1 style="margin:0 0 16px;font-size:22px;color:#ffffff">${title}</h1>${body}</td></tr>
 <tr><td style="padding:20px 32px;border-top:1px solid #232a38;font-size:12px;color:#a0a9ba">${esc(site.legal.entityName)} · ${esc(site.url)}</td></tr>
 </table></td></tr></table></body></html>`;
