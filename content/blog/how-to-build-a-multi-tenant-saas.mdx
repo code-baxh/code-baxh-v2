@@ -1,0 +1,159 @@
+---
+title: "How to build a multi-tenant SaaS architecture"
+description: "A practical guide to multi-tenant SaaS architecture: tenant isolation models, data design, auth, and billing — from a team that ships production SaaS."
+date: "2026-05-12"
+updated: "2026-11-13"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["saas", "architecture", "multi-tenancy", "postgres"]
+cover: ""
+service: "saas-development"
+---
+
+Multi-tenancy means one application serves many customers (tenants) while keeping each tenant's data isolated. The model you choose — shared schema, schema-per-tenant, or database-per-tenant — is the single most consequential early decision in a SaaS build, because changing it later is expensive. For most products the right default is a **shared schema with a `tenant_id` on every row, enforced by PostgreSQL row-level security**, with dedicated databases reserved for the enterprise customers who contractually need them.
+
+## What multi-tenancy actually requires
+
+A tenant is usually a company or team account, not an individual user. Multi-tenant architecture has to guarantee three things at once:
+
+- **Isolation.** No query, file, cache entry or background job ever crosses from one tenant to another.
+- **Fair sharing.** One heavy tenant cannot slow everyone else down (the "noisy neighbour" problem).
+- **Economy.** Adding the hundredth customer should cost almost nothing to provision and operate.
+
+Every tenancy model trades these against each other.
+
+## The three tenancy models compared
+
+AWS describes the same spectrum as [pool, bridge and silo](https://docs.aws.amazon.com/whitepapers/latest/saas-tenant-isolation-strategies/core-isolation-concepts.html) models, and Microsoft's [multitenant architecture guide](https://learn.microsoft.com/en-us/azure/architecture/guide/multitenant/overview) covers the same trade-offs on Azure.
+
+| | Shared schema (pool) | Schema-per-tenant (bridge) | Database-per-tenant (silo) |
+| --- | --- | --- | --- |
+| How tenants are separated | A `tenant_id` column on every table | A separate schema per tenant in one database | A dedicated database per tenant |
+| Isolation strength | Relies on correct scoping, backed by row-level security | Stronger; mistakes are contained to a schema | Strongest; physical separation |
+| Cost to run | Lowest | Moderate | Highest |
+| Operational effort | Low: one schema to migrate | Higher: migrations run per schema | Highest: per-database backups, upgrades, monitoring |
+| Cross-tenant analytics | Easy | Harder | Hardest |
+| Best for | Most B2B SaaS, especially at MVP stage | Mid-size tenants wanting stronger separation | Enterprise and regulated customers, data residency |
+
+## How to choose a model
+
+Ask these questions before writing the first migration:
+
+1. **Will any customer contractually require a dedicated database or a specific data region?** If yes, plan for silo as a premium tier, not as the default.
+2. **How skewed are tenant sizes?** If a few tenants will be orders of magnitude larger than the rest, you need a way to move them onto their own resources.
+3. **Do you need analytics across tenants?** Reporting across all customers is trivial in a shared schema and painful across hundreds of databases.
+4. **Who will operate it?** Per-tenant databases multiply backups, migrations and monitoring. A small team should not take that on without a reason.
+
+The common answer is a hybrid: pool by default, silo for the enterprise tier. AWS calls this [tier-based isolation](https://docs.aws.amazon.com/whitepapers/latest/saas-tenant-isolation-strategies/tier-based-isolation.html), and it works best when tenant resolution is designed so a tenant can be moved without code changes.
+
+## Building it, step by step
+
+### 1. Model tenants, users and memberships
+
+Users and tenants are a many-to-many relationship: a consultant may belong to several client accounts. Roles belong to the membership, not to the user.
+
+```sql
+create table tenants (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  plan text not null default 'trial',
+  created_at timestamptz not null default now()
+);
+
+create table memberships (
+  tenant_id uuid not null references tenants(id) on delete cascade,
+  user_id uuid not null references users(id) on delete cascade,
+  role text not null check (role in ('owner', 'admin', 'member')),
+  primary key (tenant_id, user_id)
+);
+```
+
+### 2. Resolve the tenant on every request
+
+Identify the tenant from the subdomain, the URL path or the signed-in session, then check the user is a member of it. Do this once, in middleware, and carry the result as request context. **Never trust a `tenant_id` sent in a request body**; it is user input like any other.
+
+### 3. Scope every query automatically
+
+Data access should go through a layer that adds the tenant filter for you: a repository base class, an ORM extension, or a request-scoped database client. If developers have to remember `where tenant_id = ?` on every query, one of them eventually will not.
+
+### 4. Add row-level security as a backstop
+
+PostgreSQL [row-level security](https://www.postgresql.org/docs/current/ddl-rowsecurity.html) makes the database itself refuse rows from other tenants, so an application bug cannot leak data.
+
+```sql
+alter table projects enable row level security;
+alter table projects force row level security;
+
+create policy tenant_isolation on projects
+  using (tenant_id = current_setting('app.tenant_id')::uuid);
+```
+
+Then, inside each transaction, set the tenant with `set local app.tenant_id = '...'`. Two details matter. Table owners bypass policies unless you add `force row level security`, so run the application as a non-owner role. And with connection pooling, use `set local` inside a transaction so the setting cannot leak to the next request on the same connection.
+
+### 5. Add role-based access inside each tenant
+
+Isolation keeps tenants apart; RBAC decides what each member can do within their own account. Check permissions on the server for every action, not just by hiding buttons in the UI. Our guide to [multi-tenant auth and RBAC](/blog/multi-tenant-saas-auth-rbac) covers the model in detail.
+
+### 6. Tie billing to the tenant
+
+The tenant, not the user, is the paying customer: one Stripe customer and subscription per tenant, with subscription status gating features and limits. Webhooks update the tenant's plan, so trials, upgrades, failed payments and cancellations flow straight into access control. See [Stripe subscription billing for SaaS](/blog/stripe-subscription-billing-saas).
+
+### 7. Make everything else tenant-aware
+
+Isolation bugs rarely come from the main tables. Check the places that are easy to forget:
+
+- **File storage**: prefix object keys with the tenant ID and generate signed URLs per request.
+- **Background jobs**: every job payload carries its tenant ID and sets the tenant context before touching data.
+- **Caches**: include the tenant in every cache key.
+- **Search indexes**: filter by tenant at query time, never after retrieval.
+- **Unique constraints**: `unique (tenant_id, email)`, not `unique (email)`, unless the value really is global.
+
+### 8. Observe and limit per tenant
+
+Put the tenant ID on every log line and trace so you can debug one customer without reading everyone's logs. Add per-tenant rate limits and quotas so a single heavy tenant cannot degrade the service for the rest.
+
+### 9. Handle the tenant lifecycle
+
+Provisioning at sign-up, inviting members, suspending for non-payment, exporting data and deleting an account on request (an obligation under the GDPR for EU customers) are all part of the product. Build deletion and export early; retrofitting them across every table is slow.
+
+## Test isolation like a feature
+
+Write automated tests that create two tenants, sign in as a member of one, and assert that every read and write against the other fails. Run them in CI on every change. It is the cheapest insurance in a SaaS codebase, and it catches the regressions code review misses. Our [QA strategy for startups](/blog/qa-testing-strategy-for-startups) shows how to fit this into a small team's pipeline.
+
+## Common mistakes that leak data
+
+- Accepting a `tenant_id` from the client instead of deriving it from the session.
+- Background jobs and webhooks that run without a tenant context.
+- Running the app as the table owner, so row-level security is silently bypassed.
+- Global unique constraints that let one tenant discover another's data through error messages.
+- Support "impersonation" tools with no audit trail.
+
+## Our default
+
+For most SaaS MVPs we start with a shared schema and a `tenant_id` plus Postgres row-level security — cheap to run, fast to build, and isolated when implemented carefully — and reserve database-per-tenant for enterprise customers who require it. We used exactly this approach to ship a [multi-tenant SaaS MVP](/work/multi-tenant-saas-mvp), with tenant isolation, Stripe subscriptions and role-based access live from the first release.
+
+## Frequently asked questions
+
+### Which multi-tenant model is best?
+
+For most SaaS, a shared schema with a `tenant_id` and row-level security is the best default — cheapest to operate and well-isolated when built carefully. Move to database-per-tenant only for enterprise or compliance needs.
+
+### Can you change tenancy models later?
+
+Yes, but it's expensive and risky — it usually means a data migration and significant rework. That's why the model is worth getting right at the start.
+
+### What is the difference between single-tenant and multi-tenant SaaS?
+
+Single-tenant SaaS runs a separate copy of the application and database for each customer. Multi-tenant SaaS serves every customer from one application, separating their data logically. Multi-tenant is far cheaper to run and update; single-tenant gives the strongest isolation and is mostly used for enterprise or regulated customers.
+
+### Is row-level security enough on its own?
+
+No. Row-level security is a backstop that stops application bugs from leaking data, but it only protects database rows. Files, caches, search indexes and background jobs need their own tenant scoping, and you still need role-based access inside each tenant.
+
+### How do you handle enterprise customers who want a dedicated database?
+
+Offer it as a higher tier. If tenant resolution is designed from the start to look up where each tenant's data lives, an enterprise tenant can run on its own database while everyone else stays on the shared one, with the same application code.
+
+### How long does it take to build a multi-tenant SaaS?
+
+A focused multi-tenant MVP typically takes 8–14 weeks, with tenancy, authentication and billing built in from the first sprint. See our [SaaS MVP timeline](/blog/how-long-to-build-saas-mvp) for the phase-by-phase breakdown.

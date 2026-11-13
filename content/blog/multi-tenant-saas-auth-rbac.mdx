@@ -1,0 +1,161 @@
+---
+title: "Authentication and RBAC in a multi-tenant SaaS"
+description: "Multi-tenant SaaS auth and RBAC: a role and permission matrix, where checks must run (API, data layer, not the UI), invitation flows and enterprise SSO."
+date: "2026-01-26"
+updated: "2026-11-13"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["saas", "authentication", "rbac", "multi-tenancy"]
+cover: ""
+service: "saas-development"
+---
+
+In a multi-tenant SaaS, a user authenticates once, but every permission is decided per tenant: the role lives on the user's **membership** in a tenant, not on the user. Enforce it in **three places**: middleware that resolves the tenant from the session, permission checks in the API, and tenant scoping in the data layer backed by row-level security. The UI only hides what a user cannot do; it never decides.
+
+## How should users, tenants and roles be modeled?
+
+Keep authentication and authorization separate. Authentication answers "who is this person?" and is a solved problem: use a proven auth provider rather than writing password storage, session handling and MFA yourself. Authorization answers "what may this person do in this tenant?" and is yours to design, because it encodes your product's rules.
+
+The model that holds up:
+
+- **Users** are identities: an email, a login method, a profile.
+- **Tenants** are the customer organizations that own data and pay the bill.
+- **Memberships** join a user to a tenant and carry the role. A consultant can be an admin in one client's account and a viewer in another.
+- **Permissions** are fine-grained actions such as `members:invite`. Roles are named bundles of permissions, defined in code.
+
+The tables and the tenant resolution behind this are covered step by step in our guide to [multi-tenant SaaS architecture](/blog/how-to-build-a-multi-tenant-saas). This post focuses on what sits on top: roles, checks, invitations and SSO.
+
+## What roles and permissions does a SaaS need?
+
+Start with four fixed roles. They cover most B2B products at launch, and every extra role multiplies what you have to test and explain.
+
+| Permission | Owner | Admin | Member | Viewer |
+| --- | --- | --- | --- | --- |
+| View workspace data | Yes | Yes | Yes | Yes |
+| Create records; edit or delete their own | Yes | Yes | Yes | No |
+| Edit or delete anyone's records | Yes | Yes | No | No |
+| Invite members | Yes | Yes | No | No |
+| Change roles and remove members | Yes | Yes, except owners | No | No |
+| Manage billing and plan | Yes | Yes | No | No |
+| Export all workspace data | Yes | Yes | No | No |
+| View the audit log | Yes | Yes | No | No |
+| Configure SSO and security policies | Yes | No | No | No |
+| Transfer ownership or delete the workspace | Yes | No | No | No |
+
+Three rules make the matrix work in practice:
+
+1. **Code checks permissions, never role names.** Write `can(role, "members:invite")`, not `role === "admin"`. When you add a Billing role later, you edit one mapping instead of hunting through every handler.
+2. **Nobody can grant more than they hold.** An admin can invite members and admins but cannot create or demote an owner, and every tenant always keeps at least one owner.
+3. **Ownership is an attribute, not a role.** "Edit their own records" is a check on the record (`createdBy`), combined with the role. OWASP's [authorization cheat sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html) recommends attribute- and relationship-based checks like this over piling up roles, and lists deny-by-default as a core principle.
+
+Custom roles, where each customer defines their own bundles, are a reasonable enterprise-tier feature. They are not an MVP feature; our [SaaS MVP feature checklist](/blog/saas-mvp-feature-checklist) explains where to draw that line.
+
+## Where must permission checks happen?
+
+Broken access control sits at number one in the [OWASP Top 10:2025](https://top10.owasp.org/2025/A01_2025-Broken_Access_Control), and OWASP reports that 100% of the applications tested had some form of it. In a multi-tenant product the worst version is a cross-tenant leak, and it almost always comes from a check that ran in the wrong place or not at all.
+
+| Layer | What it checks | If you skip it |
+| --- | --- | --- |
+| Middleware | The session is valid; the tenant comes from the session or subdomain, and the user is a member | Users can act in tenants they do not belong to |
+| API and service layer | The role grants the permission, and the specific record belongs to this tenant (and user, where ownership applies) | Anyone who guesses an ID can read or change it |
+| Data layer | Every query is tenant-scoped automatically, with Postgres row-level security as a backstop | One forgotten filter leaks another tenant's data |
+| Background jobs, webhooks, exports, files | The same tenant context and permission rules | The side doors stay open while the front door is locked |
+| UI | Hide or disable what the user cannot do | Nothing breaks; this layer is convenience only |
+
+The OWASP cheat sheet is blunt about the last row: developers must never rely on client-side access control checks. Hiding the delete button is good UX; the API must still refuse the request.
+
+A permission map and a handler that uses it, in TypeScript:
+
+```ts
+// permissions.ts: the single source of truth for what each role can do
+const rolePermissions = {
+  owner:  ["records:read", "records:write", "records:delete_any", "members:invite",
+           "members:manage", "billing:manage", "data:export", "audit:read",
+           "security:manage", "tenant:delete"],
+  admin:  ["records:read", "records:write", "records:delete_any", "members:invite",
+           "members:manage", "billing:manage", "data:export", "audit:read"],
+  member: ["records:read", "records:write"],
+  viewer: ["records:read"],
+} as const;
+
+type Role = keyof typeof rolePermissions;
+type Permission = (typeof rolePermissions)["owner"][number];
+
+export function can(role: Role, permission: Permission): boolean {
+  return (rolePermissions[role] as readonly string[]).includes(permission);
+}
+
+// A handler: ctx.db is already scoped to ctx.tenantId by middleware
+export async function deleteRecord(ctx: RequestContext, recordId: string) {
+  const record = await ctx.db.records.findById(recordId);
+  if (!record) throw new NotFound(); // other tenants' rows are invisible
+
+  const ownsIt = record.createdBy === ctx.userId;
+  if (!ownsIt && !can(ctx.role, "records:delete_any")) throw new Forbidden();
+
+  await ctx.db.records.delete(recordId);
+  await ctx.audit("record.deleted", { recordId });
+}
+```
+
+Returning "not found" for another tenant's record, rather than "forbidden", avoids confirming that the ID exists. For the database backstop, [PostgreSQL row-level security](https://www.postgresql.org/docs/current/ddl-rowsecurity.html) applies a default-deny policy when a table has security enabled but no policy, and table owners bypass policies unless you force them, so run the application as a non-owner role.
+
+## How should team invitations work?
+
+Invitations are where authentication meets authorization, and they are easy to get subtly wrong. A flow that holds up:
+
+1. **An admin invites an email address with a role.** Check `members:invite`, and reject roles above the inviter's own.
+2. **Store an invitation row**: tenant, email, role, inviter, expiry (seven days is typical) and a hash of a random token. Store the hash, never the token itself.
+3. **Email a link containing the token.** Do not reveal in the UI whether that email already has an account.
+4. **On acceptance**, the person signs in or signs up. Verify the token, its expiry and that it has not been used; confirm the signed-in email matches the invited one; then create the membership and mark the invitation used, in one transaction.
+5. **Write an audit entry** for the invite, the acceptance and the role granted.
+
+Handle the edge cases on purpose. Existing users joining a second tenant need a tenant switcher. Pending invitations need a revoke button, and resending should issue a fresh token. If your plans limit seats, check the limit when the invite is sent and again when it is accepted, because the plan can change in between; our [Stripe subscription billing guide](/blog/stripe-subscription-billing-saas) covers keeping plan state on the tenant.
+
+Removing a member is the mirror image: delete the membership, revoke their active sessions and any API keys they created, and reassign or keep the records they own.
+
+## How do you add SSO for enterprise customers?
+
+Enterprise buyers expect their staff to sign in through the company identity provider using SAML or OpenID Connect, and they expect access to end the moment IT removes someone. Build SSO as a per-tenant setting:
+
+- **Per-tenant connections.** Each enterprise tenant configures its own identity provider. Use an auth service that supports per-tenant SAML and OIDC rather than implementing SAML yourself.
+- **Verified domains.** Before a tenant can route `@company.com` logins to its identity provider, prove it owns the domain, typically with a DNS record. Otherwise one customer could claim another's users.
+- **Just-in-time provisioning.** On first SSO login, create the membership with a default role, or map identity-provider groups to your roles.
+- **SCIM for deprovisioning.** The [SCIM protocol (RFC 7644)](https://datatracker.ietf.org/doc/html/rfc7644) lets the customer's directory create, update and deactivate users in your app automatically. It closes the gap where someone leaves the company but keeps their SaaS login.
+- **Enforcement and break-glass.** Let tenants require SSO for all members, but keep one owner able to sign in another way in case the identity provider is misconfigured.
+
+SSO usually arrives alongside audit logs, session policies and security questionnaires, so price it into an enterprise plan. Our [enterprise software development guide](/blog/enterprise-software-development-guide) covers what else those buyers ask for.
+
+## How do you test authorization?
+
+Treat the matrix above as a test specification. Generate one test per role and permission pair, asserting allow or deny, plus cross-tenant tests that sign in as a member of tenant A and attempt every read and write against tenant B. Run both in CI on every change; OWASP's cheat sheet recommends exactly this kind of automated authorization testing. Our [QA strategy for startups](/blog/qa-testing-strategy-for-startups) shows how to fit it into a small team's pipeline.
+
+## Our approach
+
+We build tenant context, a permission map like the one above and row-level security in from the first sprint, start with three or four fixed roles, and add SSO and custom roles when an enterprise deal needs them. The same foundation sat under the [multi-tenant SaaS MVP](/work/multi-tenant-saas-mvp) we shipped, with tenant isolation and role-based access live at launch. Our [engagement models](/engagement) explain how we scope and price that work.
+
+## Frequently asked questions
+
+### How does authentication work in a multi-tenant SaaS?
+
+Authenticate the user, resolve their tenant membership and role from the session, set tenant context on every request, and enforce role-based permissions within that tenant. Scope all queries by tenant and back them with row-level security. Never accept a tenant ID from the client as proof of membership.
+
+### What is row-level security and do I need it?
+
+Row-level security (RLS) is a database feature, available in PostgreSQL, that restricts which rows a query can see or change. In a multi-tenant SaaS it is a valuable backstop: even if application code misses a tenant filter, RLS stops the query returning another tenant's data. It does not replace permission checks in your API, and it does not protect files, caches or search indexes.
+
+### Should I build my own authentication?
+
+No. Use a proven auth provider for sign-up, login, password reset, MFA and SSO, since mistakes there are costly and the problem is solved. Authorization is different: your roles, permissions and tenant rules are product logic, and they belong in your own code.
+
+### How many roles should a SaaS start with?
+
+Three or four: owner, admin, member and optionally viewer. That covers most B2B products at launch and keeps the permission matrix small enough to test fully. Add a billing role or custom roles when customers actually ask for them.
+
+### Can a user belong to more than one tenant?
+
+Yes, and the model should allow it from day one. Put the role on the membership rather than the user, give users a tenant switcher, and resolve the active tenant on every request. Agencies, consultants and people who change jobs all rely on this.
+
+### When should I add SSO?
+
+When enterprise customers start asking for it, usually as part of a security review. SSO is typically sold in a higher-priced plan alongside audit logs and SCIM provisioning. Design memberships and tenant settings so SSO can be added per tenant without reworking how login works.

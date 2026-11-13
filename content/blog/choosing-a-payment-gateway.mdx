@@ -1,0 +1,121 @@
+---
+title: "Choosing a payment gateway: Stripe, PayPal, Adyen and more"
+description: "How to choose a payment gateway: Stripe, PayPal, Adyen, Checkout.com and regional providers compared on coverage, payment methods, PCI scope and webhooks."
+date: "2026-11-08"
+updated: "2026-11-08"
+author: "bilal-khursheed"
+category: "Web"
+tags: ["payments", "payment gateway", "stripe", "pci dss", "webhooks"]
+cover: ""
+service: "payment-gateway-integration"
+---
+
+Choose a payment gateway by starting with constraints, not features. First confirm the provider supports businesses in your country and pays out in your currency. Then check it offers the payment methods your customers expect. Only after that compare fees, developer experience and extras such as subscriptions or fraud tools. For many online businesses Stripe is a sound default where it is available, but regional providers are often the better or only choice in some markets.
+
+## What a payment gateway does
+
+Several terms overlap, so it helps to separate them.
+
+- A **payment gateway** securely collects payment details and sends them for authorisation.
+- A **payment processor** moves the transaction between the card networks and the banks.
+- An **acquirer** is the bank or institution that settles funds to the merchant.
+- A **payment service provider (PSP)** bundles all three under one contract and one integration. Stripe, PayPal, Adyen and Checkout.com are PSPs.
+- A **merchant of record** goes further and sells to the customer on your behalf, taking on tax and compliance obligations. That is a different model with different trade-offs.
+
+## The main options
+
+The summary below is general. Coverage, features and pricing change often, so confirm details on each provider's own site before deciding.
+
+| Provider type | Examples | Typical strengths | Typical trade-offs |
+| --- | --- | --- | --- |
+| Developer-focused PSP | Stripe | Clear APIs and documentation, wide feature set including subscriptions and marketplaces, quick to start | Not available to businesses in every country |
+| Wallet-led PSP | PayPal | Widely recognised by consumers, buyers can pay from a PayPal balance, simple to add as an extra option | Checkout experience is less customisable, account holds are a known merchant concern |
+| Enterprise PSP | Adyen, Checkout.com | Global acquiring, many local payment methods, unified online and in-person payments, detailed reporting | Aimed at larger volumes, onboarding is more involved |
+| Regional gateway | Varies by market | Local payment methods, local currency settlement, local support and regulation | APIs and documentation vary in quality, limited reach outside the region |
+
+### Regional and local payment methods
+
+Cards are not the default everywhere. Customers in many markets prefer bank transfers, wallets or domestic card schemes. Well-known examples include iDEAL in the Netherlands, Swish in Sweden, UPI in India, Pix in Brazil, mada in Saudi Arabia and M-Pesa in Kenya. Offering the familiar local method usually matters more to conversion than small differences in fees.
+
+In some countries the global PSPs do not onboard local businesses at all. In that case a regional gateway, or a local bank's gateway, is the practical route. Examples of regional providers include Paystack and Flutterwave in parts of Africa, Razorpay in India, Mollie in Europe, and Tap Payments and HyperPay in the Gulf.
+
+## Selection criteria
+
+Work through these in order. The first three can rule a provider out entirely.
+
+1. **Availability.** Does the provider accept businesses registered in your country and industry?
+2. **Settlement.** Can it pay out in your currency to your bank, and on what schedule?
+3. **Payment methods.** Does it support the cards, wallets and local methods your customers use?
+4. **Pricing.** Compare the full cost: transaction fees, cross-border and currency conversion fees, refund and chargeback fees, and any monthly charges.
+5. **Business model fit.** Subscriptions, usage billing, marketplaces with split payouts, invoicing and in-person payments each need specific support.
+6. **Authentication and fraud.** Check support for 3D Secure, which is needed for Strong Customer Authentication in the UK and EEA, and what fraud tools are included.
+7. **Developer experience.** Look at documentation, SDKs, a test mode, webhook tooling and API versioning.
+8. **Reporting and reconciliation.** Finance teams need payout reports that match bank deposits.
+9. **Support and risk policy.** Understand how disputes, reserves and account reviews are handled.
+10. **Portability.** Ask whether stored card tokens can be migrated if you change provider.
+
+## PCI scope
+
+Any business that accepts card payments must comply with the Payment Card Industry Data Security Standard (PCI DSS). How much work that involves depends on how card data touches your systems. Your integration choice determines this.
+
+| Integration type | How card data flows | Indicative self-assessment |
+| --- | --- | --- |
+| Hosted payment page or redirect | The customer enters card details on the provider's page | SAQ A, the lightest |
+| Embedded hosted fields or iframe | Fields are served by the provider inside your page | Usually SAQ A, with added requirements for the page that hosts them |
+| Direct post from your page | Your page collects details and sends them to the provider | SAQ A-EP, more demanding |
+| Card data passes through your servers | Your systems receive or store card numbers | SAQ D, the most demanding |
+
+The practical advice is simple: never let raw card numbers reach your servers. Use the provider's hosted page or hosted fields and store only the tokens they return. Your acquirer or a qualified security assessor confirms which self-assessment questionnaire applies, so treat the table as a guide and not as compliance advice.
+
+## Webhooks
+
+A webhook is an HTTP request the gateway sends to your server when something happens, such as a payment succeeding, failing or being refunded. The customer's browser is not a reliable messenger. People close tabs, connections drop, and some payment methods confirm later.
+
+Treat the webhook, not the redirect back to your site, as the source of truth for fulfilling an order.
+
+A reliable webhook handler follows these rules:
+
+- **Verify the signature** on every request using the provider's signing secret, and reject anything that fails.
+- **Respond quickly** with a success status, then do slower work in a background job.
+- **Handle duplicates.** Providers retry, so the same event can arrive more than once. Store processed event IDs and ignore repeats.
+- **Do not rely on order.** Events can arrive out of sequence. Fetch the current state from the API when it matters.
+- **Log every event** so problems can be traced.
+- **Reconcile.** Run a scheduled job that compares your records with the provider's, to catch any event that was missed.
+
+When you create payments, send an idempotency key with the request. If the request is retried after a timeout, the provider will not charge the customer twice.
+
+## Using more than one gateway
+
+Starting with a single provider is usually right. A second becomes worthwhile when you expand into a market the first does not serve well, when you need a payment method it lacks, or when volume is high enough that a fallback route during an outage is worth the engineering effort.
+
+If that is a likely future, keep payment logic behind an internal interface so that orders, subscriptions and refunds do not depend directly on one provider's objects.
+
+## Common mistakes
+
+- Choosing on headline fees alone and discovering later that the provider does not support your country.
+- Fulfilling orders from the browser redirect instead of the webhook.
+- Skipping signature verification on webhook endpoints.
+- Not testing declines, refunds, disputes and 3D Secure challenges before launch.
+- Building custom card forms that widen PCI scope for no real gain.
+
+## Getting it built
+
+CodeBaxh is a software development and AI company. Our [payment gateway integration](/services/payment-gateway-integration) service covers provider selection, checkout, webhooks, reconciliation and testing, and payments are a standard part of our [SaaS development](/services/saas-development) work. To discuss your markets and business model, use the [project enquiry form](/start-a-project).
+
+## Frequently asked questions
+
+### Which payment gateway is cheapest?
+
+It depends on your country, card mix, average order value and volume. Headline rates are similar among major providers, and the differences appear in cross-border, currency conversion and dispute fees. Model your own expected transactions against each provider's published pricing.
+
+### Can we offer Stripe and PayPal together?
+
+Yes. Many businesses use a card-focused PSP as the main gateway and add PayPal as an extra button at checkout. Some PSPs can also present PayPal as a payment method inside their own checkout.
+
+### Do we need PCI compliance if we use a hosted checkout?
+
+Yes, but the burden is much smaller. A hosted page or hosted fields keeps card data off your systems, which typically places you on the lightest self-assessment questionnaire. You must still complete it and keep your site secure.
+
+### How hard is it to switch gateways later?
+
+One-off payments are fairly easy to move. Subscriptions are harder because saved cards are stored as tokens with the old provider. Many providers support secure token migration on request, so ask about it before you commit.

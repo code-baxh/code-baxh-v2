@@ -1,0 +1,120 @@
+---
+title: "Building a RAG pipeline with OpenAI and Anthropic"
+description: "How to build a RAG pipeline: chunking, embeddings, vector search, grounding, and evaluation, explained by a team shipping production AI systems."
+date: "2026-04-28"
+updated: "2026-11-13"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["rag", "llm", "ai", "vector search"]
+cover: ""
+service: "rag-knowledge-assistants"
+---
+
+Retrieval-Augmented Generation (RAG) grounds a large language model in your own data: relevant documents are retrieved with vector search and passed to the model so its answers are accurate and traceable to your sources. It's the difference between a demo that hallucinates and a system you can put in front of customers. A production pipeline has seven stages (ingestion, chunking, embedding, retrieval, generation, evaluation and operations), and quality is decided far more by retrieval and evaluation than by which model you pick.
+
+## How a RAG pipeline works
+
+The idea comes from the 2020 paper [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401): instead of relying on what a model memorised in training, look up relevant text at question time and give it to the model as context. In a modern stack that looks like this:
+
+1. **Ingest** your documents and keep them in sync with their sources.
+2. **Chunk** them into retrievable passages.
+3. **Embed** each chunk as a vector and store it with its metadata.
+4. **Retrieve** the most relevant chunks for each question.
+5. **Generate** an answer that uses only those chunks, with citations.
+6. **Evaluate** retrieval and answers against a fixed test set.
+7. **Operate** it: permissions, freshness, cost, latency and feedback.
+
+## Stage 1: Ingestion
+
+Load documents from wherever they live (a help centre, PDFs, a wiki, a database) and clean them: strip navigation and boilerplate, normalise formats, and drop duplicates. Keep metadata with every document: source URL, title, last-updated date and, critically, **who is allowed to see it**. Build ingestion as an incremental sync from day one, so a changed page is re-indexed in minutes rather than by re-running everything.
+
+## Stage 2: Chunking
+
+Chunking decides what the retriever can find. Chunks that are too large dilute relevance; chunks that are too small lose the context that makes them meaningful.
+
+| Strategy | How it works | Good for | Watch out for |
+| --- | --- | --- | --- |
+| Fixed size with overlap | Split every N tokens, with a small overlap between chunks | Uniform text, quick first version | Splits sentences and tables mid-thought |
+| Structure-aware | Split on headings, sections and list boundaries | Documentation, policies, help articles | Very long sections still need sub-splitting |
+| Semantic | Split where the topic changes, using embeddings | Long, unstructured documents | Slower and harder to debug |
+
+A sound starting point is structure-aware chunks of a few hundred tokens with a little overlap, each prefixed with its document and section title. Then let evaluation, not intuition, tune it.
+
+## Stage 3: Embeddings and the vector store
+
+Each chunk becomes a vector from an embedding model and is stored alongside its text and metadata. If you already run PostgreSQL, the [pgvector](https://github.com/pgvector/pgvector) extension keeps vectors next to your application data, with the same backups and access control. A dedicated vector database earns its place at very large scale or for specialised search features. Two practical rules: store the embedding model's name with every vector, and plan for re-embedding everything when you change models, because vectors from different models are not comparable.
+
+## Stage 4: Retrieval
+
+Pure vector search misses exact terms such as product codes, error messages and names. Production systems usually combine:
+
+- **Hybrid search**: vector similarity plus keyword (BM25) search, merged into one ranking.
+- **Metadata filters**: tenant, permissions, product, language and date applied in the query itself.
+- **Re-ranking**: a re-ranking model rescoring the top results so the best passages reach the prompt.
+
+The gains are measurable. Anthropic reported that adding document context to each chunk before embedding and indexing, which it calls [contextual retrieval](https://www.anthropic.com/research/contextual-retrieval), cut failed retrievals by 49%, and by 67% when combined with re-ranking.
+
+## Stage 5: Generation
+
+The prompt has three jobs: answer only from the retrieved passages, cite which passage supports each claim, and say clearly when the passages do not contain the answer. Show the citations in the interface so users can check them. Keep the model behind an interface in your code so it is swappable; our comparison of [OpenAI and Anthropic Claude](/blog/openai-vs-anthropic-claude) covers how the two differ in practice.
+
+## Stage 6: Evaluation
+
+Without evaluation, every change to chunking, prompts or models is a guess. Build a test set of real questions with known good answers and source passages, then measure two things separately:
+
+- **Retrieval**: did the right passages come back? Track recall at the number of chunks you send to the model.
+- **Generation**: is the answer faithful to the passages and does it actually answer the question?
+
+Run the suite on every change and block releases that regress. Our guide to [evaluating RAG systems](/blog/evaluating-rag-systems) walks through the metrics and how to build the test set.
+
+## Stage 7: Running it in production
+
+- **Permissions.** Filter by the user's access rights at retrieval time. Never retrieve a restricted document and rely on the prompt to hide it.
+- **Freshness.** Incremental re-indexing keeps answers current; show the source's last-updated date next to the answer.
+- **Cost.** Cache embeddings and frequent answers, keep prompts lean, and route simple questions to cheaper models. See [reducing LLM API costs](/blog/reduce-llm-api-costs).
+- **Observability.** Log the question, the retrieved chunks and the answer for every request, so a bad answer can be traced to retrieval or generation.
+- **Feedback.** A thumbs up or down on each answer feeds new cases into the test set.
+
+## Where RAG projects fail
+
+Most RAG systems don't fail at the demo — they fail in production. The common causes are poor chunking, no re-ranking, prompts that don't force grounding, and no evaluation harness, so quality silently drifts. We treat evaluation as a first-class part of the build, not an afterthought.
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| Confident but wrong answers | Prompt does not force grounding, or retrieval returned near-misses | Require citations and an explicit "not found" answer; add re-ranking |
+| Misses exact names and codes | Vector-only search | Add keyword search (hybrid retrieval) |
+| Answers from outdated documents | No incremental sync, no date metadata | Re-index on change; prefer recent sources |
+| Users see content they should not | Permissions applied after retrieval, or not at all | Filter by access rights inside the retrieval query |
+| Quality drifts after "small" changes | No regression tests | Run the evaluation suite on every change |
+
+For the answer-quality side specifically, see [how to reduce LLM hallucinations](/blog/reduce-llm-hallucinations).
+
+## Choosing the model
+
+We select the model per task to balance quality, latency, and cost — and design the system so the model is swappable. For grounded, document-heavy reasoning we often reach for Claude; for some extraction and tool-use tasks GPT fits well. The right answer is measured against your data, not assumed.
+
+## Frequently asked questions
+
+### What is a RAG pipeline?
+
+A RAG (Retrieval-Augmented Generation) pipeline retrieves relevant chunks of your own data via vector search and passes them to an LLM, so answers are grounded in and traceable to your sources instead of hallucinated.
+
+### OpenAI or Anthropic for RAG?
+
+Both work well; the right choice is task-dependent and should be measured against your data. We build RAG systems so the model is swappable and pick per task based on quality, latency, and cost.
+
+### Should I use RAG or fine-tuning?
+
+Use RAG to give a model facts that change, such as documentation, policies and product data, because updating the answer means re-indexing a document. Fine-tuning changes style and output format, not knowledge. Most business assistants need RAG, and some add fine-tuning later for tone. See [prompt engineering vs fine-tuning vs RAG](/blog/prompt-engineering-vs-fine-tuning-vs-rag).
+
+### Which vector database should I use?
+
+If you already run PostgreSQL, start with pgvector: one database, one set of backups and access controls. Move to a dedicated vector database when scale or specialised search features justify running another system.
+
+### How do you stop a RAG system from hallucinating?
+
+Retrieve well (hybrid search plus re-ranking), instruct the model to answer only from the retrieved passages and cite them, let it say when the answer is not there, and measure faithfulness with an evaluation suite on every change. No single step is enough on its own.
+
+### How long does it take to build a RAG system?
+
+A scoped prototype over a slice of your real documents takes 1–2 weeks. A production RAG assistant with citations, evaluation and one channel such as a web widget or Slack typically takes 4–6 weeks, depending mostly on the state of your data. Our [AI chatbot timeline](/blog/how-long-to-build-ai-chatbot) breaks it down.

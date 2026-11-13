@@ -1,0 +1,171 @@
+---
+title: "SSR vs SSG vs ISR in Next.js — which to use"
+description: "When to use static generation, ISR or server rendering in Next.js: a decision table for freshness, cost and SEO, and how App Router caching works now."
+date: "2026-03-22"
+updated: "2026-11-13"
+author: "bilal-khursheed"
+category: "Web"
+tags: ["nextjs", "rendering", "seo", "performance"]
+cover: ""
+service: "nextjs-development"
+---
+
+Choose per route, not per site. Use **static generation (SSG)** for pages that are the same for every visitor, **Incremental Static Regeneration (ISR)** for content that changes hourly, daily or whenever an editor publishes, and **server-side rendering (SSR)** only where data must be fresh on every request or differs per user. In the **Next.js 16** App Router, one page can mix all three: a static shell with request-time parts streamed in.
+
+## What SSR, SSG and ISR actually mean
+
+- **SSG.** HTML is built once, at build time, and served from a CDN. A content change needs a new build.
+- **ISR.** HTML is built at build time or on first visit, cached, then regenerated in the background after a time window or when you trigger it. When a page goes stale, the next visitor still gets the old version while a fresh one is built.
+- **SSR.** HTML is built on the server for every request (the Next.js docs say dynamic or request-time rendering). It is the only option that can read cookies, headers and the query string.
+- **Client-side rendering.** The browser fetches the data. Fine behind a login, risky for anything you want indexed.
+
+## The rendering decision table
+
+| | SSG | ISR | SSR | Client-side only |
+| --- | --- | --- | --- | --- |
+| When HTML is built | At build time | At build or first visit, then regenerated | On every request | In the browser, after JavaScript loads |
+| Freshness | As of the last deploy | Within your revalidation window, or seconds after an on-demand trigger | Always current | Always current |
+| Server cost per visit | Close to zero; served from a CDN | Close to zero, plus one render per regeneration | A full render, usually with database queries | Low for HTML, but every visit hits your API |
+| Time to first byte | Fastest | Fastest (from cache) | Depends on data and server location | Fast shell, slow content |
+| SEO | Excellent | Excellent | Good, if the server responds quickly | Risky: content may not be indexed reliably |
+| Personalization | None | None | Full | Full |
+| Best for | Marketing pages, docs, legal pages | Blogs, catalogs, listings, CMS content | Dashboards, account pages, search, checkout | Interactive app screens behind a login |
+
+The rule: start static, add revalidation when content changes without a deploy, and render per request only when the page depends on who is asking or on data that cannot be a minute old.
+
+## How rendering works in the Next.js 16 App Router
+
+The three acronyms come from the Pages Router, where each page picked one mode with `getStaticProps` or `getServerSideProps`. The App Router works differently, and at the time of writing (November 2026) it has two caching models.
+
+### Cache Components: the current model
+
+According to the [Next.js caching docs](https://nextjs.org/docs/app/getting-started/caching), apps created with the recommended `create-next-app` defaults have Cache Components enabled, and existing apps opt in with `cacheComponents: true`. Next.js then prerenders every route into a static shell, and each component falls into one of three buckets:
+
+- **Static.** No data, or only predictable work such as imports: prerendered automatically.
+- **Cached.** Async data wrapped in `use cache`, with a lifetime set by `cacheLife`: included in the shell and refreshed when the lifetime runs out. This is ISR per component rather than per page.
+- **Request-time.** Anything reading `cookies()`, `headers()`, `searchParams` or uncached data sits inside `<Suspense>`. The fallback ships in the shell and the content streams in per request.
+
+Next.js calls this Partial Prerendering. Reading a cookie no longer forces the whole route to render per request:
+
+```tsx
+export default function PricingPage() {
+  return (
+    <>
+      <Hero /> {/* static */}
+      <Plans /> {/* cached, in the static shell */}
+      <Suspense fallback={<p>Loading your plan…</p>}>
+        <CurrentPlan /> {/* reads cookies, streamed per user */}
+      </Suspense>
+    </>
+  )
+}
+
+async function Plans() {
+  'use cache'
+  cacheLife('days')
+  cacheTag('plans')
+  return <PlanTable plans={await db.plan.findMany()} />
+}
+```
+
+Per the [revalidating docs](https://nextjs.org/docs/app/getting-started/revalidating), the `hours` profile revalidates hourly and expires after a day, and `max` revalidates after 30 days. Very short lifetimes (the `seconds` profile, or an expiry under five minutes) are left out of the prerender and behave like SSR.
+
+### The previous model
+
+Apps without Cache Components control rendering per route. ISR is a `revalidate` export plus `generateStaticParams`. Calling `cookies()` or `headers()`, or setting `dynamic = 'force-dynamic'`, makes the whole route render per request.
+
+```tsx
+// app/blog/[slug]/page.tsx, without Cache Components
+export const revalidate = 3600 // regenerate at most once an hour
+
+export async function generateStaticParams() {
+  const posts = await getPosts()
+  return posts.map((post) => ({ slug: post.slug }))
+}
+```
+
+This website runs on the previous model, and its blog is plain SSG: `generateStaticParams` lists every MDX file at build time. Posts live in the repository, so a deploy is the publishing step and nothing needs revalidating.
+
+## How should you revalidate CMS content?
+
+Time windows are a guess. For CMS content, the Next.js docs recommend tagging the cached data, giving it a long lifetime such as `max`, and having the CMS call a webhook that runs `revalidateTag` on publish. Editors see changes within seconds, and nothing regenerates when nothing changed.
+
+```ts
+// app/api/revalidate/route.ts
+import { revalidateTag } from 'next/cache'
+
+export async function POST(request: Request) {
+  if (request.headers.get('x-webhook-secret') !== process.env.CMS_WEBHOOK_SECRET) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+  revalidateTag('posts', 'max')
+  return Response.json({ revalidated: true })
+}
+```
+
+Use `revalidateTag` for webhooks (it serves stale content while the fresh version builds), `updateTag` in a server action when a user must see their own edit immediately, and `revalidatePath` only when you do not know the tags, since it refreshes more than it needs to. If you do use time-based ISR, the [ISR guide](https://nextjs.org/docs/app/guides/incremental-static-regeneration) recommends long windows, an hour rather than a second. Our [headless CMS comparison](/blog/headless-cms-nextjs-comparison) covers the CMS side.
+
+## What does each strategy cost to run?
+
+Static and ISR pages are served from a cache, so you pay for compute per build or regeneration, not per visitor. SSR is the opposite: every request is a render plus its database queries, so cost grows with traffic, and the database usually becomes the bottleneck first.
+
+The less obvious costs sit in the caching layer:
+
+- **Regeneration is compute.** The ISR guide notes that on platforms billing per request, background regeneration counts as additional compute.
+- **Multiple instances need a shared cache.** When self-hosting, the default ISR cache lives on each instance's file system, so on-demand revalidation only reaches the instance that receives the call. Configure a shared cache handler or visitors see different versions.
+- **Every deploy starts cold.** Cached entries are scoped to one deployment, so frequent deploys mean frequent cache rebuilds.
+- **ISR needs a Node.js server.** It is not supported in a static export.
+
+Where you host changes this arithmetic; we compare the options in [where to host a SaaS](/blog/where-to-host-saas-aws-vercel-render).
+
+## Which rendering strategy is best for SEO?
+
+All three send complete HTML to crawlers, so all three can rank. Static and ISR pages are fastest to first byte, which makes the Core Web Vitals easier to pass: Google's thresholds are [LCP of 2.5 seconds or under, INP of 200 milliseconds or under and CLS of 0.1 or under](https://web.dev/articles/vitals), at the 75th percentile of page loads. SSR pages rank well too, but a slow query on an SSR route becomes a slow LCP for every visitor and crawler. Client-only content is the real risk.
+
+One App Router detail to test before launch: with Partial Prerendering, metadata can stream in after the shell, so Next.js renders requests from some crawlers at request time instead. Any data source used at build time must also be reachable at request time, or those bots get a 500 error. Our [Next.js SEO checklist](/blog/nextjs-seo-checklist) covers the rest.
+
+## Route-by-route defaults for a typical SaaS
+
+| Route | Strategy | Why |
+| --- | --- | --- |
+| Home, pricing, features | Static | Same for everyone; changes ship with a deploy |
+| Blog, docs, help center | Static from files, or ISR with on-demand tags from a CMS | Fast and crawlable; editors publish without a deploy |
+| Changelog, public listings | ISR | Changes a few times a day |
+| Product page with live stock or price | Cached page plus one streamed section | Only the volatile number needs to be fresh |
+| Search results | Request-time, with the search function cached per query | Depends on the query string; popular queries repeat |
+| Logged-in dashboard | Request-time | Per-user, per-tenant data that is never indexed |
+| Checkout and account settings | Request-time | Must never be stale or shown to the wrong person |
+
+For multi-tenant products, one rule matters most: the arguments to a `use cache` function become part of its cache key, so pass the tenant ID explicitly and one tenant's data can never reach another. It is the same rule as putting the tenant in every cache key in our [multi-tenant SaaS architecture](/blog/how-to-build-a-multi-tenant-saas) guide. If you are still choosing the framework, this rendering control is the main argument in [Next.js vs React](/blog/nextjs-vs-react).
+
+## Common rendering mistakes
+
+- **A whole route made dynamic by one cookie.** In the previous model, a session check in a shared header turns every page under it into SSR. Move the user menu into a client component, or adopt Cache Components and put it behind `<Suspense>`.
+- **One-second revalidation windows.** They behave like SSR with extra steps. Use on-demand revalidation.
+- **Per-user data in a shared cache.** Anything derived from cookies must be keyed by the user or kept request-time.
+
+## Frequently asked questions
+
+### Should marketing pages use SSR in Next.js?
+
+Usually no. Marketing and service pages should be statically generated, or use ISR if a CMS feeds them, so they load fast from a CDN and are fully crawlable. Reserve SSR for pages that need per-request or personalized data. If one small part of a page is personal, such as a signed-in banner, stream just that part at request time.
+
+### Is ISR still available in the Next.js App Router?
+
+Yes. Without Cache Components, you export `revalidate` from a page and list known paths in `generateStaticParams`. With Cache Components, you cache data or components with `use cache`, set a lifetime with `cacheLife`, and tag them for on-demand revalidation. Paths that were not prerendered get a shared shell first, then are upgraded and cached for the next visitor.
+
+### What is Partial Prerendering in Next.js?
+
+Partial Prerendering builds a static shell for each route at build time, including cached data and loading fallbacks, and streams the request-time parts into it per visit. It is the default behavior with Cache Components, so a page no longer has to be either fully static or fully dynamic.
+
+### Which is best for SEO: SSR, SSG or ISR?
+
+All three can rank, because all three send complete HTML. Static and ISR pages are faster to first byte, which helps Largest Contentful Paint, so they are the better default for pages you want to rank. Use SSR for indexable pages only when content genuinely changes per request.
+
+### How do I update a static page when content changes in my CMS?
+
+Tag the cached CMS data, give it a long cache lifetime, and configure the CMS to call a webhook on publish. The webhook's route handler checks a shared secret and calls `revalidateTag` for that tag. The page refreshes within seconds without a rebuild.
+
+### Can I use ISR with a static export?
+
+No. A static export produces plain files with no Next.js server, and ISR needs a running Node.js server to regenerate pages. In a static export every page is SSG, and anything that must be fresh is fetched in the browser.

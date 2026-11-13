@@ -1,0 +1,142 @@
+---
+title: "Hypercare and post-launch support: what to expect after go-live"
+description: "What hypercare is, how long it usually lasts, how severity levels work, and what a software support agreement should cover once the launch period has ended."
+date: "2026-11-01"
+updated: "2026-11-01"
+author: "muhammad-usman-mustafa"
+category: "Business"
+tags: ["hypercare", "support", "maintenance", "sla"]
+cover: ""
+service: "support-hypercare"
+metaTitle: "Hypercare & Post-Launch Support: What to Expect"
+---
+
+Hypercare is a period of heightened support straight after a system goes live. The team that built the software stays closely involved, monitors it actively and fixes issues faster than normal support would. It ends when the system is stable and agreed exit criteria are met. After that, a support agreement takes over and defines how issues, updates and changes are handled for the long term.
+
+## Why hypercare is needed
+
+Testing reduces risk but cannot remove it. Real users behave differently from test scripts. Real data contains cases nobody anticipated. Real load reveals performance limits. The first days of live use are when most of these surprises appear.
+
+During this window the people who know the system best should be watching it. They can diagnose a problem in minutes that would take a general support desk hours. Hypercare formalises that arrangement so it is planned and resourced, not improvised.
+
+## What happens during hypercare
+
+A well-run hypercare period usually includes:
+
+- **Active monitoring.** Dashboards and alerts for errors, response times, failed jobs and integration failures, checked proactively.
+- **A clear reporting channel.** One place for users to report issues, with every report logged.
+- **Daily triage.** A short meeting to review new issues, assign severity and agree priorities.
+- **Fast fixes.** A release process that allows small, tested fixes to ship quickly.
+- **User support.** Help with questions that are about training or process, not defects.
+- **Knowledge transfer.** Documentation and runbooks are completed and handed to whoever will support the system afterwards.
+
+Not every report is a bug. Some are change requests, and some are training gaps. Classifying them correctly keeps the team focused on stability first.
+
+## How long hypercare lasts
+
+There is no fixed duration. As an indicative industry range, hypercare commonly runs from a short period of days for a small application to a few months for a large enterprise rollout. Systems with a monthly or quarterly cycle, such as payroll or financial close, often keep hypercare open until at least one full cycle has completed.
+
+Duration should be tied to exit criteria, not only the calendar. Typical criteria are:
+
+1. No open critical or high severity issues.
+2. The rate of new issues has fallen to an agreed level.
+3. Key business processes have run successfully from start to finish.
+4. Monitoring, alerts and backups are confirmed to be working.
+5. Runbooks and documentation have been handed over and accepted.
+6. The support team has resolved issues without help from the build team.
+
+## Severity levels
+
+Severity levels give everyone a shared language for urgency. Four levels are common. The names vary, and the response targets below are illustrative only. Actual targets are agreed in each contract.
+
+| Severity | Definition | Example | Illustrative response target |
+| --- | --- | --- | --- |
+| Sev 1, Critical | System unavailable, data loss or security breach, no workaround | Nobody can sign in | Within an hour, worked continuously |
+| Sev 2, High | Major function impaired for many users, workaround difficult | Invoices cannot be generated | Within a few business hours |
+| Sev 3, Medium | Partial loss of a function, workaround available | A report shows the wrong totals for one filter | Within one business day |
+| Sev 4, Low | Cosmetic issue or minor inconvenience | A label is misspelt | Scheduled into a future release |
+
+Two points are worth settling in writing. First, severity is based on business impact, not on how loudly the issue is reported. Second, response time and resolution time are different things. Response time is how quickly someone qualified starts work. Resolution time is how long a fix or workaround takes, and it is harder to guarantee because it depends on the cause.
+
+## From hypercare to steady-state support
+
+When hypercare ends, responsibility passes to an ongoing support arrangement. This may be your own team, the original supplier or a different one. The handover should be explicit: a meeting, a signed checklist and a date.
+
+The differences are mainly in intensity.
+
+| | Hypercare | Steady-state support |
+| --- | --- | --- |
+| Team | The build team, closely engaged | A support team, with escalation to engineers |
+| Monitoring | Proactive and frequent | Alert-driven |
+| Response | Faster than contracted levels | As defined in the agreement |
+| Releases | Frequent small fixes | Scheduled releases, plus urgent patches |
+| Focus | Stabilisation | Reliability, upkeep and planned improvement |
+
+## What a support agreement should cover
+
+A support agreement, sometimes called a maintenance agreement or service level agreement, should leave no doubt about what you are paying for. Check that it addresses the following.
+
+### Scope
+
+Which systems, environments and integrations are covered. Whether third-party services are included or only the code that connects to them.
+
+### Support hours and channels
+
+The hours during which support is available, the time zone, and whether out-of-hours cover exists for critical incidents. How to raise an issue and how it will be tracked.
+
+### Severity definitions and service levels
+
+The severity table, with response and resolution targets for each level, and what happens if targets are missed.
+
+### Types of maintenance
+
+Software maintenance is usually described in four categories:
+
+- **Corrective.** Fixing defects.
+- **Adaptive.** Keeping the system working as its environment changes, for example new operating system versions or API changes from a third party.
+- **Perfective.** Improving performance or usability.
+- **Preventive.** Work that reduces future risk, such as dependency upgrades and refactoring.
+
+The agreement should state which of these are included. Security patching and dependency updates are easy to overlook and important to include.
+
+### Operations
+
+Monitoring, backups, restore testing, uptime targets and incident communication. After a serious incident, a written review covering cause, impact and preventive actions is a reasonable expectation.
+
+### Changes and enhancements
+
+How new features and change requests are handled and paid for. They are normally outside the support fee and either drawn from a pool of hours or quoted separately.
+
+### Commercial and exit terms
+
+Fees, review dates, notice periods and what happens at the end. You should have access to the code repository, infrastructure accounts, credentials and documentation at all times, so that support can be moved if necessary.
+
+## Common mistakes
+
+- **No hypercare in the plan.** The build team is reassigned on launch day and nobody familiar with the system is available.
+- **Exit by date alone.** Hypercare ends on schedule while serious issues are still open.
+- **Bugs and changes mixed together.** Stabilisation stalls because the team is building new features.
+- **No handover.** The support team inherits a system without runbooks or access.
+- **Unowned infrastructure.** Hosting and domain accounts sit in a supplier's name, which makes any future move difficult.
+
+## Planning for it
+
+Hypercare and support should be scoped before launch, not afterwards. CodeBaxh is a software development and AI company, and our [support and hypercare](/services/support-hypercare) service covers both the launch period and ongoing maintenance. The longer-term options are described on our [engagement](/engagement) page. To discuss support for a new or existing system, use the [project enquiry form](/start-a-project).
+
+## Frequently asked questions
+
+### Is hypercare the same as a warranty period?
+
+No. A warranty period is a contractual commitment to fix defects in delivered work at no extra charge for a set time. Hypercare is an operating mode with extra monitoring and faster response. They often overlap, but a contract should define each separately.
+
+### Who should pay for bugs found after launch?
+
+It depends on the contract. Commonly, defects against the agreed specification are fixed under warranty for a defined period, while new requirements and changes are chargeable. Agree the definitions of "defect" and "change" before work begins.
+
+### Can a different company support software it did not build?
+
+Yes, provided there is a proper handover. The new team needs the source code, documentation, infrastructure access and time to learn the system. Expect an onboarding period before full service levels apply.
+
+### Do we need a support agreement for a small application?
+
+If the application matters to your business, yes. Even small systems need security updates, monitoring and someone to call when something fails. The agreement can be proportionate to the size of the system.

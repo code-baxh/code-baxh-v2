@@ -1,0 +1,146 @@
+---
+title: "A QA and testing strategy for startups"
+description: "A practical QA strategy for startups: the test pyramid, manual versus automated testing, what to automate first, and a release checklist a small team can run."
+date: "2026-10-29"
+updated: "2026-10-29"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["qa", "testing", "test automation", "startups"]
+cover: ""
+service: "qa-testing"
+---
+
+A startup does not need a large QA department. It needs a small set of habits that catch the most costly bugs early: fast automated tests on business logic, a handful of end-to-end tests on the journeys that earn money, focused manual testing on anything new, and a short release checklist. Start there and add depth as the product and team grow.
+
+## Why a strategy matters early
+
+Without a plan, testing happens by accident. Developers click through the feature they just built, something unrelated breaks, and a customer finds it. Each incident costs trust and pulls the team away from planned work.
+
+A testing strategy is simply a set of agreed answers to four questions: what do we test, at which level, who does it, and what must pass before we release.
+
+## The test pyramid
+
+The test pyramid is a model for balancing different kinds of automated test. It has many fast, cheap tests at the bottom and a few slow, expensive ones at the top.
+
+| Level | What it checks | Speed | Cost to maintain | Share of tests |
+| --- | --- | --- | --- | --- |
+| Unit | One function or module in isolation | Milliseconds | Low | Most |
+| Integration | Several parts together, such as API plus database | Seconds | Medium | Some |
+| End-to-end | A full user journey through the real interface | Seconds to minutes | High | Few |
+
+The shape matters because of feedback speed. Unit tests run in seconds on every change, so a developer learns about a mistake immediately. End-to-end tests are closer to what users experience, but they are slower and more likely to fail for reasons unrelated to the code, such as timing.
+
+The pyramid is a guide, not a rule. Some teams, especially those building API-heavy products, favour more integration tests because they give the most confidence per test. What to avoid is the inverted shape: a large, slow, fragile suite of interface tests sitting on almost no unit tests.
+
+## Manual versus automated testing
+
+Both have a place. The question is which is better suited to each job.
+
+Automated tests are best for:
+
+- Checks that must be repeated on every change, such as regression tests.
+- Business rules with many input combinations, such as pricing or permissions.
+- Anything a person would find tedious and therefore skip.
+
+Manual testing is best for:
+
+- New features whose design is still changing.
+- Exploratory testing, where a person actively looks for unexpected behaviour.
+- Usability, visual polish and anything that needs judgement.
+- One-off checks that are not worth the cost of automating.
+
+Exploratory testing deserves a specific mention. A skilled tester given an hour and a goal, such as "try to break checkout", will find issues no script anticipated. It complements automation and does not replace it.
+
+## What to automate first
+
+Automation has a cost. Every test must be written, run and maintained. Spend that budget where a failure would hurt most.
+
+A sensible order for a young product:
+
+1. **Unit tests for core business logic.** Calculations, pricing, permissions, state transitions. These are cheap and catch serious errors.
+2. **Integration tests for the API.** Cover authentication, authorisation and the main create, read, update and delete paths. Include a test that one tenant cannot read another tenant's data if your product is multi-tenant.
+3. **End-to-end tests for the critical journeys.** Typically sign-up, sign-in, the main action that delivers value, and payment. Aim for a handful, not hundreds.
+4. **Regression tests for bugs that reached production.** When a bug is fixed, add a test that would have caught it.
+5. **Checks on integrations you depend on.** Payment webhooks, email delivery and third-party APIs.
+
+Leave these until later: tests for screens that change weekly, pixel-level visual comparisons, and tests of third-party libraries that have their own test suites.
+
+## Put tests in the pipeline
+
+Tests only help if they run. Configure continuous integration so that every pull request runs linting, type checks, unit tests and integration tests. A failing check should block the merge.
+
+Run end-to-end tests against a staging environment before release, or on every merge if they are fast enough. Keep the full pipeline quick. If it takes too long, developers will find ways around it.
+
+### Deal with flaky tests
+
+A flaky test passes and fails without any code change. Flaky tests are damaging because they teach the team to ignore failures. When one appears, fix it promptly or remove it from the blocking suite until it is fixed. Common causes are fixed waits, shared test data and dependence on test order.
+
+## Test environments and data
+
+You need at least one environment that mirrors production closely, usually called staging. It should use the same infrastructure configuration, with test credentials for third-party services.
+
+Test data needs equal care. Use seeded, repeatable data sets so tests start from a known state. Do not copy production data containing personal information into test environments unless it has been anonymised.
+
+## A release checklist
+
+A checklist turns good intentions into routine. Keep it short enough that people really use it.
+
+**Before release**
+
+- All automated checks pass on the release branch.
+- New features have been tested manually against their acceptance criteria.
+- A smoke test of the critical journeys has passed on staging.
+- Database migrations have been run on staging and a rollback has been considered.
+- Feature flags and environment variables are set correctly for production.
+- Release notes are written and support staff know what is changing.
+
+**During release**
+
+- Deploy at a time when the team is available to respond.
+- Watch error rates, response times and key business events.
+- Run the smoke test against production.
+
+**After release**
+
+- Confirm monitoring and alerts are quiet.
+- Check that background jobs and webhooks are processing.
+- Record anything that went wrong and add a test or checklist item for it.
+
+## Beyond functional testing
+
+Functional correctness is not the whole story. Even an early product benefits from light coverage of:
+
+- **Security.** Dependency scanning, checks on authorisation, and a review against the OWASP Top 10.
+- **Performance.** A basic load test on the busiest endpoints before a launch or campaign.
+- **Accessibility.** Automated checks plus keyboard-only navigation of the main journeys.
+- **Compatibility.** The browsers and devices your users really have.
+
+## How QA changes as you grow
+
+| Stage | Who tests | Typical focus |
+| --- | --- | --- |
+| Pre-launch | Developers and founders | Unit tests on core logic, manual checks, a smoke test |
+| Early customers | Developers plus part-time QA support | Critical end-to-end tests, CI gating, release checklist |
+| Scaling | Dedicated QA engineer or team | Wider automation, performance and security testing, test data management |
+
+The principle stays the same throughout: developers own the quality of their code, and QA specialists add depth, independence and a user's perspective.
+
+CodeBaxh is a software development and AI company. Our [QA and testing](/services/qa-testing) service can set up this strategy for an existing product or run testing alongside your team, and quality checks are built into every stage of our [process](/process). If you would like a review of your current approach, use the [project enquiry form](/start-a-project).
+
+## Frequently asked questions
+
+### What test coverage percentage should we aim for?
+
+There is no universal number. Coverage shows which code ran during tests, not whether the tests are meaningful. Aim for strong coverage of business logic and critical paths, and treat the overall figure as a signal, not a target.
+
+### Do we need a dedicated QA engineer from day one?
+
+Usually not. Early on, developers can write automated tests and founders can test manually. A dedicated tester becomes valuable once releases are frequent, the product is broad, or bugs are reaching customers regularly.
+
+### Should developers write their own tests?
+
+Yes. Developers are best placed to write unit and integration tests because they know the code. An independent tester adds value by checking the product as a user would and by questioning assumptions.
+
+### How many end-to-end tests are enough?
+
+Enough to cover the journeys that would cause real harm if broken, such as sign-up, sign-in, the core action and payment. For many early products that is a small number. Add more only when lower-level tests cannot give the same confidence.

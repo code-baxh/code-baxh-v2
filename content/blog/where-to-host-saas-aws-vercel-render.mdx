@@ -1,0 +1,113 @@
+---
+title: "Where to host your SaaS: AWS vs Vercel vs Render"
+description: "AWS vs Vercel vs Render for a SaaS: how each prices as you grow, when to move off a PaaS, and how to keep EU customer data in the EU."
+date: "2026-02-26"
+updated: "2026-11-13"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["hosting", "aws", "vercel", "render", "devops"]
+cover: ""
+service: "cloud-devops"
+---
+
+For most early-stage SaaS products, host the **Next.js front end on Vercel**, or run the whole app on **Render** for one simple bill, with a managed database in the same region. Move workloads to **AWS** when compliance, private networking, steady high traffic or unit cost justify someone to operate it. If you sell to EU customers, put **data and compute in an EU region** from day one; changing regions later is a migration.
+
+## Vercel, Render and AWS at a glance
+
+| | Vercel | Render | AWS |
+| --- | --- | --- | --- |
+| What it is | Managed platform for front ends and serverless functions, from the company behind Next.js | Platform-as-a-service for web services, workers, cron jobs and Postgres | Cloud infrastructure: compute, databases, networking and hundreds of managed services |
+| Best at | Next.js front ends, preview deployments, global CDN | Running a whole app, including API, workers and database, with little setup | Control, compliance, scale and services a PaaS does not offer |
+| Pricing shape | Seats plus metered usage (data transfer, requests, function CPU) | Workspace plan plus a fixed monthly price per instance size | Pay per resource, per hour and per GB, with discounts for committed usage |
+| Cost as you scale | Low floor; grows with traffic and server-side work | Predictable steps as you add or resize instances | Highest setup effort; lowest unit cost at steady high load |
+| Operations effort | Lowest | Low | High: networking, permissions, monitoring, infrastructure as code |
+| EU data residency | Choose an EU function region (the default is in the US) | Frankfurt region; a service's region cannot be changed later | Several EU regions, with full control |
+| Lock-in | Moderate; Next.js also self-hosts | Low; standard containers and Postgres | Low with containers, high with proprietary services |
+
+## How does hosting cost behave as you scale?
+
+The shape of the bill matters more than today's price, because it decides what happens when traffic grows tenfold.
+
+### Vercel: a low floor, then usage
+
+At the time of writing (November 2026), [Vercel's pricing page](https://vercel.com/pricing) lists the Pro plan at **$20 a month**, developer seats at $20 a month each, a $20 monthly usage credit, and **1 TB of Fast Data Transfer and 10 million CDN requests** included. Beyond that, usage is metered, starting at $0.15 per GB of data transfer and $0.60 per million function invocations.
+
+The shape: nearly flat while you are small, then roughly linear with traffic and with how much work your server does per request. Rendering choices move the line. Static and ISR pages are served from cache and barely touch functions; pages rendered per request, image optimization and long-running streaming responses do. Our guide to [SSR, SSG and ISR in Next.js](/blog/ssr-vs-ssg-vs-isr-nextjs) shows how to keep most traffic on the cached path.
+
+### Render: a staircase of instances
+
+Render charges a workspace plan plus a monthly price for each service instance, set by its CPU and memory size. You pay for the capacity you provision, not per request, so the bill moves in predictable steps when you add an instance or move up a size. The trade-off is that idle capacity costs the same as busy capacity.
+
+Render's free tier is for demos, not customers: per [Render's documentation](https://render.com/docs/free), free web services spin down after 15 minutes without traffic, and free Postgres databases expire 30 days after creation.
+
+### AWS: many meters, lowest unit cost
+
+AWS bills each resource separately: compute hours, database instance hours, storage, load balancers, NAT gateways and data transfer out to the internet. A production setup with redundancy across availability zones has a real fixed floor before the first customer arrives. In return, unit costs at steady high load are the lowest of the three, especially with committed-use discounts, and nothing is off limits. Model it with the AWS Pricing Calculator before you commit.
+
+The platform bill is rarely the biggest number, though. The cost that decides most hosting choices is engineering time. A PaaS premium is usually cheaper than the part-time DevOps work AWS needs, until the bill is large or a requirement forces the move. Hosting is one line in the running costs we list in [how much it costs to build a SaaS](/blog/how-much-does-it-cost-to-build-a-saas).
+
+## When should you move off a PaaS?
+
+Stay on Vercel or Render while they fit. Start planning a move when one or more of these is true:
+
+1. **The bill is large and the load is steady.** Predictable, always-on traffic is where reserved capacity on AWS beats metered serverless pricing.
+2. **The workload does not fit.** Long-running jobs, GPU inference, heavy background processing or large numbers of persistent connections push against platform limits.
+3. **A customer contract requires it.** Private networking to their systems, specific security controls, audit evidence or dedicated infrastructure are easier on AWS.
+4. **Your data already lives on AWS.** Calling an AWS database from another provider adds latency and data transfer charges on every request.
+5. **You have someone to own it.** Infrastructure as code, monitoring and on-call need an owner. Without one, a move to AWS swaps a bill for a risk.
+
+Move incrementally. Start with the piece that hurts, often background workers or the database, and leave the Next.js front end where it is. Packaging services as Docker containers from the start keeps every move cheap. Next.js itself runs on any Node.js server or container, but if you self-host several instances, ISR needs a shared cache so every instance serves the same version of a page.
+
+## Data residency for EU customers
+
+The GDPR does not flatly require personal data to stay in the EU, but transfers outside it need a legal basis. The European Commission's [adequacy decisions](https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/adequacy-decisions_en) let data flow to recognized countries without further safeguards; for the United States, that covers organizations in the EU-US Data Privacy Framework, adopted on 10 July 2023. Even so, B2B buyers commonly ask where data is stored and processed, and "in the EU" is the answer that ends the conversation.
+
+Getting there is mostly configuration, done early:
+
+- **Put the database in an EU region** and keep backups there too.
+- **Run compute next to it.** According to [Vercel's region docs](https://vercel.com/docs/regions), Vercel Functions run in Washington, D.C. (`iad1`) by default. Set them to an EU region such as Frankfurt (`fra1`), Paris (`cdg1`), Dublin (`dub1`) or Stockholm (`arn1`), or every request crosses the Atlantic and personal data is processed in the US.
+- **On Render, choose Frankfurt when you create each service.** Render's docs say a region cannot be changed after creation, and services in different regions cannot talk over the private network.
+- **On AWS, pick an EU region** such as Frankfurt, Ireland, Paris or Stockholm and keep every service in it.
+- **Audit your sub-processors.** Email delivery, error tracking, logging, analytics and AI APIs can each process personal data elsewhere. List them in your data processing agreement.
+
+For enterprise customers who want their data fully separated, a dedicated database per tenant in their chosen region is the usual answer; our guide to [multi-tenant SaaS architecture](/blog/how-to-build-a-multi-tenant-saas) shows how to design for that without forking the code.
+
+## A sensible setup at each stage
+
+| Stage | Setup | Why |
+| --- | --- | --- |
+| MVP | Next.js on Vercel, or the whole app on Render, plus managed Postgres in the same region | Fastest to ship; no infrastructure to run |
+| First paying customers | Front end on Vercel; API and background workers on Render or AWS containers; managed Postgres | Workers and long jobs get a proper home |
+| Scale or enterprise | Data, workers and compliance-sensitive services on AWS with infrastructure as code; front end on Vercel or self-hosted | Control, private networking, audit evidence and unit cost |
+
+Managed Postgres providers are worth comparing at the MVP stage; see [Supabase vs Firebase](/blog/supabase-vs-firebase) and our wider [SaaS tech stack](/blog/saas-tech-stack-2026). A focused MVP takes 8–14 weeks to build, and hosting setup is a small part of that if the decisions above are made early.
+
+## Our approach
+
+We often host the Next.js front end on Vercel and put data, backend services and anything compliance-sensitive on AWS, packaged as Docker containers and deployed with infrastructure as code and CI/CD, so every environment is reproducible. For smaller products, a single PaaS is often the right answer. The goal is the simplest setup that meets your scale and compliance needs, with a clear path to the next stage.
+
+## Frequently asked questions
+
+### Where should I host my SaaS?
+
+A common pragmatic setup is Next.js on Vercel for the front end, with backend services and data on a PaaS such as Render or on AWS. Render can also run the whole app for smaller teams who want one bill. Choose by stage, workload shape and compliance needs, and put everything in the region where your customers' data should live.
+
+### Vercel or AWS for a SaaS?
+
+They are often used together: Vercel for the Next.js front end, with its previews and CDN, and AWS for databases, background workers and compliance-sensitive workloads. Vercel alone suits early stages with modest server-side work. AWS earns its operational cost when you need private networking, specific controls or lower unit costs at steady scale.
+
+### Is Render cheaper than Vercel?
+
+It depends on the shape of your traffic, not the headline price. Render bills for provisioned instances, so steady load is predictable and spikes do not raise the bill unless you scale up. Vercel bills per seat plus usage, so a mostly static site with small server-side work can cost very little, while heavy per-request rendering grows with traffic. Model your own traffic on both pricing pages.
+
+### When should a startup move from Vercel or Render to AWS?
+
+When the bill is large and the load is predictable, when the workload does not fit the platform's limits, when a customer contract requires private networking or specific controls, or when your data already lives on AWS. Move one piece at a time, and only once someone on the team can own the infrastructure.
+
+### Can I keep EU customer data in the EU on Vercel?
+
+Yes, with configuration. Vercel has several EU regions, but functions default to Washington, D.C., so set the function region to an EU region next to an EU-hosted database. Check every third-party service the app sends personal data to as well, since each is a sub-processor.
+
+### Can you self-host Next.js instead of using Vercel?
+
+Yes. Next.js runs on any Node.js server or Docker container, and a fully static site can be exported as plain files. If you run several instances, configure a shared cache so ISR revalidation reaches all of them, and plan for image optimization and CDN caching yourself.

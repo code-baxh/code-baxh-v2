@@ -1,0 +1,87 @@
+---
+title: "How much does it cost to build an AI chatbot?"
+description: "AI chatbot development cost explained: the three tiers, what drives the price, one-off build vs ongoing token costs, and how to keep it affordable."
+date: "2026-06-30"
+updated: "2026-06-30"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["chatbots", "cost", "rag"]
+cover: ""
+service: "ai-chatbot-development"
+---
+
+A scoped FAQ-style chatbot can be built for the low four figures (USD). An AI chatbot grounded in your own data, wired into your tools, and safe to put in front of customers typically runs into the five figures. The cost is driven far more by **data grounding, integrations, and evaluation** than by the chat interface itself — the chat box is the cheapest part.
+
+The clearest way to size a chatbot budget is to first decide which of three tiers you actually need.
+
+## The three tiers of AI chatbot
+
+Most quotes vary wildly because 'chatbot' spans three very different things. Pinning your tier is the single biggest lever on cost:
+
+| Tier | What it does | Typical build | Best for |
+| --- | --- | --- | --- |
+| FAQ / scripted | Answers from a fixed set of canned responses and simple rules | Low four figures | Deflecting a handful of repetitive questions |
+| RAG (grounded) | Answers from your own docs and content via retrieval, with citations | Four to five figures | Real customer support, sales, and internal Q&A |
+| Agentic | Takes actions — looks up an order, books a slot, updates a record | Five figures and up | Workflows where answering a question isn't enough |
+
+*Ranges are directional; your exact number depends on the factors below.*
+
+## What drives the cost
+
+- **Scope and tier:** a scripted FAQ bot, a [RAG bot grounded in your data](/blog/building-a-rag-pipeline), or an [agent that takes actions](/blog/ai-agents-vs-chatbots-vs-rag) — each is a step up in effort.
+- **Data grounding:** ingesting, cleaning, chunking, and indexing your content into a vector store so answers are accurate and traceable, not hallucinated.
+- **Integrations:** helpdesk (Zendesk, Intercom), CRM, knowledge base, and live-agent handoff each add real work.
+- **Guardrails and evaluation:** the difference between a demo and a system you can put in front of customers — see [reducing LLM hallucinations](/blog/reduce-llm-hallucinations).
+- **Channels:** a web widget is cheapest; WhatsApp, Slack, or in-app each add surface area.
+- **Volume and quality bar:** a bot answering 50 questions a day is a different build from one handling thousands against a strict accuracy target.
+
+## Build cost vs running cost
+
+Budget for two numbers, not one: the one-off build, and the monthly running cost.
+
+| Cost | One-off (build) | Ongoing (monthly) |
+| --- | --- | --- |
+| Engineering | The bulk of the build | Maintenance and content updates |
+| LLM usage | — | Priced per million tokens; scales with traffic |
+| Vector store / hosting | Initial setup | Modest; scales with data and traffic |
+| Integrations | Setup per system | Minimal once wired |
+
+> **The lever most teams miss**
+>
+> Running cost is mostly LLM tokens. Caching answers to common questions and routing easy questions to a cheaper, faster model — reserving the top-tier model for hard ones — often cuts the monthly bill by more than half with no drop in quality.
+
+## A worked example
+
+Say you want a support chatbot grounded in around 300 help-centre articles, embedded on your site, that hands off to a human when unsure. The build covers: ingesting and chunking the articles into a vector index, a retrieval-plus-generation pipeline that answers only from those sources with links, a web widget, a handoff into your helpdesk, and an evaluation set of real questions to measure accuracy before launch.
+
+That lands in the four-to-five-figure range depending on integration depth and how strict the accuracy bar is. The ongoing cost is dominated by token usage — which is exactly where caching and model routing pay off as traffic grows.
+
+## How we build chatbots that pay for themselves
+
+We scope to your highest-volume questions first so the bot deflects real tickets quickly, reuse a proven RAG foundation instead of rebuilding it, and route requests to the cheapest model that clears the quality bar — measured against an evaluation set so quality doesn't silently drift. See our [AI chatbot development service](/services/ai-chatbot-development), or [book a free discovery call](/start-a-project) for a fixed estimate.
+
+## Frequently asked questions
+
+### How much does an AI chatbot cost to build?
+
+A simple FAQ chatbot can start in the low four figures (USD); a chatbot grounded in your data with real integrations and guardrails typically runs into the five figures. Data grounding, integrations, and evaluation drive the cost more than the chat interface.
+
+### What are the ongoing costs of an AI chatbot?
+
+Mostly LLM usage, priced per million tokens, plus hosting and maintenance. Caching frequent answers and routing easy questions to a cheaper model keep monthly costs down as usage scales.
+
+### What's the cheapest way to start?
+
+Scope to your highest-volume questions and ship a grounded bot for those first. It deflects real tickets quickly and gives you usage data to justify expanding — far cheaper than trying to answer everything on day one.
+
+### Do I need RAG, or is a scripted bot enough?
+
+A scripted FAQ bot is fine for a handful of fixed questions. If you need accurate answers across a body of your own content, you need RAG (retrieval-augmented generation) so the bot answers from your data instead of making things up.
+
+### How long does it take to build an AI chatbot?
+
+A grounded support bot typically takes a few weeks, depending on how much content it must ingest and how many systems it integrates with. Agentic bots that take actions take longer because of the guardrails and testing involved.
+
+### Can the chatbot hand off to a human?
+
+Yes — a good support bot escalates to a human when its confidence is low or the user asks, passing along the conversation context. Building that handoff in is essential to avoid trapping frustrated users.

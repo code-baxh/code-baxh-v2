@@ -1,0 +1,128 @@
+---
+title: "How much does a custom website cost in 2026?"
+description: "Custom website cost by tier, from marketing site to CMS-driven site and web app: timelines, budget bands, what drives the price and the running costs."
+date: "2026-02-18"
+updated: "2026-11-13"
+author: "bilal-khursheed"
+category: "Web"
+tags: ["website", "cost", "nextjs"]
+cover: ""
+service: "web-development"
+---
+
+A custom **marketing website** typically costs **four figures to low five figures (USD)** and takes **5–8 weeks**. A larger **CMS-driven site**, with structured content, many templates, migration and integrations, runs to **low five figures to five figures** over **8–12 weeks**. A **web application** with accounts and its own data is software, not a site: **five figures and up** over **10+ weeks**. Templates, content and integrations move the price more than page count.
+
+## Custom website cost at a glance
+
+| Tier | What it includes | Typical timeline | Budget band (USD) |
+| --- | --- | --- | --- |
+| Marketing site | 8–15 pages built from a handful of templates, a blog or simple CMS, contact and booking flows, structured data, sitemap and metadata, Core Web Vitals in the green | 5–8 weeks | Four figures to low five figures |
+| CMS-driven site | Many content types modeled in a headless CMS, editorial roles and previews, site search, multiple languages or regions, content migration with redirects, several integrations | 8–12 weeks | Low five figures to five figures |
+| Web application | Accounts and roles, a real data model, dashboards, transactions, integrations and the backend behind them | 10+ weeks | Five figures to high five figures; six figures and up at enterprise scale |
+
+A single **landing page** with one conversion goal sits below these tiers: 2–3 weeks and four figures. The timelines match our breakdown of [how long a website takes to build](/blog/how-long-to-build-a-website), and they share its two assumptions: design is settled at kickoff and content arrives on schedule.
+
+## What drives the cost of a website?
+
+### 1. Templates, not pages
+
+Pages are compositions of templates, and templates are where the design and build effort goes. Forty case-study pages built from one template cost far less than fifteen pages that are each unique. When you compare quotes, ask how many distinct templates each one assumes.
+
+### 2. Content modeling and the CMS
+
+Letting your team edit content without a developer means modeling it: which fields a case study has, how authors relate to posts, what an editor can change without breaking the layout. A blog and a few editable pages is a small job. Dozens of content types, editorial roles, scheduled publishing, previews and translation is a project of its own. Our [headless CMS comparison for Next.js](/blog/headless-cms-nextjs-comparison) covers which platform fits which team.
+
+### 3. How custom the design is
+
+Adapting a design system to your brand is efficient. A fully bespoke visual identity with illustration and motion takes longer to design and longer to build, because each animation has to be tuned and made accessible. Decide whether the design itself is how you differentiate, or whether clarity and speed matter more.
+
+### 4. Integrations
+
+A CRM, a booking tool, a payment flow, a mailing list or a product catalog each needs setup, error handling and testing. Off-the-shelf embeds are cheap; syncing data both ways with an internal system is not. See [what a custom API integration costs](/blog/cost-of-custom-api-integration).
+
+### 5. Migration and redirects
+
+Replacing an existing site means auditing every old URL and mapping it to a new one, or the rankings and links the old site earned disappear at launch. Moving hundreds of posts out of an old CMS can take as long as building the templates. Our [Next.js SEO checklist](/blog/nextjs-seo-checklist) lists what has to survive a migration.
+
+### 6. Performance, SEO and accessibility
+
+Google's [Core Web Vitals](https://web.dev/articles/vitals) set "good" as a Largest Contentful Paint within 2.5 seconds, an Interaction to Next Paint of 200 milliseconds or less, and a Cumulative Layout Shift of 0.1 or less, measured at the 75th percentile of page loads. Hitting those on a template loaded with plugins is hard; on a custom build it is a design constraint from day one. Accessibility follows the same logic: building to [WCAG 2.2](https://www.w3.org/TR/WCAG22/) level AA from the start costs a fraction of retrofitting it after an audit.
+
+### 7. The content itself
+
+Copywriting, photography, case studies and legal pages are often the largest hidden cost, and the most common reason a site launches late. If the copy has to be written during the build, budget for a writer as well as two to three extra weeks.
+
+## Template, website builder or custom: which is cheaper?
+
+A template is cheaper upfront. Whether it is cheaper over two or three years depends on what the site has to do.
+
+| | Template or website builder | Custom build on a headless CMS |
+| --- | --- | --- |
+| Upfront cost | Lowest | Higher |
+| Time to launch | Days to a couple of weeks | 5–8 weeks for a marketing site |
+| Design | Inherited from the theme | Built around your brand and content |
+| Performance | Limited by the theme and plugins | Under your control |
+| SEO control | What the platform exposes | Full control of metadata, structured data and rendering |
+| Integrations | What the plugin ecosystem offers | Anything with an API |
+| Ownership | Tied to the platform | Your code, portable between hosts |
+| Best for | Small sites with standard layouts | Sites that are a real acquisition channel |
+
+If you need a handful of pages, standard layouts and no unusual integrations, a well-configured template gets you live in days and is the right answer. Custom earns its cost when the site drives traffic and leads, when performance and structured data translate into rankings, or when you need integrations a template cannot accommodate. The cheapest site is often the one you do not have to rebuild in a year.
+
+## When does a website become a web application?
+
+The line is logins. Once users sign in, store their own data, see dashboards or complete transactions, you are building software, and the cost behaves like a software project: data model, permissions, testing and a backend. Our guide to [what a SaaS costs](/blog/how-much-does-it-cost-to-build-a-saas) covers that budget in detail.
+
+Many products need both: a fast, crawlable marketing site and an application behind a login. They can share a codebase in a framework like Next.js, with each page rendered the way that suits it; see [SSR vs SSG vs ISR](/blog/ssr-vs-ssg-vs-isr-nextjs) for how that choice affects speed and cost.
+
+## What does a website cost to run?
+
+| Cost | What drives it |
+| --- | --- |
+| Domain and DNS | A small annual fee per domain |
+| Hosting | Traffic and how pages are rendered. Static and cached pages are cheap to serve; [Vercel's Pro plan](https://vercel.com/pricing) is 20 USD a month per deploying developer seat, with an included usage credit and pay-as-you-go beyond it, at the time of writing (November 2026) |
+| CMS subscription | Free tiers for small teams; paid plans scale with editor seats, content volume and features such as localization |
+| Third-party tools | Forms, analytics, email marketing, booking and search, each small but real in total |
+| Maintenance | Framework and dependency updates, security patches and small changes, usually a monthly allocation |
+| Content and SEO | New pages, posts and updates, which is what keeps a site earning traffic |
+
+A marketing site is cheap to keep online. The ongoing spend that matters is content and maintenance, because a site nobody updates slowly loses both rankings and security.
+
+## How to keep a website affordable
+
+1. **Write the content first.** A site whose copy is ready at kickoff routinely ships early, and no engineering decision saves more.
+2. **Design a small set of templates.** Fewer, well-built templates make every future page cheaper.
+3. **Launch with fewer pages.** A live eight-page site earns more than a perfect twenty-page site three weeks later.
+4. **Buy the commodity parts.** Forms, booking, newsletters and search are solved problems; embed them before building them.
+5. **Do not cut SEO and performance.** It is a small share of the build and far more expensive to retrofit.
+6. **Get a written scope.** A short [discovery phase](/blog/discovery-phase-software-project) turns a brief into a page and template list, which is what makes a fixed price possible.
+
+## How we price a website
+
+We build custom sites on Next.js with a headless CMS, so they are fast, crawlable and owned by you. After a scoping call we send a written scope listing templates, content types, integrations and migration work, with milestones and a fixed price for each. Our work runs from a [custom wall art store](/work/fika-wall-art-ecommerce) to a [professional services marketplace](/work/prowire-marketplace), and the pattern holds across both ends: the projects that launched on the original date had their content ready in week one. Our [engagement models](/engagement) explain how fixed-scope and retainer work are priced.
+
+## Frequently asked questions
+
+### How much does a custom website cost?
+
+A marketing site typically costs four figures to low five figures (USD), and a larger CMS-driven site with many content types, migration and integrations runs to low five figures to five figures. A web application with accounts and its own data costs five figures and up. The number of templates, the CMS, integrations and content readiness drive the price.
+
+### Is a custom website worth it over a template?
+
+A template is cheaper upfront but limited. A custom site is faster, on-brand, SEO-ready and yours to extend, and often cheaper over time because you avoid a rebuild. Choose custom when the site is core to how you win customers; choose a template when you need a few standard pages quickly.
+
+### How much does it cost to maintain a website?
+
+Hosting and domains for a marketing site are modest. The real ongoing costs are a monthly maintenance allocation for framework and security updates, any CMS and third-party subscriptions, and the content work that keeps the site current. Plan for all three from launch.
+
+### How much does a website redesign cost?
+
+Usually slightly more than a new build of the same size. You gain existing content, but you also inherit a URL migration: every old page needs a mapped redirect, and moving content out of the old CMS takes time. Skipping that work is how redesigns lose the rankings the old site had earned.
+
+### Do I need a headless CMS?
+
+You need a CMS if non-developers will edit content regularly. A headless CMS suits teams that want a fast custom front end and structured content they can reuse across pages and channels. For a site that rarely changes, content kept in the codebase is cheaper and perfectly adequate.
+
+### Why do website quotes vary so much?
+
+Quotes assume different things. One may count fifteen unique templates while another assumes five; one includes copywriting, migration and accessibility work while another leaves them out. Ask each provider for the template list, the integrations, who writes the content and what happens to old URLs, then compare like for like.

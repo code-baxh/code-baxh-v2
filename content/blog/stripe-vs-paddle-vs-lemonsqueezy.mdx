@@ -1,0 +1,131 @@
+---
+title: "Stripe vs Paddle vs Lemon Squeezy for SaaS billing"
+description: "Stripe vs Paddle vs Lemon Squeezy for SaaS: merchant of record vs payment processor, sales tax and VAT, fees, payouts, and which fits your business."
+date: "2026-05-02"
+updated: "2026-11-13"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["stripe", "paddle", "lemon squeezy", "billing"]
+cover: ""
+service: "payment-gateway-integration"
+---
+
+Stripe is a payment processor: you are the seller, so sales tax and VAT are your responsibility, in exchange for the lowest fees (**2.9% + 30¢** on US cards) and full control. Paddle and Lemon Squeezy are merchants of record: they are the legal seller and handle global tax for **5% + 50¢** per transaction. At the time of writing (November 2026), Lemon Squeezy is owned by Stripe and in transition toward Stripe Managed Payments.
+
+## What is the difference between a merchant of record and a payment processor?
+
+A payment processor moves money on your behalf. Your company is the seller on every invoice, so you register for sales tax and VAT where required, calculate it, collect it, file returns and handle disputes. Stripe is a processor by default.
+
+A merchant of record (MoR) acts as the reseller of your product and becomes the legal seller to your customer. The tax obligation sits with them, so they calculate, collect, file and remit it. You sell to one customer, the MoR, and receive a payout net of their fee.
+
+| Responsibility | Payment processor (Stripe) | Merchant of record (Paddle, Lemon Squeezy) |
+| --- | --- | --- |
+| Legal seller on the invoice | Your company | The MoR |
+| Sales tax and VAT registration | You, in each place you have an obligation | The MoR |
+| Tax calculation and filing | You (Stripe Tax can calculate and collect) | The MoR |
+| Fraud and chargebacks | You, with the processor's tools | Largely the MoR |
+| What the customer sees on their statement | Your business name | The MoR's name |
+| Your accounting | Revenue from many customers in many tax regimes | Payouts from one reseller |
+
+That last row is underrated. With an MoR, your books show a handful of payouts a month instead of thousands of transactions across dozens of tax jurisdictions, which makes year-end accounting much simpler for a small team.
+
+## Stripe vs Paddle vs Lemon Squeezy at a glance
+
+Fees below are each vendor's published standard rates at the time of writing (November 2026). Volume and custom pricing are available from all three.
+
+| | Stripe | Paddle | Lemon Squeezy |
+| --- | --- | --- | --- |
+| Model | Payment processor | Merchant of record | Merchant of record |
+| Standard fee | 2.9% + 30¢ for US domestic cards, plus 1.5% for international cards ([Stripe pricing](https://stripe.com/pricing)) | 5% + 50¢ per checkout transaction ([Paddle pricing](https://www.paddle.com/pricing)) | 5% + 50¢ per transaction ([Lemon Squeezy pricing](https://www.lemonsqueezy.com/pricing)) |
+| Subscription billing | Stripe Billing, 0.7% of billing volume on pay-as-you-go | Included | Included |
+| Sales tax and VAT | Your obligation; Stripe Tax calculates where you are registered, 0.5% per transaction on the no-code plan | Handled by Paddle | Handled by Lemon Squeezy |
+| Payouts | To your bank on a schedule you choose; daily is available in many countries | Monthly | Twice a month, by bank or PayPal |
+| Control and flexibility | Highest: full API, any pricing model, Connect for marketplaces | Good for standard SaaS plans, seats and proration | Simplest; strong for digital products and license keys |
+| Best fit | Teams that want control, low fees at scale or complex billing | Global SaaS that wants tax handled | Indie products already on it; see the note on its future |
+
+## How do sales tax and VAT work with each?
+
+### Stripe: you own the obligation
+
+Selling software across borders creates tax obligations in places you have never visited. Rules for digital services differ by country and by US state, thresholds vary, and B2B and B2C sales are often treated differently. Stripe Tax handles the arithmetic once you register in a jurisdiction, but deciding where you must register, registering, filing returns and keeping records are still yours. In practice that means an accountant or a filing service, plus monitoring as you grow into new markets.
+
+### Paddle and Lemon Squeezy: the MoR owns it
+
+Because the MoR is the seller, it charges the right tax at checkout and remits it. You do not register for VAT in the EU or sales tax in US states for those sales. You still owe income or corporate tax on your profits; an MoR removes indirect tax, not tax altogether.
+
+### A decision rule for tax
+
+If most of your revenue comes from businesses in your own country, tax under Stripe is usually manageable: few jurisdictions and mostly B2B treatment. If you sell to consumers or small teams in many countries from day one, the compliance burden arrives before the revenue does, and an MoR is often the cheaper option in total.
+
+## How do payouts and cash flow differ?
+
+Stripe pays your available balance into your bank on the schedule you set, daily in many countries, after a settlement period that varies by country. Paddle runs a monthly payout cycle, so a sale on the 2nd can be in your balance for a month before it is paid out. Lemon Squeezy pays out twice a month.
+
+For a bootstrapped company, that gap matters. A monthly cycle means you need enough cash to cover roughly a month of costs ahead of receipts. It is rarely a deal-breaker, but put it in the cash-flow forecast before you choose.
+
+## What does the fee difference look like on a real charge?
+
+Take a 100 USD monthly subscription paid with a US card, using the published rates above, before tax:
+
+| Provider | Fees on 100 USD | What is included |
+| --- | --- | --- |
+| Stripe (processing, Billing, Tax) | 4.40 USD | Processing and subscription billing; tax calculated where you are registered |
+| Paddle | 5.50 USD | Processing, billing, tax filing and remittance, fraud |
+| Lemon Squeezy | 5.50 USD | Processing, billing, tax filing and remittance |
+
+On paper Stripe is about 1.1 percentage points cheaper. But Stripe's figure excludes the cost of registering, filing and accounting for tax yourself, which is a fixed cost that does not shrink when revenue is small. International cards add 1.5% on Stripe, which narrows the gap further for global B2C.
+
+The rule that follows: **at low revenue, fixed compliance costs dominate and an MoR often wins; at higher revenue, the percentage difference dominates and Stripe wins.** Cheap plans shift the maths too, because the fixed fee hurts. On a 10 USD plan, 5% + 50¢ is 10% of the charge. Paddle's pricing page invites sellers of low-priced products to ask for custom pricing.
+
+## What is happening with Lemon Squeezy?
+
+Stripe acquired Lemon Squeezy in 2024. Its [January 2026 update](https://www.lemonsqueezy.com/blog/2026-update) says the team has been building Stripe Managed Payments, Stripe's own merchant of record product, acknowledges slower support and fewer product updates during the transition, and states the goal of giving Lemon Squeezy users an easy way to migrate. It does not announce a shutdown date.
+
+At the time of writing (November 2026), Lemon Squeezy's site still offers sign-up and lists its standard pricing. For a new product we would treat it as a platform in transition and not build on it. If you are already on it, plan for a migration rather than waiting for a deadline.
+
+### Stripe Managed Payments
+
+Managed Payments makes Stripe (through its Link brand) the merchant of record for digital products and software subscriptions sold through Stripe Checkout, Payment Links and Billing. Stripe's pricing page lists it at 3.5% per transaction on top of standard processing fees, with Billing charged separately. Customers see the purchase as sold through Link, and custom checkout domains are not supported. It is worth comparing with Paddle if you want an MoR but prefer Stripe's API and ecosystem.
+
+## Which should you choose for your type of business?
+
+| Business type | Best fit | Why |
+| --- | --- | --- |
+| B2B SaaS selling mainly in your home market | Stripe | Few tax jurisdictions, lowest fees, full control |
+| Global B2C or prosumer SaaS with a small team | Paddle or Stripe Managed Payments | Tax handled from the first sale |
+| Usage-based, hybrid or heavily custom pricing | Stripe | Billing handles metering, tiers and custom invoicing |
+| Marketplace paying out sellers | Stripe Connect | MoR products are built for selling your own product |
+| Enterprise contracts with invoices and purchase orders | Stripe | Invoicing, quotes and manual payment terms |
+| Digital downloads, templates or license keys | Paddle or Stripe Managed Payments | Lemon Squeezy fits but is in transition |
+
+If billing logic is central to your product, Stripe's flexibility is usually worth owning the tax work. If billing is a means to an end and you sell globally, an MoR buys back founder time. For the wider picture, our guide to [choosing a payment gateway](/blog/choosing-a-payment-gateway) covers regional processors and wallets.
+
+## How hard is it to switch later?
+
+Harder than founders expect. Moving live subscribers means moving stored payment methods between providers, preserving renewal dates and making sure nobody is charged twice. Our [Stripe integration timeline](/blog/how-long-to-integrate-stripe) notes that migrating existing subscribers can take longer than the original integration. Choose as if the decision is permanent, and keep billing behind a small internal interface so the rest of the app does not call the provider directly.
+
+## How we help teams choose
+
+We build most SaaS on Stripe for its control and ecosystem, with subscription state tied to the tenant as described in our [Stripe subscription billing guide](/blog/stripe-subscription-billing-saas). When a client sells globally to consumers and the tax burden outweighs the fee difference, we recommend an MoR instead. Either way, billing is a v1 feature (see the [SaaS MVP feature checklist](/blog/saas-mvp-feature-checklist)) and one of the drivers in [what a SaaS costs to build](/blog/how-much-does-it-cost-to-build-a-saas). Our [engagement models](/engagement) explain how a fixed-scope billing integration is priced.
+
+## Frequently asked questions
+
+### What is a merchant of record?
+
+A merchant of record is the legal seller of your product to your customer. Providers like Paddle and Lemon Squeezy act as the merchant of record, so they collect and remit sales tax and VAT and handle much of the fraud and dispute work. With Stripe's standard processing, your company is the seller and that responsibility is yours.
+
+### Is Stripe or Paddle better for SaaS?
+
+Stripe offers more control and lower headline fees, but you handle sales tax and VAT. Paddle is a merchant of record that handles global tax for a higher fee. Choose Paddle if you sell globally with a small team and want tax off your plate; choose Stripe if billing is complex, you sell mostly in your home market, or volume makes the fee difference significant.
+
+### Is Lemon Squeezy still a good choice?
+
+It still works and its site still offers sign-up, but Stripe owns it and its January 2026 update describes a move toward Stripe Managed Payments. For a new product we would choose Paddle or Stripe Managed Payments instead. Existing users should plan a migration rather than wait for an announced deadline.
+
+### Do I still have tax obligations with a merchant of record?
+
+Yes, but fewer. The MoR handles indirect taxes such as sales tax and VAT on the sales it makes, while you remain responsible for income or corporate tax on your profits. Your accountant will also treat the MoR's payouts differently from direct customer revenue.
+
+### Can I move from Paddle to Stripe later?
+
+Yes, but plan it as a project. Stored payment methods must move between providers, renewal dates must be preserved and customers must not be double-charged, which can take longer than the original integration. Many teams switch once revenue makes the fee difference larger than the cost of handling tax themselves.

@@ -1,0 +1,84 @@
+---
+title: "How long does it take to build a website?"
+description: "Realistic website timelines: 2–3 weeks for a landing page, 5–8 weeks for a marketing site, 10+ weeks for a web app, and why content usually sets the date."
+date: "2026-09-17"
+updated: "2026-09-17"
+author: "bilal-khursheed"
+category: "Web"
+tags: ["website", "timeline", "project planning"]
+cover: ""
+service: "web-development"
+---
+
+A custom **marketing website** typically takes **5–8 weeks** from kickoff to launch. A focused **landing page** takes **2–3 weeks**. A **web application** with accounts, dashboards, and its own data model runs **10+ weeks** and is a different kind of project entirely.
+
+The thing that derails website timelines is almost never engineering. It is **content**: the copy, the photography, the case studies, the legal pages, and the internal approvals on all of it. A build can be finished and sitting on a staging URL for three weeks waiting on an About page nobody has written.
+
+If you are sizing budget as well as schedule, read this with [how much a custom website costs](/blog/cost-to-build-custom-website).
+
+## What are the realistic website timeline tiers?
+
+| Tier | Timeline | What you get | Right for |
+| --- | --- | --- | --- |
+| Landing page | 2–3 weeks | One page, one conversion goal, responsive, fast, analytics wired, basic on-page SEO | Validating an offer or supporting a campaign |
+| Marketing site | 5–8 weeks | 8–15 pages, a blog or CMS, structured data, sitemap and metadata, Core Web Vitals in the green, contact and booking flows | Your main storefront — the common case |
+| Web application | 10+ weeks | Accounts, roles, a real data model, dashboards, integrations, and the backend behind them | Software, not a brochure |
+
+*Assumes design is settled at kickoff and content arrives on schedule — the two assumptions that most often fail.*
+
+## Where do the weeks actually go?
+
+The shape of a typical 6-week marketing site. Note that content collection starts in week one and runs in parallel — projects that treat it as a later step are the ones that slip.
+
+- **Week 1 — discovery, sitemap, and the content kickoff.** Agree the page list, the primary conversion, and who owns each piece of copy with a date against it. Starting the content clock now is the highest-leverage thing in the whole project.
+- **Week 2 — design direction.** Key templates rather than every page: home, an inner page, a post. Once those are agreed the rest are compositions of the same components.
+- **Weeks 3–4 — build.** Components, pages, responsive behaviour, and CMS wiring so your team can edit without a developer. Real content goes in as it arrives; placeholder text hides layout problems.
+- **Week 5 — SEO, performance, and analytics.** Metadata, structured data, sitemap, redirects from any old URLs, image optimisation, and Core Web Vitals. Doing this at the end as a checklist is how sites launch with a month of avoidable technical debt.
+- **Week 6 — review, accessibility pass, and launch.** Cross-browser and mobile checks, keyboard and screen-reader basics, form testing, then DNS cutover with redirects in place from day one.
+
+## What makes a website take longer?
+
+- **Content that does not exist yet.** The most common cause, by a wide margin. If the copy has to be written during the build, add two to three weeks and assign an owner per page with a deadline.
+- **Approval by committee.** Every additional stakeholder with veto power adds a review round, and review rounds are calendar time, not engineering time.
+- **Design arriving page by page.** Building against a moving design means rebuilding shared components repeatedly. Settle the core templates before the build starts.
+- **A migration nobody scoped.** Moving an existing site means auditing old URLs and mapping redirects. Skipping that is how a redesign quietly destroys rankings the business already had — our [Next.js SEO checklist](/blog/nextjs-seo-checklist) covers what has to survive a migration.
+- **Integrations discovered late.** A CRM, a booking tool, a payment flow, or a mailing list each carry their own setup and testing.
+- **Bespoke animation.** Motion is fun to specify and slow to build, tune, and make accessible.
+
+## How do you compress the timeline?
+
+Three levers, in order of impact. **Write the content first** — a site whose copy is ready at kickoff routinely ships two weeks early, and no engineering decision comes close to that. **Name one decision-maker** so reviews resolve in a day instead of a week. **Cut the page count for v1** and add pages after launch, since a live eight-page site earns more than a perfect twenty-page site three weeks later.
+
+What is not worth cutting is the SEO and performance work in week five. It is a small share of the build, it is far more expensive to retrofit, and on a new domain it is the difference between a site that can eventually rank and one that cannot.
+
+> **From our own builds**
+>
+> We have shipped an [admin dashboard](/work/redeemx-admin-dashboard), an [e-commerce storefront](/work/fika-wall-art-ecommerce), and a [marketplace](/work/prowire-marketplace) across this range. The pattern is consistent: the sites that launched on the original date were the ones whose content was ready in week one.
+
+## Do you still need a custom website?
+
+Not always, and it is worth being honest about. If you need a handful of pages, standard layouts, and no unusual integrations, a well-configured template on a mainstream platform gets you live in days for a fraction of the cost. That is genuinely the right answer for many small businesses.
+
+Custom earns its keep when the site is a real acquisition channel — where performance, structured data, and page-level SEO control translate into traffic — when you need integrations a template cannot accommodate, or when the design itself is part of how you differentiate. If none of those apply, spend the money on the content instead.
+
+## Frequently asked questions
+
+### How long does it take to build a simple website?
+
+Two to three weeks for a landing page, and four to five for a small multi-page site, assuming the copy is ready. Simple means standard layouts, no custom integrations, and one decision-maker. The word doing the work in that sentence is "assuming the copy is ready" — content readiness, not page count, is what separates a three-week site from a seven-week one.
+
+### Why do website projects run late?
+
+Content, in most cases. Copy, images, case studies, and team bios have to be written and approved by people whose main job is something else, and that work is routinely left until the build is underway. The second cause is approval structure: each extra stakeholder with veto power adds review rounds that consume calendar time no amount of engineering speed recovers.
+
+### How long does it take to redesign an existing website?
+
+Slightly longer than building fresh, which surprises people. You get existing content, which helps, but you also inherit a URL migration: every old URL has to be audited and mapped to a redirect, or the rankings and links the old site earned are lost at launch. Budget an extra week for that mapping and testing — it is the step that protects everything the current site is already earning.
+
+### Can you build a website in a week?
+
+A single landing page, yes, if the copy exists and the design is straightforward. A multi-page site, no — not because the pages take that long individually, but because design review, content collection, and testing each need a turn and they cannot all happen in the same week. If the deadline is genuinely a week, ship one strong page rather than a rushed five.
+
+### What do you need from us to hit the timeline?
+
+Content and a decision-maker. Specifically: final copy for each page with an owner and a date, brand assets and imagery, access to your domain and any tools we are integrating, and one person who can approve design without convening a committee. Teams that bring those to kickoff hit the ranges above consistently; teams that do not add two to three weeks regardless of how the build goes.

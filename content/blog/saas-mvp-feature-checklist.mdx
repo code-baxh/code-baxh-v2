@@ -1,0 +1,134 @@
+---
+title: "SaaS MVP feature checklist: what to build (and skip)"
+description: "A SaaS MVP feature checklist: what belongs in v1, v2 and later, the reason behind each placement, and a decision rule for borderline feature requests."
+date: "2026-02-10"
+updated: "2026-11-13"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["saas", "mvp", "product scope"]
+cover: ""
+service: "mvp-development"
+---
+
+A SaaS MVP needs the one workflow that proves your value, plus what it takes to charge for it and run it safely: accounts, a tenant model, basic roles, subscription billing, transactional email, an admin view, monitoring, and data export and deletion. That is an **8–14 week** build. Everything else waits for evidence from paying users, including SSO, granular permissions, native mobile apps, integrations and onboarding polish.
+
+## What is an MVP actually for?
+
+An MVP exists to answer one question: will a specific type of customer pay for this workflow? Every feature should either help answer that question or keep you legally and operationally safe while you ask it. Features that do neither make the build longer, push the answer further away and add code you might delete.
+
+That does not mean building something flimsy. The opposite of scope creep is not throwaway code: the parts that are expensive to change later, such as the tenancy model, the data schema and how billing state is stored, should be built properly in v1, even when the interface on top is basic.
+
+If the idea still needs validating before any code, a clickable prototype in 2–4 weeks is the cheaper test. A short [discovery phase](/blog/discovery-phase-software-project) turns the result into a written scope.
+
+## The v1, v2 and later checklist
+
+| Feature | When | Why it sits there |
+| --- | --- | --- |
+| Sign-up, login, password reset | v1 | No accounts, no product. Use a proven auth provider rather than building it |
+| The one core workflow, end to end | v1 | This is the thing being tested; build it well |
+| Tenant (workspace) model | v1 | Retrofitting tenancy means migrating every table |
+| Two or three roles and team invites | v1 | B2B buyers are teams, but more roles can wait |
+| Subscription billing and a self-serve portal | v1 | Charging is the real test of value |
+| Transactional email | v1 | Verification, reset, invites and receipts break without it |
+| Minimal internal admin view | v1 | You will need to find accounts and fix data for early customers |
+| Error monitoring, logs, uptime checks | v1 | You cannot support what you cannot see |
+| Data export and account deletion | v1 | A legal obligation for EU customers, and cheap to build early |
+| Terms, privacy policy, cookie consent where needed | v1 | Required before you take money |
+| Product analytics on the core workflow | v1 | You need to know whether people reach the value |
+| Accessibility basics | v1 | Cheap from the start, expensive to retrofit |
+| Guided onboarding and product tours | v2 | Watch where real users stall before designing them |
+| The first one or two integrations | v2 | Build the ones paying customers name |
+| Annual plans, coupons, extra tiers | v2 | Each multiplies billing states to test |
+| Reporting dashboards | v2 | Learn which numbers customers actually check |
+| Notification preferences and in-app alerts | v2 | Email covers launch |
+| Public API and outbound webhooks | v2 | When customers want to automate around you |
+| AI features, unless AI is the product | v2 | Add once you know which workflow they should improve |
+| SSO, SAML and SCIM | Later | An enterprise deal triggers it, and pays for it |
+| Custom roles and audit log UI | Later | Enterprise-tier features; capture audit events from v1 |
+| Native mobile apps | Later | Only when usage shows people need it away from a desk |
+| Internationalization and multi-currency | Later | When a specific market justifies it |
+| Real-time collaboration | Later | Conflict handling and presence are a project of their own |
+| White-labeling and custom domains | Later | Usually a premium-tier request |
+| Dedicated databases and data residency | Later | Enterprise and regulated customers only |
+
+## Why each v1 item earns its place
+
+### Auth, tenancy and roles
+
+Authentication is a commodity; buy it. The tenant model is not: deciding that every row carries a `tenant_id` costs very little on day one and a painful migration later. Our guide to [multi-tenant SaaS architecture](/blog/how-to-build-a-multi-tenant-saas) explains the model we default to. Keep roles to owner, admin and member at launch; [auth and RBAC in a multi-tenant SaaS](/blog/multi-tenant-saas-auth-rbac) shows how to design them so more can be added without rework.
+
+### Billing
+
+An MVP that does not charge proves interest, not value. Stripe Checkout and the hosted [customer portal](https://docs.stripe.com/customer-management) let customers update cards, change plans, cancel and download invoices without you building those screens. A solid subscription integration takes 2–3 weeks; our [Stripe subscription billing guide](/blog/stripe-subscription-billing-saas) covers the states and webhooks that matter. Launch with one or two plans.
+
+### Operations: admin, monitoring and email
+
+The first customers will hit bugs, mistype emails and ask you to change things. A basic internal admin view, error monitoring and structured logs turn those from emergencies into five-minute fixes. Transactional email is not optional either: invites, verification and password resets are part of the core flow.
+
+### Legal and trust basics
+
+If you have customers in the EU, the [GDPR](https://eur-lex.europa.eu/eli/reg/2016/679/oj) gives people rights to erasure and data portability, so account deletion and data export belong in v1. They are a few days of work while the schema is small and a slog across dozens of tables later. The same logic applies to accessibility: building on semantic components with keyboard support and sufficient contrast, guided by [WCAG 2.2](https://www.w3.org/TR/WCAG22/), costs little at the start and a redesign later.
+
+## Why the v2 and later items wait
+
+They are not unimportant. They are features whose right design depends on information you do not have yet.
+
+- **Onboarding** should fix where real users get stuck, which you only learn from analytics and support conversations.
+- **Integrations** are expensive and specific. Build the one your first ten customers keep asking for, not the five on a competitor's pricing page. Our breakdown of [custom API integration costs](/blog/cost-of-custom-api-integration) shows why each one is a real line item.
+- **AI features** need a target workflow and an evaluation set. [Adding AI to an existing app](/blog/add-ai-to-existing-app) is easier once that workflow exists and has users.
+- **Mobile apps** double the surface area. A responsive web app or PWA covers most B2B use at launch; see [web app vs mobile app vs PWA](/blog/web-app-vs-mobile-app-vs-pwa).
+- **SSO and enterprise controls** are sold, not guessed. When a buyer's security review asks for them, the deal funds the work.
+
+One nuance: some later features need groundwork in v1. Capture audit events in the database from the start, even if the audit log screen comes later, because you cannot backfill history. Store prices and amounts with a currency, even if you only sell in one.
+
+## How to decide on a borderline feature
+
+Every MVP meets features that feel essential. Run each one through these questions, in order, and stop at the first yes:
+
+1. **Does it prove the core value?** If the workflow does not work or make sense without it, it is v1.
+2. **Is it required to charge, or to operate legally and safely?** Billing, deletion, security basics: v1.
+3. **Is it expensive to retrofit?** Build the foundation now (the schema, the event capture, the tenant field) and the interface later.
+4. **Can it be done by hand for the first customers?** Manual onboarding calls, a CSV import you run yourself, an invoice sent from the Stripe dashboard. If yes, do it manually and automate in v2.
+5. **Has a paying customer asked for it, and would they leave without it?** Then it is v2, scheduled after launch.
+
+Anything that falls through all five goes on a backlog with a note of who asked and why. That list becomes the evidence-based v2 roadmap.
+
+A practical guardrail on top: if a borderline feature would push launch out by more than a week or two, it needs a stronger reason than "customers might expect it". Our [SaaS MVP timeline](/blog/how-long-to-build-saas-mvp) shows how quickly small additions compound.
+
+## Signs your MVP scope has crept
+
+- The launch date has moved more than once and nobody can name the feature that moved it.
+- You are building settings pages for options no customer has requested.
+- There are more than three pricing plans before the first sale.
+- The roadmap mentions SSO, a mobile app and AI before anyone has paid.
+- Testing the release takes longer than building the last feature; our [QA strategy for startups](/blog/qa-testing-strategy-for-startups) shows what proportionate testing looks like.
+
+## Our approach
+
+We scope MVPs to the core loop and the essentials around it, then build that on architecture that carries into v2, so nothing is thrown away. The [multi-tenant SaaS MVP](/work/multi-tenant-saas-mvp) we shipped launched with the core of this v1 set: tenant isolation, subscription billing, role-based access and a customer dashboard, ready for real users on a tight timeline. For budgets, see [what a SaaS costs to build](/blog/how-much-does-it-cost-to-build-a-saas), and for how we price fixed-scope work, our [engagement models](/engagement).
+
+## Frequently asked questions
+
+### What features does a SaaS MVP need?
+
+Only the essentials: authentication and accounts, the one core workflow done well, a tenant model, basic roles with team invites, subscription billing, transactional email, a minimal admin view, monitoring, and data export and deletion. Everything else can wait for v2, once paying users show you what matters.
+
+### What should I leave out of an MVP?
+
+SSO and enterprise features, complex RBAC, native mobile apps if the web covers the need, extensive settings and integrations, and internationalization, unless one is genuinely critical from day one. For each candidate, ask whether it proves the core value or is needed to charge and operate safely. If neither, it waits.
+
+### How long does it take to build a SaaS MVP?
+
+A focused SaaS MVP typically takes 8–14 weeks from kickoff to launch. The spread comes from the complexity of the core workflow, the number of integrations and how quickly decisions are made. A clickable prototype to test the idea first takes 2–4 weeks.
+
+### Should an MVP include AI features?
+
+Only if AI is the product. If the core value is an AI capability, such as answering questions from a customer's documents, then it is the core workflow and belongs in v1 with proper evaluation. Otherwise, add AI in v2, once you know which workflow it should improve and have real usage to measure it against.
+
+### Should my MVP have a mobile app?
+
+Usually not. A responsive web app covers most B2B use at launch and avoids building and maintaining two or three clients at once. Build native apps when usage data or customers show a clear need, such as field work, offline use or push notifications that matter to the workflow.
+
+### What if an early customer asks for a feature that is not in v1?
+
+Ask what problem it solves and whether they would leave without it. If a paying customer would churn without it, schedule it for v2 or find a manual workaround for now. If not, log it with their name and reason; repeated requests from several customers are the best evidence you can get for v2.

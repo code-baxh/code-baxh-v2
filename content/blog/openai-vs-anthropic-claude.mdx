@@ -1,0 +1,139 @@
+---
+title: "OpenAI vs Anthropic Claude: which LLM for your product?"
+description: "OpenAI vs Anthropic Claude compared: current models and prices, context windows, structured output, data residency, and how to choose on your own data."
+date: "2026-06-12"
+updated: "2026-11-13"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["llm", "openai", "anthropic", "model selection"]
+cover: ""
+service: "ai-integration"
+---
+
+Neither is better across the board. At the time of writing (November 2026), both offer four-tier line-ups with **roughly 1M-token context windows**, tool use, schema-enforced structured output and no training on API data by default, and their mid tiers cost the same: **$2 per million input tokens and $10 per million output tokens**. The real differences are data residency, terms and how each model handles your task, so **measure both on your own data and keep the model swappable**.
+
+## The current line-ups at a glance
+
+Both providers sell a family of models priced per million input and output tokens, which lets you route each task to the cheapest model that does it well. Current models and list prices at the time of writing (November 2026), from [Anthropic's models overview](https://platform.claude.com/docs/en/about-claude/models/overview) and [OpenAI's models page](https://developers.openai.com/api/docs/models):
+
+| Provider | Model | How the provider positions it | Price per 1M tokens (input / output) |
+| --- | --- | --- | --- |
+| Anthropic | Claude Fable 5.2 | Demanding reasoning and long-horizon agentic work | $8 / $40 |
+| Anthropic | Claude Opus 5.5 | Recommended starting point for most workloads | $4 / $20 |
+| Anthropic | Claude Sonnet 5.5 | Best combination of speed and intelligence | $2 / $10 |
+| Anthropic | Claude Haiku 5.5 | High-volume classification, extraction and routing | From $0.10 / from $0.50 |
+| OpenAI | GPT-6 Astra | Most capable, for the most demanding work | $10 / $50 |
+| OpenAI | GPT-6.1 Sol | Close to Astra on complex work at lower cost | $2 / $10 |
+| OpenAI | GPT-6.1 Terra | Fast: visual reasoning, computer use, writing | $1 / $5 |
+| OpenAI | GPT-6 Luna | Most efficient, for high-volume focused tasks | $0.10 / $0.50 |
+
+The tiers do not map one to one: Anthropic's recommended default is its second tier, while OpenAI recommends its top tier for complex reasoning. Long prompts cost more on Claude Haiku 5.5 and across OpenAI's line-up; the other current Claude models bill the full window at the standard rate.
+
+## Which capabilities actually differ?
+
+Names and prices change every few months. These capabilities change slowly, and they decide whether a provider is even eligible for your product.
+
+| Capability | Anthropic Claude | OpenAI |
+| --- | --- | --- |
+| Context window | 1M tokens on all four current models, 128K max output | 1.05M tokens on all four flagship models, up to 128K output |
+| Tool use | All current models; strict mode validates tool inputs against your schema | Function calling with a strict mode |
+| Structured output | JSON Schema output enforced by constrained decoding | Structured Outputs with JSON Schema and strict mode |
+| Training on API data | Not without your express permission | Not by default |
+| Zero data retention | Available on request, except for the Fable models | Available to approved customers |
+| Regional processing (first-party API) | US-only or global inference; data at rest stored in the US | Projects pinned to regions including the US and Europe |
+| Also sold through | Amazon Bedrock, Google Cloud, Microsoft Foundry | Microsoft Foundry |
+
+### Context window: parity, so measure what fills it
+
+Earlier Claude models topped out at 200K tokens; today both providers offer about a million. The question is no longer whether your document fits but whether the model still finds the right sentence when it does, and long prompts are billed on every call. Retrieving the relevant passages usually beats stuffing the window, which is why we build a [RAG pipeline](/blog/building-a-rag-pipeline) even when the corpus would fit.
+
+### Tool use and structured output: both are mature
+
+Both can force output to match a JSON Schema and validate tool arguments strictly. That removes parsing bugs, not the need to check business rules in your code: a schema can say a field is a date, not that the date is in the future. The real difference is ecosystem. If your stack already uses OpenAI's SDK, GPT models drop in with less glue; Anthropic's API differs in shape, so a thin adapter pays for itself.
+
+### Data, privacy and retention
+
+Neither trains on API data by default, and both offer zero data retention to qualifying customers. The fine print differs. Anthropic's top-tier Fable models require data retention to be enabled, so they are unavailable under zero retention unless Anthropic expressly authorizes it. OpenAI keeps abuse-monitoring logs by default unless you qualify for stricter controls. If you handle health, financial or personal data, get both providers' terms reviewed before you write code.
+
+### Regional availability
+
+This is where the two differ most for European and regulated customers. [OpenAI's data residency](https://developers.openai.com/api/docs/guides/data-residency) lets eligible organizations pin projects to regional storage and processing in the US or Europe (EEA and Switzerland), with storage-only options in several other countries, at a **10% uplift** for models released on or after March 5, 2026. [Anthropic's first-party API](https://platform.claude.com/docs/en/manage-claude/data-residency) offers two inference locations, `us` and `global`, with US-only inference priced at **1.1x** and data at rest stored in the US. To keep Claude processing in another region, go through Amazon Bedrock's regional endpoints or Google Cloud's multi-region endpoints, priced by those platforms.
+
+## Match the model to the task
+
+Rather than crowning a winner, match the model to the job. These are starting points to validate against your own data:
+
+| If you're doing… | Test first | Why |
+| --- | --- | --- |
+| Long-context, grounded reasoning over documents | Claude Opus 5.5 or Sonnet 5.5, with GPT-6.1 Sol as challenger | Claude is often strong at careful grounding; measure faithfulness |
+| Extraction and function calling in existing OpenAI tooling | GPT-6.1 Sol or Terra | Mature tooling and integrations |
+| High-volume, simple tasks (classification, tagging) | Claude Haiku 5.5 or GPT-6 Luna | Same list price; accuracy on your labels decides |
+| The hardest reasoning and long agentic runs | Claude Fable 5.2 or GPT-6 Astra | Most expensive tier; check retention terms first |
+| Processing must stay in the EU | An OpenAI EU project, or Claude via a cloud regional endpoint | Residency filters before quality does |
+
+*Capabilities shift with every release. Treat this as a hypothesis to test, not gospel.*
+
+## Why per-token prices are not the whole story
+
+The same text produces different token counts on different tokenizers. [Anthropic notes](https://platform.claude.com/docs/en/about-claude/models/overview) that 1M tokens holds roughly 555,000 words on its current tokenizer, against about 750,000 on its earlier models. So "$2 per million tokens" from two vendors is not the same price for the same work. Compare **cost per completed task**:
+
+1. Run 100 or so representative requests through each candidate.
+2. Record tokens in and out, and whether each answer passed your evaluation.
+3. Divide total spend by the number of passing answers.
+
+A model that costs more per token but answers correctly first time, with shorter output, is often cheaper. Discounts matter too: Anthropic lists batch requests at 50% off and cache reads at a fraction of the input price. Our guide to [reducing LLM API costs](/blog/reduce-llm-api-costs) covers caching, batching and routing.
+
+## Don't marry one provider
+
+Every model is eventually retired: Anthropic publishes a "not sooner than" [retirement date](https://platform.claude.com/docs/en/about-claude/models/overview) for each, September 2027 for Claude Opus 5.5. If your app is hard-wired to one provider's SDK and prompt quirks, switching is painful. Put a thin abstraction between the app and the model, and "which model" becomes a per-task, reversible decision:
+
+*A thin interface keeps the model swappable*
+
+```ts
+// Depend on an interface, not a specific provider's SDK.
+interface LLM {
+  complete(input: PromptInput): Promise<Completion>;
+}
+
+const claude: LLM = new AnthropicProvider({ model: "claude-sonnet-5-5" });
+const gpt: LLM = new OpenAIProvider({ model: "gpt-6.1-sol" });
+
+// Route per task, measured against an eval set, not by vibes.
+const model: LLM = task.needsGroundedLongContext ? claude : gpt;
+```
+
+Keep prompts (versioned per model), JSON schemas and the evaluation set outside the adapter so they survive a switch, and log the model ID with every request.
+
+> **Measure against your data**
+>
+> Score each candidate model on an evaluation set of real inputs with known-good outputs. That turns "OpenAI or Anthropic?" from an argument into a measurement.
+
+## Our approach
+
+We build model-agnostic AI systems and choose the model per task against an evaluation set, the discipline behind our guides to [evaluating RAG systems](/blog/evaluating-rag-systems) and [reducing hallucinations](/blog/reduce-llm-hallucinations). Our [contract analysis system](/work/legal-contract-ai) answers questions over 500 to 1,000 page contracts with cited sources; our [AI call analysis](/work/ai-call-analysis) scores lead intent with GPT. Unsure whether you need a better prompt, retrieval or fine-tuning? Read [prompt engineering vs fine-tuning vs RAG](/blog/prompt-engineering-vs-fine-tuning-vs-rag), or see our [engagement models](/engagement).
+
+## Frequently asked questions
+
+### OpenAI or Anthropic — which is better?
+
+Neither wins across the board. At the time of writing (November 2026) they match on context window, tool use and structured output, and their mid tiers cost the same per token. Claude is often strong at long-context grounded reasoning; GPT has a broad tooling ecosystem and strong extraction. Measure both on your own data and keep the model swappable.
+
+### Should I build my app around one LLM provider?
+
+No. Capabilities and prices change quickly, and every model is eventually retired. Put a thin abstraction between your app and the model and keep an evaluation set, so you can route per task and switch providers without a rewrite.
+
+### How are these models priced?
+
+Per million input and output tokens, with output costing more. At the time of writing (November 2026), Claude Sonnet 5.5 and GPT-6.1 Sol both list at $2 input and $10 output, and the cheapest tiers start at $0.10 and $0.50. Batching and prompt caching cut those rates; long prompts and regional processing can raise them.
+
+### Which model is best for RAG?
+
+Both work well for retrieval-augmented generation, and the right pick is task-dependent. Retrieval quality and grounding instructions usually matter more than the model. Keep the model swappable and choose on faithfulness, latency and cost.
+
+### How do I decide objectively?
+
+Build an evaluation set of real inputs and known-good outputs, score each candidate on it, and compare cost per passing answer rather than cost per token. That replaces opinion with measurement and catches regressions when models or prompts change.
+
+### Which provider is better for data privacy and data residency?
+
+Neither trains on API data by default, and both offer zero data retention to qualifying customers, with exceptions such as Anthropic's Fable models. For EU processing, OpenAI offers European data residency on its own API; for Claude, use a regional or multi-region endpoint on Amazon Bedrock or Google Cloud. Check current terms with your legal team before you commit.

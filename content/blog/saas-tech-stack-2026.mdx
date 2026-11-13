@@ -1,0 +1,125 @@
+---
+title: "The SaaS tech stack we use in 2026 — and why"
+description: "Our SaaS tech stack layer by layer: Next.js, Node or FastAPI, PostgreSQL, managed auth, Stripe, Vercel, AWS and observability, with reasons and alternatives."
+date: "2026-03-28"
+updated: "2026-11-13"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["saas", "tech stack", "nextjs", "postgresql"]
+cover: ""
+service: "saas-development"
+---
+
+Our default SaaS stack is **TypeScript end to end**: Next.js and React on the front end, Node.js with NestJS on the back end (or Python with FastAPI when the product is AI- or data-heavy), **PostgreSQL** with row-level security, a managed auth provider, Stripe for billing, Vercel plus AWS for hosting, and OpenTelemetry-based observability. It is boring on purpose: proven, easy to hire for, and easy to change later.
+
+## The stack at a glance
+
+| Layer | Our default | Why | Alternatives, and when |
+| --- | --- | --- | --- |
+| Frontend | Next.js, React, TypeScript, Tailwind CSS, an accessible component library | Server rendering for public pages, one language with the backend, a large hiring pool | Plain React with Vite for apps that live entirely behind a login |
+| Backend | Node.js (LTS) with NestJS; Next.js route handlers for small products | Typed, modular structure; types shared with the frontend | Python and FastAPI when the core is AI, ML or data processing |
+| Database | Managed PostgreSQL (Supabase, or Amazon RDS) | Transactions, relational integrity, JSON columns, row-level security, pgvector | MongoDB for genuinely document-shaped data |
+| Cache and jobs | Redis with a job queue | Emails, webhooks, exports and AI calls run off the request path | A Postgres-backed queue for small apps; SQS on AWS-heavy builds |
+| Auth | A managed provider; one with per-tenant SSO when enterprise is on the roadmap | Security-sensitive commodity work you should not write yourself | Open-source auth libraries when you must hold all user data in-house |
+| Payments | Stripe Billing | The most complete subscription API and ecosystem | Paddle or Stripe Managed Payments when you want a merchant of record |
+| Hosting | Vercel for the Next.js app; AWS for the API, database and workers; Docker | Best developer experience for Next.js, with AWS control and scale behind it | Render as a simpler all-in-one; AWS-only for compliance-heavy products |
+| Observability | Error tracking, structured logs and traces via OpenTelemetry, uptime checks | Debug one tenant's problem without reading everyone's logs | Any OpenTelemetry-compatible backend |
+| AI, when needed | A model-agnostic layer over OpenAI and Anthropic, retrieval on pgvector, an evaluation suite | Models change fast; the code should not care which one is behind it | A dedicated vector database at very large scale |
+
+## What versions should you start on?
+
+At the time of writing (November 2026):
+
+- **Next.js 16.4**, released in October 2026, ships with React 19.3 and recommends Cache Components for every new app; the [Next.js 16.4 release notes](https://nextjs.org/blog/next-16-4) say this model becomes the default in Next.js 17. Next.js also moved to a formal schedule of security releases in 2026, so plan time to apply them.
+- **Node.js v26, v24 and v22** are the LTS lines, and the [Node.js release page](https://nodejs.org/en/about/previous-releases) advises production applications to run only Active LTS or Maintenance LTS releases. Start new projects on the newest LTS your hosting platform supports.
+- **PostgreSQL 18** is the latest major version, released in September 2025 and, per the [PostgreSQL versioning policy](https://www.postgresql.org/support/versioning/), supported until November 2030. Each major version gets five years of support.
+
+Pin versions in the repository, upgrade on a schedule rather than in a panic, and include dependency updates in the post-launch plan; our guide to [hypercare and post-launch support](/blog/hypercare-post-launch-support) covers how that is usually budgeted.
+
+## Why TypeScript end to end?
+
+One language across the frontend, backend and shared packages means one set of types, one toolchain and engineers who can work anywhere in the codebase. The biggest practical win is sharing validation schemas, so the form and the API agree on what valid input looks like:
+
+```ts
+// packages/shared/project.ts: one schema, used by the API and the form
+import { z } from "zod";
+
+export const createProject = z.object({
+  name: z.string().min(1).max(120),
+  visibility: z.enum(["private", "team"]),
+});
+
+export type CreateProject = z.infer<typeof createProject>;
+```
+
+When a field changes, the compiler finds every place that needs updating before a customer does.
+
+We switch the backend to **Python and FastAPI** when the product's core is machine learning, document processing or heavy data work, because that is where Python's libraries are strongest. The frontend stays Next.js, and an OpenAPI-generated client keeps the types honest across the language boundary.
+
+On the frontend, Next.js earns its place for public, search-facing pages and a single deployment model. For a pure dashboard behind a login, plain React with Vite is a legitimate choice; our [Next.js vs React](/blog/nextjs-vs-react) comparison sets out the rule we use.
+
+## Why PostgreSQL by default?
+
+Most SaaS data is relational: tenants have users, users create records, records belong to projects. PostgreSQL handles that with real transactions and constraints, stores flexible data in JSON columns when you need it, and gives you row-level security as a backstop for tenant isolation. With the pgvector extension it also covers retrieval for AI features without a second database. Our [PostgreSQL vs MongoDB](/blog/postgresql-vs-mongodb) comparison covers the cases where a document store genuinely wins.
+
+**Supabase or plain AWS?** Supabase gives you managed Postgres plus auth, storage and good row-level security tooling, which shortens an MVP. Amazon RDS keeps everything inside your own AWS account, which some enterprise buyers and compliance reviews prefer. Both are standard Postgres, so moving later is a data migration, not a rewrite. The trade-offs are in [Supabase vs Firebase](/blog/supabase-vs-firebase), and the tenancy design that sits on top is in our guide to [multi-tenant SaaS architecture](/blog/how-to-build-a-multi-tenant-saas).
+
+## How should the backend be structured?
+
+**Start with a modular monolith.** One deployable application, organized into modules with clear boundaries (billing, accounts, the core domain), each owning its own tables. It ships faster, is easier to debug and scales further than most teams expect. Split a module into its own service only when there is a concrete reason: a part that needs to scale independently, a separate team, or a different runtime such as a Python AI service.
+
+Expose a REST API by default, versioned from the first release. GraphQL earns its place when many clients need flexible, nested queries; [REST vs GraphQL](/blog/rest-vs-graphql) walks through that decision. Put anything slow on the job queue: sending email, processing Stripe webhooks, generating exports and calling language models.
+
+## Where should it run, and how do you see what is happening?
+
+The common, pragmatic setup is the Next.js app on Vercel and the API, database and workers on AWS, packaged with Docker so nothing is tied to one platform. Render is a sensible simpler option for small teams, and AWS-only suits products with strict compliance or data-residency needs. [Where to host a SaaS](/blog/where-to-host-saas-aws-vercel-render) compares them stage by stage.
+
+Observability is part of the stack from the first deploy, not something added after the first outage:
+
+- **Error tracking** with source maps, so a stack trace points at real code.
+- **Structured logs and traces** carrying the tenant ID and request ID on every line. [OpenTelemetry](https://opentelemetry.io/docs/what-is-opentelemetry/) is a vendor-neutral CNCF standard for traces, metrics and logs, so you can change monitoring vendors without re-instrumenting the code.
+- **Uptime checks** on the app, the API and the webhook endpoint.
+- **Cost alerts** on cloud spend and AI usage, so a bug or a heavy tenant does not become a surprise invoice.
+
+## When do we deviate from the default?
+
+| Situation | What changes |
+| --- | --- |
+| The product is AI-first | FastAPI service for the AI pipeline; retrieval and evaluation built in, as in our [RAG pipeline guide](/blog/building-a-rag-pipeline) |
+| Mobile is the main surface | A React Native app sharing TypeScript types with the backend; see [React Native vs Flutter](/blog/react-native-vs-flutter) |
+| Enterprise or regulated buyers | AWS-only hosting, per-tenant SSO, audit logging, and dedicated databases for the tenants who require them |
+| You sell globally to consumers | A merchant of record instead of plain Stripe; see [Stripe vs Paddle vs Lemon Squeezy](/blog/stripe-vs-paddle-vs-lemonsqueezy) |
+| Real-time collaboration is core | A dedicated WebSocket service and a conflict-resolution strategy from the start |
+
+## What we avoid
+
+- **Bleeding-edge tools for core infrastructure.** New is fine at the edges, but the database, auth and billing must be dull and dependable.
+- **Lock-in without an exit.** Managed services are good; services whose data you cannot export are not.
+- **Premature microservices and Kubernetes.** Both add operational load an early-stage team does not need.
+- **Rolling your own auth, billing logic or cryptography.** Buy the commodity parts and spend the budget on what makes the product different.
+
+## How does the stack affect cost and timeline?
+
+A mainstream stack is cheaper mainly because it removes surprises: libraries exist for the common problems, engineers already know it, and hosting is well understood. It is a large part of why a focused SaaS MVP fits in 8–14 weeks. The bigger cost drivers are still scope, integrations and compliance; [what a SaaS costs to build](/blog/how-much-does-it-cost-to-build-a-saas) breaks those down. Our [engagement models](/engagement) explain how we scope and price a build on this stack.
+
+## Frequently asked questions
+
+### What's the best tech stack for a SaaS in 2026?
+
+A pragmatic default is Next.js and TypeScript on the front end, Node.js with NestJS or Python with FastAPI on the back end, PostgreSQL (often via Supabase), a managed auth provider, Stripe for billing, and Vercel plus AWS for hosting. It is proven, type-safe and scalable. The right stack still depends on your product, team and customers.
+
+### Should I use microservices for my SaaS?
+
+Usually not at first. A well-structured modular monolith ships faster, is easier to debug and scales further than most teams expect. Split out services only when a clear scaling need, team boundary or different runtime demands it.
+
+### Should I use Supabase or AWS directly?
+
+Supabase is faster for an MVP because it bundles Postgres with auth, storage and row-level security tooling. AWS (for example Amazon RDS) suits teams that want everything inside their own cloud account or face strict compliance reviews. Both run standard PostgreSQL, so moving from one to the other is a migration, not a rewrite.
+
+### Node.js or Python for a SaaS backend?
+
+Node.js with TypeScript is our default because it shares a language and types with a Next.js frontend. Choose Python with FastAPI when the product's core is machine learning, document processing or data pipelines, where Python's libraries are far stronger. Many AI products run both: a TypeScript app with a Python service for the AI work.
+
+### Does the tech stack change how much a SaaS costs?
+
+Less than scope does, but it matters. A mainstream stack reduces risk because common problems have well-tested libraries and experienced engineers are easy to find, while an unusual stack adds learning time and hiring cost. Scope, integrations, billing complexity and compliance remain the main cost drivers.

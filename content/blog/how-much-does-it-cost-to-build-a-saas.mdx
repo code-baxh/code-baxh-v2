@@ -1,0 +1,129 @@
+---
+title: "How much does it cost to build a SaaS product?"
+description: "SaaS development cost explained: budget tiers from MVP to enterprise, the drivers behind the price, running costs after launch, and how to spend less."
+date: "2026-04-10"
+updated: "2026-11-13"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["saas", "mvp", "cost"]
+cover: ""
+service: "saas-development"
+---
+
+A focused, launch-ready **SaaS MVP** typically costs in the **low-to-mid five figures (USD)** and takes **8–14 weeks**. A growth-stage product with multi-tenancy, team accounts and integrations runs into the **high five figures**. Enterprise SaaS with SSO, audit logs and compliance work starts in the **six figures**. What moves a project between those bands is complexity, not feature count: integrations, billing, roles, compliance and how polished the interface has to be.
+
+## SaaS development cost at a glance
+
+| Stage | What it includes | Typical timeline | Budget band (USD) |
+| --- | --- | --- | --- |
+| Clickable prototype | Designed screens and a thin working slice of the core workflow, to test the idea with users | 2–4 weeks | Four figures to low five figures |
+| Focused MVP | One core workflow, sign-up and login, subscription billing, a basic admin view, production hosting | 8–14 weeks | Low to mid five figures |
+| Growth-stage product | Multi-tenancy with roles, team invites, integrations, analytics, a refined interface | 4–6 months | High five figures |
+| Enterprise SaaS | SSO and SAML, audit logging, data residency, security reviews, uptime commitments | 6–12 months | Six figures and up |
+
+These bands assume a senior, full-stack team building on a modern stack. The same scope costs more with a large onshore agency and less with a solo freelancer, at a different level of risk; our comparison of [agency, freelancer and in-house teams](/blog/agency-vs-freelancer-vs-in-house) covers that trade-off.
+
+## What actually drives the price
+
+### 1. The core workflow
+
+Most of the budget goes into the one thing your product does that nobody else does. A scheduling tool, a reporting engine or a document workflow each has its own hard part, and that hard part sets the floor. Everything around it (login, settings, billing) is well-trodden and comparatively cheap.
+
+### 2. Multi-tenancy and roles
+
+Serving many customers from one application, with each customer's data isolated, is the defining architectural decision in a SaaS build. A shared schema with a tenant ID and row-level security is the economical default; a dedicated database per customer costs more to build and run. Add role-based access inside each customer account and the work grows again. Our guides to [multi-tenant SaaS architecture](/blog/how-to-build-a-multi-tenant-saas) and [auth and RBAC](/blog/multi-tenant-saas-auth-rbac) go into the detail.
+
+### 3. Billing
+
+Taking a one-off payment is a few days of work. Subscription billing that survives real customers (trials, upgrades with proration, failed cards, cancellations, refunds) takes around two to three weeks, because each of those is a state your application must handle. We break the timeline down in [how long it takes to integrate Stripe](/blog/how-long-to-integrate-stripe) and the design choices in [Stripe subscription billing for SaaS](/blog/stripe-subscription-billing-saas).
+
+### 4. Integrations
+
+Every external system (a CRM, an accounting package, a data provider) adds authentication, error handling, rate limits and a sync strategy. A well-documented API is a small job; a legacy system with no sandbox can be the largest line in the estimate. See [what a custom API integration costs](/blog/cost-of-custom-api-integration).
+
+### 5. AI features
+
+A retrieval-augmented assistant over your own content, or an agent that takes actions, is real engineering: data preparation, evaluation and guardrails, plus a usage bill that scales with traffic. [Adding AI to an existing app](/blog/add-ai-to-existing-app) and [the cost of an AI agent](/blog/cost-to-build-ai-agent) cover how that changes the budget.
+
+### 6. Compliance and security
+
+Handling personal data of people in the EU brings obligations under the [GDPR](https://eur-lex.europa.eu/eli/reg/2016/679/oj): consent, data export and deletion, processor agreements. Health or financial data, or an enterprise buyer asking for SOC 2 evidence, raises the floor further through audit logging, access reviews and documented processes.
+
+### 7. Design polish
+
+A clean, functional interface built on a component library is efficient. A bespoke, branded experience with custom illustration and motion takes noticeably longer. For an MVP, functional and clear usually wins; polish follows traction.
+
+## Cost by feature
+
+Relative effort for common SaaS features, assuming a modern TypeScript stack:
+
+| Feature | Relative effort | Notes |
+| --- | --- | --- |
+| Sign-up, login, password reset | Small | Use a proven auth provider rather than building it |
+| Team accounts and invites | Small to medium | Grows with the number of roles |
+| Subscription billing | Medium | Around 2–3 weeks to handle the full lifecycle |
+| Multi-tenancy with row-level security | Medium | Cheapest when decided on day one |
+| Admin panel | Small to medium | Internal tools can use off-the-shelf builders |
+| Each third-party integration | Small to large | Depends on API quality and data volume |
+| AI assistant over your content | Medium to large | Includes evaluation, not just the model call |
+| Real-time collaboration | Large | Conflict handling and presence are hard |
+| SSO and SAML | Medium | Usually an enterprise-tier feature |
+| Native mobile app | Large | A separate build; see [mobile app cost](/blog/cost-to-build-mobile-app) |
+
+## Running costs after launch
+
+Build cost is only half the budget. Plan for these from day one:
+
+| Cost | What drives it |
+| --- | --- |
+| Hosting and database | Traffic, data volume and region. Model it with the provider's calculator, for example the [AWS Pricing Calculator](https://calculator.aws/); we compare platforms in [where to host a SaaS](/blog/where-to-host-saas-aws-vercel-render) |
+| Payment processing | A percentage plus a fixed fee per transaction; check [Stripe's pricing](https://stripe.com/pricing) for your country |
+| Third-party services | Email delivery, error monitoring, auth, analytics; small individually, real in total |
+| AI usage | Tokens per request multiplied by traffic; caching and model routing cut it, see [reducing LLM API costs](/blog/reduce-llm-api-costs) |
+| Maintenance and support | Security patches, dependency upgrades, bug fixes and small improvements, usually a monthly allocation (see [what hypercare covers](/blog/hypercare-post-launch-support)) |
+
+## How to spend less without building throwaway code
+
+1. **Scope to one workflow.** The cheapest SaaS is the one you do not have to rebuild. Ship the smallest product that proves people will pay; our [MVP feature checklist](/blog/saas-mvp-feature-checklist) separates v1 from later.
+2. **Buy the commodity parts.** Authentication, payments, email and file storage are solved problems. Paying for a service costs far less than building and securing your own.
+3. **Choose a boring, proven stack.** Fewer surprises, more engineers who know it, faster delivery. See our [SaaS tech stack for 2026](/blog/saas-tech-stack-2026).
+4. **Make the tenancy decision once.** Changing tenancy models after launch means a data migration and rework. It costs little to get right at the start.
+5. **Start with discovery.** A short [discovery phase](/blog/discovery-phase-software-project) turns an idea into a written scope, which is what makes a fixed price possible.
+6. **Keep AI out of v1 unless it is the product.** Add it once you know which workflow it should improve.
+
+## Costs founders often miss
+
+- **Data migration** from spreadsheets or a legacy tool, which is often a project of its own.
+- **Testing.** Automated tests and a QA pass before each release; our [QA strategy for startups](/blog/qa-testing-strategy-for-startups) shows what is proportionate.
+- **Legal documents**: terms, privacy policy and a data processing agreement.
+- **Onboarding and support**: help content, transactional emails, and someone to answer the first customers.
+
+## How we estimate a SaaS build
+
+We start with a discovery conversation, then send a written scope with milestones and a fixed price for each. You see working software every week and pay by milestone, so the budget never runs ahead of what has been delivered. We built a [multi-tenant SaaS MVP](/work/multi-tenant-saas-mvp) this way: tenant isolation, Stripe subscriptions, role-based access and a customer dashboard were live at launch, on the agreed timeline. Our [engagement models](/engagement) explain how fixed-scope, retainer and team-extension work are priced.
+
+## Frequently asked questions
+
+### How much does a SaaS MVP cost?
+
+Most focused SaaS MVPs fall in the low-to-mid five figures (USD) and scale with scope and complexity. A single core workflow with sign-up, billing and a basic admin view sits at the lower end; integrations, multi-tenancy with roles, or AI features move it up. We provide a fixed estimate after a free discovery call.
+
+### Is it cheaper to use a freelancer or an agency?
+
+A single freelancer can be cheaper upfront but riskier for a full SaaS (no redundancy, narrower skills). A small senior agency gives you full-stack coverage and continuity. For a product you intend to scale, the agency total cost of ownership is often lower.
+
+### How long does it take to build a SaaS MVP?
+
+Typically 8–14 weeks from kickoff to launch. The spread comes from scope discipline, integration complexity and how quickly decisions are made. Our [SaaS MVP timeline](/blog/how-long-to-build-saas-mvp) breaks it down phase by phase.
+
+### What does it cost to run a SaaS after launch?
+
+Budget for hosting and database, payment processing fees, third-party services such as email and monitoring, AI usage if your product calls a model, and a monthly maintenance allocation for security updates and fixes. At MVP scale the infrastructure is usually modest; maintenance is the line people forget.
+
+### Does adding AI make a SaaS more expensive?
+
+Yes, in two ways. Building an AI feature properly includes data preparation, evaluation and guardrails, not just a model call. And it adds a usage cost that grows with traffic. Both are manageable when the feature is scoped to one workflow and measured from the start.
+
+### Can I get a fixed price for a SaaS build?
+
+Yes, once the scope is written down. A short discovery phase produces the scope, and from that we quote a fixed price split into milestones, paid as each one is delivered.

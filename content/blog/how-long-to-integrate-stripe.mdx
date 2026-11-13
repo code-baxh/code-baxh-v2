@@ -1,0 +1,84 @@
+---
+title: "How long does it take to integrate Stripe?"
+description: "Realistic Stripe integration timelines: 3–5 days for one-off payments, 2–3 weeks for subscriptions, 4–6 weeks for usage-based or marketplace billing."
+date: "2026-09-17"
+updated: "2026-09-17"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["stripe", "payments", "billing", "timeline"]
+cover: ""
+service: "payment-gateway-integration"
+---
+
+Taking a **one-off payment** with Stripe Checkout takes **3–5 days**. **Subscription billing** that holds up in production — plan changes, failed cards, proration, cancellations, refunds — takes **2–3 weeks**. **Usage-based or marketplace billing** with Connect runs **4–6 weeks**.
+
+The gap between those numbers is not the payment form. Stripe makes charging a card genuinely easy. The work is everything that happens **after** the charge: reconciling webhooks, keeping your database in sync with Stripe's view of the world, and handling the dozen states a subscription can be in that are not "active".
+
+If you have not chosen a provider yet, [Stripe vs Paddle vs Lemon Squeezy](/blog/stripe-vs-paddle-vs-lemonsqueezy) comes first — the merchant-of-record question changes who handles your sales tax, and that decision is far more consequential than integration time.
+
+## What are the realistic Stripe integration timelines?
+
+| Scope | Timeline | What it covers | Right for |
+| --- | --- | --- | --- |
+| One-off payments | 3–5 days | Stripe Checkout, success and cancel handling, one webhook to confirm fulfilment, test-mode coverage | Selling a product, a report, a single service |
+| Subscriptions | 2–3 weeks | Plans, trials, upgrades and downgrades with proration, dunning for failed payments, the customer billing portal, and full webhook reconciliation | SaaS — the common case |
+| Usage-based or marketplace | 4–6 weeks | Metering and usage reporting, or Stripe Connect with onboarding, split payments, and payouts to third parties | Consumption pricing or paying out sellers |
+
+*Assumes you have a working app with authentication and a database to attach billing to.*
+
+## Where does the time actually go?
+
+For a typical 2–3 week subscription build, the payment form is roughly a day of it. Here is the rest:
+
+- **Modelling the billing states.** Your database needs to know who is on what plan, whether they are in a trial, past due, cancelled-but-active-until-period-end, or fully lapsed. Getting these states wrong is what produces customers who paid and cannot log in.
+- **Webhooks, done properly.** Stripe is the source of truth and it tells you about changes asynchronously. Handlers must be idempotent, because events arrive more than once and out of order. This is the single largest chunk of the work and the part that separates a weekend integration from a production one.
+- **Plan changes and proration.** Upgrades, downgrades, and mid-cycle switches each have billing consequences your users will notice immediately and complain about loudly if they are wrong.
+- **Failed payments and dunning.** Cards expire constantly. Deciding retry cadence, what email goes out, and exactly when access is revoked is product design as much as engineering.
+- **Entitlements.** Connecting "has an active subscription" to "can actually use this feature" touches your authorisation layer, and in a multi-tenant product it touches it in several places — see [authentication and RBAC in a multi-tenant SaaS](/blog/multi-tenant-saas-auth-rbac).
+- **Testing the unhappy paths.** Stripe's test cards simulate declines, disputes, and authentication challenges. Working through them is a day well spent and the thing most rushed integrations skip.
+
+## What makes a Stripe integration take longer?
+
+- **Migrating existing subscribers.** Moving live customers from another processor or a legacy setup means preserving billing dates, proration, and payment methods without double-charging anyone. This can exceed the integration itself.
+- **Tax.** Stripe Tax is straightforward to enable, but deciding where you are registered is a business question, not an engineering one, and it routinely stalls launches. A merchant of record avoids it entirely, which is why the provider choice matters.
+- **Strong Customer Authentication.** European cards can require an additional authentication step mid-payment, which your flows must handle rather than treating as a failure.
+- **Custom invoicing and enterprise terms.** Purchase orders, net-30, manual invoices, and annual contracts sit outside the standard self-serve flow.
+- **Marketplace payouts.** Stripe Connect adds onboarding, identity verification, and payout scheduling for every seller — a genuinely larger project than accepting payments.
+
+## How do you compress the timeline?
+
+Start with **Stripe Checkout and the hosted billing portal** rather than a custom payment UI. Both are maintained by Stripe, handle authentication challenges and card updates for you, and remove most of your PCI surface. A bespoke checkout looks better in a design review and costs a week you did not need to spend.
+
+Then **launch with one plan.** Annual options, multiple tiers, add-ons, and coupons each multiply the state combinations you have to test. One monthly plan gets you taking revenue, and every extra option is far cheaper to add once webhooks are proven in production.
+
+> **From our own builds**
+>
+> We built Stripe Checkout, subscriptions, and webhook handling into a [GIS zoning SaaS](/work/gis-zoning-saas) selling both on-demand reports and recurring plans, and shipped billing inside an [multi-tenant SaaS MVP](/work/multi-tenant-saas-mvp). In both, the payment form was a day and webhook reconciliation was the fortnight.
+
+## Should you use Stripe Billing or build your own logic?
+
+Use Stripe Billing. Teams who model subscriptions in their own database and treat Stripe as a dumb charging API end up rebuilding proration, dunning, and invoicing badly, then discovering the edge cases in production with real customers.
+
+Keep Stripe as the source of truth for billing state, mirror only what you need for fast authorisation checks, and reconcile through webhooks. Your own logic belongs in entitlements — what a paying customer is allowed to do — not in working out what they owe.
+
+## Frequently asked questions
+
+### How long does it take to add Stripe payments to a website?
+
+Three to five days for one-off payments using Stripe Checkout, including the success and cancellation flows, a webhook to confirm fulfilment, and testing against Stripe's test cards. That assumes an existing site with somewhere to record the order. Subscriptions are a different scope — two to three weeks — because recurring billing brings states that a single charge does not.
+
+### Why do Stripe subscriptions take longer than one-off payments?
+
+Because a subscription has a lifecycle and a payment does not. Trials, upgrades, downgrades with proration, failed cards, dunning, cancellations that stay active until period end, and refunds are each a state your application must recognise and act on. Add asynchronous webhooks that arrive out of order and more than once, and the work is reconciliation rather than payment.
+
+### What is the hardest part of a Stripe integration?
+
+Webhooks. Stripe is the source of truth and notifies you of changes asynchronously, so handlers must be idempotent and tolerate events arriving late, twice, or in the wrong order. Get this wrong and you get the failure modes users actually notice: paid customers locked out, cancelled customers still charged, or access that silently never revokes.
+
+### Can we migrate existing subscribers to Stripe?
+
+Yes, and it is usually a project in its own right rather than part of the integration. Billing dates, proration, and payment methods have to carry across without anyone being double-charged or losing access, and it is typically run as a phased migration with a reconciliation period. Budget for it separately — on an existing subscriber base it can take longer than the integration itself.
+
+### Do we need Stripe Connect?
+
+Only if you pay out to third parties. Connect is for marketplaces and platforms where money moves from a buyer to a seller who is not you, and it brings seller onboarding, identity verification, and payout scheduling — four to six weeks rather than two to three. If you are simply charging your own customers for your own product, standard Stripe Billing is what you want.
