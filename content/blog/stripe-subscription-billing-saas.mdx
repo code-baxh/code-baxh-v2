@@ -1,0 +1,42 @@
+---
+title: "How to add subscription billing to your SaaS with Stripe"
+description: "A practical guide to SaaS subscription billing with Stripe: products and prices, Checkout, webhooks as the source of truth, and feature gating."
+date: "2026-02-02"
+updated: "2026-02-02"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["stripe", "billing", "subscriptions", "saas"]
+cover: ""
+---
+
+To add subscription billing to a SaaS with Stripe: model your plans as products and prices in Stripe, use Stripe Checkout (or Elements) for signup, sync subscription state to your database via webhooks, and gate features by plan. The most important principle is that webhooks — not client-side redirects — are the source of truth for what a customer is actually paying for.
+
+## The billing flow
+
+- Define products and prices (monthly/annual tiers) in Stripe.
+- Send customers to Stripe Checkout (fastest) or build with Elements for a custom flow.
+- Use the Stripe customer portal so users can upgrade, downgrade, and manage cards themselves.
+- Listen to webhooks (subscription created/updated/deleted, payment succeeded/failed) and update your database.
+- Gate features by the plan stored in your database, scoped to the tenant.
+
+## Get these right
+
+- Treat webhooks as the source of truth — never trust a success redirect alone.
+- Make webhook handlers idempotent so retries don't double-apply.
+- Handle proration on upgrades/downgrades and mid-cycle changes.
+- Handle failed payments and dunning so churn isn't silent.
+- Account for tax (Stripe Tax) or use a merchant of record if global tax is a burden.
+
+## Our approach
+
+We build webhook-driven billing where subscription state lives in your database, tied to the tenant, and feature gating reads from it — then test the whole thing with Stripe test clocks so renewals, upgrades, and failures are proven before launch.
+
+## Frequently asked questions
+
+### How do I add subscriptions to my SaaS with Stripe?
+
+Model plans as Stripe products and prices, use Checkout or Elements for signup, sync subscription state to your database via webhooks, and gate features by the stored plan. Add the Stripe customer portal so users manage their own subscriptions.
+
+### Should I use Stripe webhooks or client redirects?
+
+Webhooks are the source of truth. A client-side success redirect can be missed or spoofed; webhooks reliably tell your backend when a subscription is created, updated, paid, or failed. Make handlers idempotent to handle retries.

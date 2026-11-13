@@ -1,0 +1,126 @@
+---
+title: "Enterprise software development: what makes it different"
+description: "What sets enterprise software apart: single sign-on, role-based access, audit trails, integrations and phased rollout, and how to plan for each early on."
+date: "2026-10-22"
+updated: "2026-10-22"
+author: "bilal-khursheed"
+category: "Business"
+tags: ["enterprise software", "sso", "rbac", "audit trails", "integrations"]
+cover: ""
+---
+
+Enterprise software is different because of who uses it and what surrounds it, not because the features are harder. It must fit an existing identity system, enforce detailed permissions, record who did what, exchange data with other systems, and reach thousands of users without disrupting their work. These needs shape the architecture from the first day. Adding them late is expensive.
+
+## The requirements that define enterprise software
+
+A consumer app can launch with email and password login and one type of user. An enterprise system rarely can. The table below lists the requirements that appear in almost every enterprise project.
+
+| Requirement | What it means | Why it matters |
+| --- | --- | --- |
+| Single sign-on (SSO) | Users log in through the company identity provider | One place to grant and remove access |
+| Role-based access control (RBAC) | Permissions are attached to roles, not individuals | Access stays manageable as headcount grows |
+| Audit trail | A tamper-resistant record of actions | Investigations, compliance and trust |
+| Integrations | Data flows to and from other systems | The new system is never the only system |
+| Phased rollout | Release to groups in stages | Limits the impact of problems |
+| Environments and change control | Separate dev, test, staging and production | Changes are reviewed before users see them |
+
+## Single sign-on and user provisioning
+
+SSO lets staff use their existing corporate account. The common standards are SAML 2.0 and OpenID Connect, and the common identity providers include Microsoft Entra ID, Okta and Google Workspace.
+
+Login is only half of the picture. Enterprises also expect provisioning: when someone joins, moves team or leaves, their access should follow automatically. SCIM is the standard most identity providers support for this. Without it, administrators maintain users by hand and leavers keep access longer than they should.
+
+Design points to settle early:
+
+- Which identity providers must be supported at launch.
+- Whether roles are assigned inside your application or mapped from identity provider groups.
+- What happens to a user's data and open tasks when their account is deactivated.
+- Whether any users, such as contractors or external partners, sit outside the corporate directory.
+
+## Role-based access control
+
+RBAC groups permissions into roles such as "Approver", "Finance viewer" or "Regional admin". Users receive roles. The application checks permissions, never role names, so roles can change without code changes.
+
+Real organisations add two complications.
+
+### Scope
+
+A manager may approve requests, but only for their own department. A regional admin may manage users, but only in one country. Permissions therefore need a scope: which business unit, site or record set they apply to. Model this from the start. Retrofitting scope into a flat permission system usually means touching every query.
+
+### Segregation of duties
+
+Some actions must not be performed by the same person, for example raising and approving the same payment. The system should enforce this, not rely on policy documents.
+
+A practical rule: enforce every permission on the server. Hiding a button in the interface is a convenience for the user, not a security control.
+
+## Audit trails
+
+An audit trail answers four questions about any important action: who did it, what changed, when, and from where. A useful audit record typically holds:
+
+- The acting user and, if relevant, the user they were acting on behalf of.
+- The action and the record affected.
+- The values before and after the change.
+- A timestamp in UTC.
+- Source details such as IP address and session.
+
+Audit records should be append-only. Application users, including administrators, should not be able to edit or delete them. Store them separately from operational logs, agree a retention period with the compliance team, and make them searchable. An audit trail that exists but cannot be queried will not help during an incident.
+
+Decide deliberately what to record. Logging every read of every record is rarely needed and creates noise. Logging every change to permissions, financial data and personal data almost always is.
+
+## Integrations
+
+Enterprise systems live among ERPs, HR systems, CRMs, data warehouses and older internal applications. Integration work is frequently the largest source of schedule risk, because it depends on other teams and on systems you do not control.
+
+Common patterns, from most to least preferable in most cases:
+
+1. Documented REST or GraphQL APIs with webhooks for events.
+2. Message queues or event streams for high-volume or asynchronous flows.
+3. Scheduled file exchange, such as CSV over SFTP, where the other system offers nothing better.
+4. Direct database access, which should be a last resort because it couples you to another team's schema.
+
+Whatever the pattern, plan for failure. The other system will be slow, unavailable or return unexpected data at some point. Use retries with backoff, idempotent operations so a repeated message does no harm, a dead-letter queue for messages that keep failing, and a reconciliation report that shows where the two systems disagree.
+
+Agree ownership of each data field. If an employee's department lives in the HR system, your application should read it, not offer a second place to edit it.
+
+## Phased rollout
+
+Releasing to an entire organisation on one day concentrates risk. A phased rollout spreads it.
+
+A typical sequence looks like this:
+
+1. **Pilot.** One team or site uses the system for real work. The goal is to find gaps in process and training, not only bugs.
+2. **Early adopters.** A few more groups with different needs, chosen to test the variations in how the organisation works.
+3. **Wave rollout.** Remaining groups in planned batches, with support staff available for each.
+4. **Decommissioning.** The old system is switched to read-only, then retired once data has been verified.
+
+Feature flags help here. They let you deploy code to everyone while switching features on for selected groups. Each phase needs entry criteria, exit criteria and a rollback plan that has been tested.
+
+Data migration deserves its own plan. Run trial migrations against a copy of production data, reconcile totals and record counts, and have business users check samples. Most migration surprises come from old data that does not follow today's rules.
+
+## Non-functional requirements
+
+Enterprise buyers will ask about matters that never appear in a feature list: availability targets, backup and recovery objectives, data residency, encryption in transit and at rest, penetration testing, accessibility and supported browsers. Write these down as measurable requirements early. They affect hosting, architecture and cost.
+
+## How to plan an enterprise build
+
+Start with the stakeholders, not the screens. Security, IT operations, compliance and the business owner each hold a veto, and each should be involved in discovery. Capture requirements formally so they can be reviewed and signed off. Then deliver in increments that reach real users early through a pilot.
+
+CodeBaxh is a software development and AI company that builds systems of this kind. Our [enterprise software development](/services/enterprise-software-development) service covers architecture, build and rollout, and our [requirements documentation](/services/requirements-documentation) service produces the documents enterprise stakeholders expect to approve. To discuss a system, use the [project enquiry form](/start-a-project).
+
+## Frequently asked questions
+
+### Do we need SSO from the first release?
+
+If the users are employees of a company with an identity provider, plan for it from the first release. IT teams often refuse to approve tools that sit outside central access control, and adding SSO later changes how accounts are modelled.
+
+### What is the difference between RBAC and ABAC?
+
+RBAC grants permissions through roles. Attribute-based access control (ABAC) decides using attributes of the user, the record and the context, such as department or region. Many enterprise systems use RBAC with scopes, which covers most needs with less complexity.
+
+### How long should audit logs be kept?
+
+It depends on your sector and jurisdiction. Regulations and internal policy set the period, so ask the compliance or legal team. Design the storage so the retention period can be changed without code changes.
+
+### Can an existing product be made enterprise-ready?
+
+Usually, yes. The typical work is adding SSO and provisioning, restructuring permissions around roles and scopes, adding audit records, and strengthening integrations. An architecture review will show how much of this the current design can absorb.

@@ -1,0 +1,42 @@
+---
+title: "How to add AI features to an existing app"
+description: "A practical guide to adding AI features to an existing app: layer an AI service beside your stack, ground it with RAG, and ship one feature first."
+date: "2026-03-14"
+updated: "2026-03-14"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["ai integration", "rag", "llm", "product development"]
+cover: ""
+---
+
+You can add AI features to an existing app without rebuilding it. The approach is to layer a new AI service alongside your current stack: expose the data the feature needs via an API, put RAG and LLM calls behind a new endpoint, and surface the feature inside your existing UI. Start with one high-value use case rather than 'add AI everywhere'.
+
+## How to add AI incrementally
+
+- Pick one high-value use case where AI clearly saves time or money.
+- Expose the data that feature needs through an API your AI service can call.
+- Build a small AI service/endpoint alongside your app — no rewrite of the core.
+- Ground it with RAG so answers come from your data, not the model's imagination.
+- Add guardrails and an evaluation set before you widen the rollout.
+- Ship behind a feature flag so you can test with real users safely.
+
+## Good first features
+
+- Search and Q&A over your own content or documentation.
+- Summarization of long records, threads, or documents.
+- Drafting assistance (replies, descriptions, reports).
+- Classification and routing (tagging, triage, prioritization).
+
+## Our approach
+
+We add a swappable AI layer beside your existing app rather than rewriting it, ground it in your data, and prove one feature before expanding. That keeps risk low, cost controlled, and the model easy to change as the landscape shifts.
+
+## Frequently asked questions
+
+### Can I add AI to my existing app without rebuilding it?
+
+Yes. Layer a separate AI service beside your current stack, expose the data it needs via an API, ground it with RAG, and surface the feature in your existing UI. Start with one high-value feature behind a flag.
+
+### What's a good first AI feature to add?
+
+Start where AI clearly saves time: search/Q&A over your own content, summarization, drafting assistance, or classification and routing. Prove one feature before expanding.

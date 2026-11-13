@@ -1,0 +1,48 @@
+---
+title: "Next.js SEO checklist: how to make your site rank"
+description: "A practical Next.js SEO checklist: server rendering, metadata, structured data, Core Web Vitals, sitemaps, and the mistakes that kill rankings."
+date: "2026-04-04"
+updated: "2026-04-04"
+author: "bilal-khursheed"
+category: "Web"
+tags: ["nextjs", "seo", "core web vitals"]
+cover: ""
+---
+
+To make a Next.js site rank, ship server-rendered HTML, get metadata and canonicals right, add structured data, hit Core Web Vitals, and expose a clean sitemap. The single most common failure is leaving indexable content client-only rendered, so search engines and AI crawlers never reliably see it.
+
+## The technical SEO checklist
+
+- Render content on the server: use static generation or ISR for pages that need to rank.
+- Set metadata per route (title, description, canonical) with the Metadata API.
+- Add JSON-LD structured data (Article, Breadcrumb, FAQ, Organization) so engines and AI understand the page.
+- Publish sitemap.xml and robots, and keep canonicals consistent to avoid duplicate content.
+- Use semantic headings (one h1, logical h2/h3) and descriptive link text.
+- Optimize images with next/image and reserve space to avoid layout shift.
+
+## Core Web Vitals targets
+
+- LCP (largest contentful paint): 2.5s or faster.
+- INP (interaction to next paint): 200ms or faster.
+- CLS (cumulative layout shift): 0.1 or less.
+
+## Common mistakes that kill rankings
+
+- Client-only rendering of content that should be indexed.
+- Missing or duplicated titles, descriptions, and canonicals.
+- No structured data, so you miss rich results and AI answer citations.
+- Slow LCP from unoptimized images and heavy client JavaScript.
+
+## Our approach
+
+We build Next.js sites static or ISR by default, add structured data to every page template, and hold pages to a Core Web Vitals budget. The result is content that's fast, crawlable, and eligible for both search rankings and AI answer citations.
+
+## Frequently asked questions
+
+### How do I make a Next.js site rank on Google?
+
+Server-render (static or ISR) so pages ship crawlable HTML, set correct metadata and canonicals, add structured data, publish a sitemap, and hit Core Web Vitals (LCP ≤ 2.5s, INP ≤ 200ms, CLS ≤ 0.1). Avoid client-only rendering of indexable content.
+
+### Does Next.js help SEO?
+
+Yes — Next.js can server-render complete HTML and makes metadata, structured data, and performance optimization straightforward, all of which help search and AI crawlers index and rank your content.

@@ -1,0 +1,87 @@
+---
+title: "How to estimate and cut your LLM API costs"
+description: "A practical guide to LLM cost control: how token pricing works, how to estimate monthly spend, and the levers (routing, caching, trimming) that cut the bill."
+date: "2026-07-11"
+updated: "2026-07-11"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["llm", "cost", "prompt caching"]
+cover: ""
+---
+
+LLM cost is driven by **tokens** — the input you send plus the output you get back — priced per million tokens. You estimate spend as roughly *requests × tokens per request × price*. At scale, the bill is dominated by a handful of levers: **model choice, context size, caching, and routing.** Getting those right often cuts costs by more than half with no drop in quality.
+
+The good news: you rarely need to optimize until you're actually at volume — but you should measure from day one so you know where the money goes.
+
+## How token pricing works
+
+- A token is roughly ¾ of a word; "hello world" is about 2 tokens.
+- You pay for **input tokens** (your prompt plus any context you attach) and **output tokens** (the model's response).
+- Providers price per million tokens, and **output is usually more expensive than input.**
+- Long context inflates cost fast — big system prompts and lots of [retrieved RAG chunks](/blog/building-a-rag-pipeline) are billed as input on every call.
+
+## Estimating your monthly cost
+
+Before optimizing, get a rough number. The formula is simple:
+
+*A back-of-the-envelope monthly LLM cost estimate.*
+
+```ts
+// Prices are per 1M tokens — plug in your provider's current rates.
+const inputPrice = /* $ per 1M input tokens */;
+const outputPrice = /* $ per 1M output tokens */;
+
+const requestsPerMonth = 100_000;
+const avgInputTokens = 1_200;   // prompt + retrieved context
+const avgOutputTokens = 400;
+
+const monthlyCost =
+  (requestsPerMonth * avgInputTokens / 1_000_000) * inputPrice +
+  (requestsPerMonth * avgOutputTokens / 1_000_000) * outputPrice;
+```
+
+## The levers that actually cut cost
+
+- **Right-size the model:** route easy requests to a cheaper, faster model and reserve the top-tier model for hard ones — see [choosing between LLM providers](/blog/openai-vs-anthropic-claude).
+- **Cache repeated work:** cache answers to common questions, and use provider prompt caching for the static part of your prompt.
+- **Trim the context:** retrieve fewer, tighter chunks and keep system prompts lean — every token of context is billed on every call.
+- **Cap output:** set a sensible max on output tokens so responses don't run long unnecessarily.
+- **Batch and pre-compute** where latency allows, instead of calling the model live for everything.
+
+> **Prompt caching is the underrated win**
+>
+> Many providers cache a repeated prompt prefix (your system prompt, instructions, few-shot examples) at a steep discount on subsequent calls. Structure your prompt so the large static part comes first and the small dynamic part comes last, and input costs can drop dramatically at scale.
+
+## Don't optimize prematurely
+
+The most expensive mistake is optimizing before you measure. Log tokens per request and cost per feature first, find the one or two lines that dominate the bill, and fix those. A dashboard of token spend by feature is worth more than a dozen micro-optimizations. This is exactly the observability we build into [production AI features](/services/ai-integration).
+
+## How we keep AI features affordable
+
+We measure token spend per feature, route each request to the cheapest model that clears the quality bar, cache aggressively, and keep context tight — the same approach behind our [AI chatbot builds](/blog/cost-to-build-ai-chatbot). [Book a free discovery call](/start-a-project) to size and control your AI costs.
+
+## Frequently asked questions
+
+### How much do LLM APIs cost?
+
+They're priced per million tokens, separately for input and output, and rates vary widely by model tier. Your bill is roughly requests × tokens per request × price, so it scales with both traffic and how much context you send.
+
+### What is a token?
+
+A token is a chunk of text — roughly three-quarters of a word on average. You pay for the tokens in your prompt and context (input) plus the tokens in the model's response (output).
+
+### How do I estimate my monthly AI bill?
+
+Multiply expected monthly requests by average input and output tokens per request, divide by a million, and multiply by your provider's per-million input and output prices. Add the two together for a rough monthly figure.
+
+### What's the single biggest cost lever?
+
+Model choice. Routing easy requests to a cheaper, faster model and reserving the top-tier model for genuinely hard ones typically cuts cost the most — often by more than half — with no meaningful quality loss.
+
+### Does using a cheaper model hurt quality?
+
+Not if you route by difficulty and measure against an evaluation set. Many requests are easy and a cheaper model handles them perfectly; you only pay for the top-tier model where it actually earns its keep.
+
+### What is prompt caching?
+
+It's a provider feature that caches a repeated prompt prefix so you're charged a large discount for it on later calls. Putting your static instructions first and dynamic input last maximizes the savings.

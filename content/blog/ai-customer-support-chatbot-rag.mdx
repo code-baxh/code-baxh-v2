@@ -1,0 +1,42 @@
+---
+title: "How to build an AI customer support chatbot with RAG"
+description: "Build an AI support chatbot that deflects real tickets: ground it in your help content with RAG, integrate your helpdesk, and add human handoff."
+date: "2026-01-18"
+updated: "2026-01-18"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["chatbots", "rag", "customer support"]
+cover: ""
+---
+
+To build an AI customer support chatbot that actually helps, ground it in your own help content with RAG, connect it to your helpdesk, add a confident human-handoff, and evaluate its answers. That combination lets it deflect real tickets without inventing answers — the failure mode that erodes trust fastest.
+
+## The build
+
+- Ingest your help docs, past tickets, and knowledge base into a vector index.
+- Retrieve the most relevant chunks for each question (RAG), and re-rank for quality.
+- Generate answers grounded strictly in retrieved content, with links to sources.
+- Integrate your helpdesk (Zendesk, Intercom, etc.) so the bot has context and can log conversations.
+- Add a clear human handoff when confidence is low or the user asks.
+- Track deflection rate and answer accuracy with analytics and an evaluation set.
+
+## Where support bots fail
+
+- Hallucination: answering without grounding, so it confidently makes things up.
+- No handoff: trapping frustrated users instead of escalating to a human.
+- Stale content: the knowledge base drifts and answers go wrong.
+- No evaluation: quality silently degrades and nobody notices.
+
+## Our approach
+
+We build support chatbots that are grounded, evaluated, and measured on real deflection — with the model kept swappable so you're never locked to one provider's pricing or quirks. It's the difference between a demo and a bot your customers actually trust.
+
+## Frequently asked questions
+
+### How do I build an AI customer support chatbot?
+
+Ground it in your help content with RAG, retrieve and re-rank relevant chunks, generate answers strictly from those sources with links, integrate your helpdesk, add a human handoff, and measure deflection and accuracy with an evaluation set.
+
+### How do I stop a support chatbot from hallucinating?
+
+Ground answers in retrieved content (RAG), require the model to answer only from provided sources with citations, add a confident handoff to humans when unsure, and evaluate accuracy continuously so quality doesn't drift.

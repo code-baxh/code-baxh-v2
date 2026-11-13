@@ -1,0 +1,28 @@
+---
+title: "SSR vs SSG vs ISR in Next.js — which to use"
+description: "A clear decision guide for Next.js rendering: when to use static generation, ISR, and server rendering, with SEO and performance in mind for each route."
+date: "2026-03-22"
+updated: "2026-03-22"
+author: "bilal-khursheed"
+category: "Web"
+tags: ["nextjs", "rendering", "seo", "performance"]
+cover: ""
+---
+
+Pick the rendering strategy per route. As a rule: static generation (SSG) for content that's the same for everyone, Incremental Static Regeneration (ISR) for content that changes occasionally, and server-side rendering (SSR) only where data must be fresh on every request. Marketing and service pages should almost always be static or ISR so they're fast and fully crawlable.
+
+## The decision rule
+
+- Static (SSG): marketing pages, docs, blog posts — content that rarely changes. Fastest possible loads and trivially crawlable.
+- ISR: catalogs, listings, and content that updates periodically — static speed with scheduled or on-demand revalidation.
+- SSR: dashboards, personalized pages, and anything that depends on the current request. Use it where freshness genuinely matters.
+
+## Why this matters for SEO
+
+Search engines and AI crawlers reward fast, server-rendered HTML. Leaving indexable content client-only-rendered is the most common Next.js SEO mistake — the content may never be reliably crawled. Static and ISR pages ship complete HTML and hit Core Web Vitals targets (LCP ≤ 2.5s, INP ≤ 200ms, CLS ≤ 0.1) more easily.
+
+## Frequently asked questions
+
+### Should marketing pages use SSR in Next.js?
+
+Usually no. Marketing and service pages should be statically generated (or use ISR) so they load fast and are fully crawlable. Reserve SSR for pages that need per-request fresh or personalized data.

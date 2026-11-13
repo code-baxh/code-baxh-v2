@@ -1,0 +1,39 @@
+---
+title: "Building a RAG pipeline with OpenAI and Anthropic"
+description: "How to build a RAG pipeline: chunking, embeddings, vector search, grounding, and evaluation, explained by a team shipping production AI systems."
+date: "2026-04-28"
+updated: "2026-04-28"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["rag", "llm", "embeddings", "vector search"]
+cover: ""
+---
+
+Retrieval-Augmented Generation (RAG) grounds a large language model in your own data: relevant documents are retrieved with vector search and passed to the model so its answers are accurate and traceable to your sources. It's the difference between a demo that hallucinates and a system you can put in front of customers.
+
+## The production pipeline
+
+- Ingestion: load your documents and clean them (strip boilerplate, normalize formats).
+- Chunking: split documents into retrievable pieces — chunk size and overlap materially affect answer quality.
+- Embeddings: convert chunks to vectors and store them in a vector index (e.g. pgvector/Supabase).
+- Retrieval: embed the query, find the most relevant chunks, and optionally re-rank them.
+- Generation: pass retrieved context to the LLM (GPT or Claude) with a prompt that requires grounding in the provided sources.
+- Evaluation: measure answer accuracy and grounding with an eval set so changes are improvements, not regressions.
+
+## Where RAG projects fail
+
+Most RAG systems don't fail at the demo — they fail in production. The common causes are poor chunking, no re-ranking, prompts that don't force grounding, and no evaluation harness, so quality silently drifts. We treat evaluation as a first-class part of the build, not an afterthought.
+
+## Choosing the model
+
+We select the model per task to balance quality, latency, and cost — and design the system so the model is swappable. For grounded, document-heavy reasoning we often reach for Claude; for some extraction and tool-use tasks GPT fits well. The right answer is measured against your data, not assumed.
+
+## Frequently asked questions
+
+### What is a RAG pipeline?
+
+A RAG (Retrieval-Augmented Generation) pipeline retrieves relevant chunks of your own data via vector search and passes them to an LLM, so answers are grounded in and traceable to your sources instead of hallucinated.
+
+### OpenAI or Anthropic for RAG?
+
+Both work well; the right choice is task-dependent and should be measured against your data. We build RAG systems so the model is swappable and pick per task based on quality, latency, and cost.

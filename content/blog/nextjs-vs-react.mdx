@@ -1,0 +1,65 @@
+---
+title: "Next.js vs React: when you actually need Next.js"
+description: "Next.js vs React explained: a side-by-side table, when plain React is enough, when you need Next.js for SEO and performance, and our default rule."
+date: "2026-06-05"
+updated: "2026-06-05"
+author: "bilal-khursheed"
+category: "Web"
+tags: ["nextjs", "react", "seo"]
+cover: ""
+---
+
+React is a UI library for building components; **Next.js is a full framework built on React** that adds routing, server rendering, and SEO out of the box. Use plain React (with Vite) for internal tools and single-page apps that live behind a login; use Next.js for anything public that needs to be found on Google, load fast on first paint, or fetch data on the server.
+
+## The real difference, side by side
+
+| Concern | React (e.g. Vite) | Next.js |
+| --- | --- | --- |
+| Rendering | Client-side by default | Server (SSG / ISR / SSR) — ships complete HTML |
+| Routing | Add a router yourself | File-based routing built in |
+| SEO | Client-only apps often aren't reliably indexed | Ships crawlable HTML; strong SEO |
+| Data fetching | In the browser, after load | Server components fetch close to your data |
+| Performance / CWV | You wire up optimization | Image, font, and script optimization built in |
+| Best for | Internal tools, SPAs behind a login | Public sites, marketing, SaaS front-ends |
+
+## Plain React is enough when
+
+- The app is internal or behind authentication (SEO doesn't matter).
+- It's a dashboard or tool where a fast client SPA is fine.
+- You don't need server-side data fetching or rendering.
+
+## You need Next.js when
+
+- The site is public and must rank in search or AI answers (see the [Next.js SEO checklist](/blog/nextjs-seo-checklist)).
+- First-load speed and [Core Web Vitals](/blog/ssr-vs-ssg-vs-isr-nextjs) matter (marketing, e-commerce, SaaS).
+- You want server-side data fetching and rendering without wiring it up yourself.
+
+> **The one-question rule**
+>
+> Does this page need to be found and fast? If yes — it's public and SEO/first-load matters — reach for Next.js. If it lives behind a login and speed-to-index is irrelevant, plain React is simpler and perfectly fine.
+
+## Our default
+
+We reach for Next.js for public products, marketing sites, and SaaS front-ends where SEO and speed matter, and plain React for internal dashboards and tools behind a login. Which rendering mode to use within Next.js is its own decision — we cover it in [SSR vs SSG vs ISR](/blog/ssr-vs-ssg-vs-isr-nextjs). See our [Next.js development service](/services/nextjs-development) or [book a discovery call](/start-a-project).
+
+## Frequently asked questions
+
+### Do I need Next.js or just React?
+
+Use plain React for internal tools and apps behind a login. Use Next.js for anything public that needs SEO, fast first loads, or server-side data fetching — it adds routing, server rendering, and SEO on top of React.
+
+### Is Next.js good for SEO?
+
+Yes. Next.js can server-render pages and ship complete, crawlable HTML, which is far more reliable for SEO than a client-only React app that renders in the browser.
+
+### Is Next.js harder to learn than React?
+
+If you know React, Next.js is an incremental step — you're mainly learning its routing, rendering modes, and data-fetching conventions. The core (components, hooks, JSX) is identical.
+
+### Can I migrate a React app to Next.js later?
+
+Yes, though it's real work — you migrate routing and adopt server rendering where it helps. It's easier to start on Next.js if you already know the app will be public and SEO matters.
+
+### Does Next.js replace my backend?
+
+Partly — Next.js can handle server-side rendering and API routes, which covers many needs. Data-heavy or complex products still pair it with a dedicated backend and database.

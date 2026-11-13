@@ -1,0 +1,39 @@
+---
+title: "How to reduce LLM hallucinations in production"
+description: "Practical ways to reduce LLM hallucinations: grounding with RAG, forcing citations, constraining output, evaluation, and designing for uncertainty."
+date: "2026-01-10"
+updated: "2026-01-10"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["llm", "hallucinations", "rag", "evaluation"]
+cover: ""
+---
+
+You reduce LLM hallucinations by grounding responses in retrieved data (RAG), forcing the model to cite its sources, constraining outputs, and running an evaluation set to catch regressions. You can't eliminate hallucinations entirely, so also design for graceful uncertainty and keep a human in the loop where the stakes are high.
+
+## Techniques that work
+
+- Ground answers in your data with RAG, so the model reasons over retrieved facts instead of guessing.
+- Require citations to the provided sources, and reject answers that can't be grounded.
+- Use structured or constrained outputs (schemas) so the model stays on the rails.
+- Lower the temperature for factual tasks; save creativity for where it belongs.
+- Prompt the model to say 'I don't know' rather than fabricate.
+- Re-rank retrieved context so the best evidence is what the model sees.
+
+## Measure it, or it drifts
+
+Build an evaluation set of real questions with known-good answers, and track grounding and accuracy on every change. Without measurement, quality degrades silently as prompts, data, and models change. We treat evaluation as a first-class part of every AI build.
+
+## Design for uncertainty
+
+Since no model is perfect, surface confidence, show sources so users can verify, and route high-stakes outputs through human review. Designing for uncertainty is what makes an AI feature safe to ship, not just impressive in a demo.
+
+## Frequently asked questions
+
+### How do I stop an LLM from hallucinating?
+
+Ground responses in your data with RAG, require citations to sources, use constrained/structured outputs, lower temperature for factual tasks, prompt it to admit uncertainty, and run an evaluation set to catch regressions.
+
+### Can hallucinations be eliminated completely?
+
+No. Hallucinations can be made rare and catchable through grounding, citations, and evaluation, but not eliminated entirely. Design for uncertainty — show sources and keep humans in the loop for high-stakes outputs.

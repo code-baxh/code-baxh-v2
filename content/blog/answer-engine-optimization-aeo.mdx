@@ -1,0 +1,102 @@
+---
+title: "Answer Engine Optimization (AEO): how to get cited by AI search"
+description: "AEO explained: how to structure content and pages so ChatGPT, Perplexity, and Google AI Overviews cite you. Direct answers, structured data, crawlable HTML."
+date: "2026-07-08"
+updated: "2026-07-08"
+author: "bilal-khursheed"
+category: "Web"
+tags: ["aeo", "seo", "ai search", "structured data"]
+cover: ""
+---
+
+**Answer Engine Optimization (AEO)** is optimizing your content so AI answer engines — ChatGPT, Perplexity, Google AI Overviews, Claude — quote and cite it when they answer a user's question. The core moves: **give a direct answer up front, structure content so machines can extract it, ship crawlable server-rendered HTML, and add structured data.**
+
+AEO is an extension of good SEO, not a replacement. The same pages that rank well are the ones that get cited — but AEO adds a bias toward extractable, question-shaped, factual content.
+
+## AEO vs SEO — what's actually different
+
+|   | SEO | AEO |
+| --- | --- | --- |
+| Goal | Rank in the list of blue links | Get quoted in the AI's answer |
+| Unit of value | A ranking position | A citation / mention |
+| Rewards | Relevance, authority, links | Direct answers, structure, extractability |
+| Content shape | Comprehensive pages | Comprehensive pages with clear, quotable answers |
+
+*AEO doesn't replace SEO — it layers extractability on top of it.*
+
+## The AEO content checklist
+
+- **Answer first (inverted pyramid):** open each section with a one- or two-sentence direct answer, then expand. Engines quote the answer, not the wind-up.
+- **Use question-shaped headings** that match how people actually ask ("How much does X cost?"), so your section maps to a query.
+- **Write extractable statements:** short, self-contained, factual sentences an engine can lift without surrounding context.
+- **Add an FAQ block** of real questions and concise answers — one of the most-cited formats.
+- **Use tables and lists** for comparisons and steps; they're easy to parse and quote.
+- **Be explicit about entities** (names, tools, numbers) instead of vague pronouns.
+- **Show freshness and expertise:** a visible author, and a `dateModified` so engines trust it's current.
+
+## The technical foundations
+
+Great content only gets cited if machines can actually read it. This is where the build matters:
+
+- **Server-render the content you want cited** — client-only rendering can leave your text invisible to crawlers. Choose the [right rendering strategy per route](/blog/ssr-vs-ssg-vs-isr-nextjs).
+- **Ship fast Core Web Vitals** so pages are fully crawled — see our [Next.js SEO checklist](/blog/nextjs-seo-checklist).
+- **Add JSON-LD structured data** (`Article`, `FAQPage`, `BreadcrumbList`) so engines understand the page's role.
+- **Write clean, semantic HTML** with a sane heading hierarchy.
+- **Allow AI crawlers** in `robots.txt` for the content you want surfaced.
+
+## Structured data engines can read
+
+*A minimal FAQPage JSON-LD block — one of the most citation-friendly schemas.*
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [{
+    "@type": "Question",
+    "name": "What is Answer Engine Optimization?",
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "AEO is optimizing content so AI answer engines cite it when answering a question."
+    }
+  }]
+}
+```
+
+> **Crawlable HTML is non-negotiable**
+>
+> If your key content only renders client-side in the browser, many crawlers and AI bots may never see it — so it can't be cited no matter how good it is. Server-render anything you want quoted. (This site is built exactly that way.)
+
+## How to measure AEO
+
+AEO is harder to measure than rankings, but not impossible. Watch for referral traffic from AI sources in your analytics, search for your brand and key questions in the engines to see whether you're cited, and track which of your question-shaped pages get surfaced. Treat it as a trend, not a single number.
+
+## How we build AEO-ready sites
+
+We build on server-rendered [Next.js](/services/nextjs-development) with structured data, question-shaped content, and green Core Web Vitals baked in — the same approach behind this blog. Want your site structured to get cited? [Book a free discovery call](/start-a-project).
+
+## Frequently asked questions
+
+### What is Answer Engine Optimization (AEO)?
+
+AEO is the practice of structuring content and pages so AI answer engines — like ChatGPT, Perplexity, and Google AI Overviews — quote and cite your site when answering users' questions, rather than just listing it as a link.
+
+### Is AEO different from SEO?
+
+It's an extension of SEO, not a replacement. SEO aims for a ranking position; AEO aims to be the cited answer. The same authoritative pages tend to win both, but AEO rewards direct answers, structure, and extractability more heavily.
+
+### Should I allow or block AI crawlers?
+
+If you want to be cited in AI answers, allow the relevant AI crawlers in robots.txt for that content. Block them only if you specifically don't want your content used — that also removes your chance of being cited.
+
+### Does structured data help with AI citations?
+
+Yes. JSON-LD schemas like FAQPage and Article help engines understand what a page is and extract clean answers from it, which makes citation more likely.
+
+### Will optimizing for AEO hurt my Google ranking?
+
+No — done well, it helps both. Direct answers, clean structure, structured data, and fast, crawlable pages are good for traditional SEO and AEO at the same time.
+
+### How do I know if AEO is working?
+
+Look for referral traffic from AI engines in analytics, check whether the engines cite you for your target questions, and monitor which question-shaped pages get surfaced. It's a trend to watch rather than a single ranking number.

@@ -1,0 +1,90 @@
+---
+title: "AI agents vs RPA: which should automate your workflow?"
+description: "AI agents vs RPA compared: how each handles exceptions, what breaks them, what they cost to maintain, and a decision rule for picking one or running both."
+date: "2026-08-27"
+updated: "2026-08-27"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["ai agents", "rpa", "automation"]
+cover: ""
+---
+
+**Use RPA when the process is stable and the steps never change. Use an AI agent when the process has exceptions that a recorded script cannot anticipate.** That is the whole decision, and most of the confusion around it comes from vendors selling one as a replacement for the other when they are better understood as different tools.
+
+Robotic process automation follows a path someone defined in advance: click here, copy that field, paste it there. It is fast, cheap to run, and completely deterministic — and it breaks the moment reality departs from the recording. An AI agent decides what to do next from the situation in front of it, which is why it survives variation and why it needs guardrails that RPA never did.
+
+## AI agents vs RPA at a glance
+
+|   | RPA | AI agent |
+| --- | --- | --- |
+| How it works | Follows explicitly defined steps | Plans and decides from context each run |
+| Handles exceptions | No — halts or does the wrong thing | Yes, within the boundaries you set |
+| Unstructured input | Poor; needs fixed fields and layouts | Strong; reads documents, email, free text |
+| Determinism | Same input, same output, every time | Constrained by tools and evaluation, not guaranteed |
+| Breaks when | A UI or form layout changes | The task moves outside its scoped tools |
+| Running cost | Very low per run | Per step, so higher and worth capping |
+| Maintenance | Constant, as underlying screens change | Lower per change, higher per new capability |
+| Auditability | Trivially auditable — the script is the record | Needs step-level logging built in deliberately |
+
+*The trade is determinism against adaptability. Neither is strictly better.*
+
+## Where RPA still wins
+
+RPA is not legacy technology, and replacing working RPA with an agent is a common and expensive mistake. If a process is high-volume, stable, and entirely structured — reconciling two systems with fixed fields, moving files on a schedule, rekeying a form that never changes — RPA does it more cheaply, more predictably, and with an audit story you get for free.
+
+- **Determinism is a requirement, not a preference.** In regulated reporting, "it usually does the right thing" is not an acceptable property.
+- **The volume is enormous and the task is trivial.** Per-step model costs make agents a poor fit for millions of identical operations.
+- **The audit trail must be the specification.** With RPA the script is the record of what happened; an agent needs that engineered in.
+
+## Where AI agents win
+
+Agents earn their extra cost precisely where RPA fails: when the input is unstructured, when the correct next step depends on judgement, and when the exception rate is high enough that a human currently has to babysit the automation.
+
+- **The input is a document, an email, or a conversation.** Anything without fixed fields is where RPA needs brittle scaffolding and an agent simply reads it.
+- **The process has a long tail of exceptions.** If your RPA bot handles 70% of cases and a person picks up the rest, the remaining 30% is exactly what an agent is for.
+- **The steps depend on what was found.** "If the contract has an auto-renewal clause, do X, otherwise Y" is a decision, not a recorded path.
+- **The screens keep changing.** Agents working through APIs and semantics survive interface changes that break selector-based RPA weekly.
+
+> **From our own builds**
+>
+> Our [legal contract analysis pipeline](/work/legal-contract-ai) is a clean example of the boundary. Extracting a value from a fixed field in a standard form is RPA work. Reading a 900-page contract with inconsistent structure, finding the clauses that matter, and citing them is not something you can record as a script — separate agents handle processing, retrieval, query understanding, and response.
+
+## The hybrid pattern most teams end up with
+
+In practice the strongest setups are not one or the other. RPA handles the deterministic spine of the process, and an agent is called in at the points where judgement is required — reading the attachment, deciding the routing, handling the case the script was never taught.
+
+This is usually the cheapest path too, because you keep the RPA investment that already works and buy intelligence only where it is missing. A common shape: RPA moves records and triggers the workflow, the agent classifies and enriches the awkward ones, and anything either is unsure about escalates to a person with the context already gathered.
+
+## A decision rule you can apply today
+
+Take one process and count. What share of runs complete without a human touching them? If it is above roughly 90% and the failures are caused by system outages rather than unexpected content, keep the RPA and fix the plumbing. If a person intervenes on a meaningful share of runs — and especially if they intervene because something needed reading or deciding — that intervention is the agent-shaped hole in your process.
+
+Then check the second question before you build anything: can you say what the correct outcome is for each of those exceptions? If yes, that list is your evaluation set and you are ready to scope an agent. If no, that ambiguity is the actual problem, and no automation of either kind will resolve it.
+
+## What about agentic RPA from your existing vendor?
+
+Every major RPA platform now ships an AI layer, and for straightforward document reading inside a process you already automate there, it is often the pragmatic choice — the integration is done and the governance already exists.
+
+Where teams outgrow it is when the agent needs to reason across systems the platform does not own, when per-step costs need controlling at a level the platform does not expose, or when you need the evaluation harness and audit depth that a custom build gives you. Our [AI agents vs chatbots vs RAG](/blog/ai-agents-vs-chatbots-vs-rag) breakdown is the companion piece if you are still narrowing down which category of tool your problem actually needs.
+
+## Frequently asked questions
+
+### Will AI agents replace RPA?
+
+No, and treating them as replacements leads to expensive rebuilds of automation that already works. RPA remains cheaper, faster, and more predictable for stable, structured, high-volume tasks. Agents handle the variation and unstructured input RPA cannot. Most organisations end up running both, with agents filling the exception paths where a human currently intervenes.
+
+### Can an AI agent work with our existing RPA platform?
+
+Yes. The common pattern is RPA handling the deterministic spine of a process and calling an agent at the points needing judgement — reading an attachment, classifying an edge case, deciding routing. This keeps the RPA investment that already works and adds intelligence only where it is missing, which is usually the cheapest path to a higher automation rate.
+
+### Which is cheaper to run, an AI agent or RPA?
+
+RPA, by a wide margin per run, because it is not paying a model on every step. Agents cost per step rather than per task, so a single job can be dozens of model calls. The fair comparison is not cost per run but cost per completed outcome including the human intervention each approach still requires — an RPA bot that needs a person on a third of runs is often the more expensive option.
+
+### Why does our RPA keep breaking?
+
+Usually because it is bound to interfaces rather than meaning. Selector-based automation depends on screens staying where they were, so a layout change breaks it even though the underlying process has not changed. Agents working through APIs and semantics tolerate that variation, which is one of the strongest arguments for them in environments where the systems are actively developed.
+
+### How do we decide between them for a specific process?
+
+Count how often a human currently intervenes and ask why. If interventions are rare and caused by outages, keep the RPA. If a person regularly steps in because something needed reading, interpreting, or deciding, that is the agent-shaped part of the process. Then confirm you can define the correct outcome for those exceptions — if you cannot, that ambiguity is the real problem and no automation will fix it.

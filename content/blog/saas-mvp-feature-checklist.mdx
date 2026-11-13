@@ -1,0 +1,47 @@
+---
+title: "SaaS MVP feature checklist: what to build (and skip)"
+description: "A SaaS MVP feature checklist: the essentials to build for launch, what to skip for v1, and the one question that decides every feature request."
+date: "2026-02-10"
+updated: "2026-02-10"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["saas", "mvp", "product scope"]
+cover: ""
+---
+
+A SaaS MVP needs only two things: what proves your core value, and the essentials required to charge for it and operate safely. That means auth, one core workflow, billing, and basic admin and observability. Almost everything else can wait until you have real users telling you what matters.
+
+## Build these for v1
+
+- Authentication and accounts.
+- The one core workflow that delivers your value — done well.
+- Billing (Stripe) so you can actually charge.
+- Basic roles, so the right people see the right things.
+- Transactional email (signup, reset, receipts).
+- A minimal admin view and basic observability (logs, errors) so you can support customers.
+
+## Skip these until later
+
+- SSO and enterprise features (until an enterprise deal needs them).
+- Complex, granular RBAC beyond a couple of roles.
+- A native mobile app if the web covers the core need.
+- Extensive settings, integrations, and self-serve onboarding polish.
+- Internationalization and multi-currency, unless it's day-one critical.
+
+## One question to decide every feature
+
+For anything you're tempted to add, ask: does this prove the core value, or is it required to charge or operate safely? If the answer is no, it's a v2 candidate. This single filter keeps an MVP focused and on schedule.
+
+## Our approach
+
+We scope MVPs to the core loop and build it on architecture that scales, so v1 becomes the foundation for v2 — not throwaway code. That discipline is how we shipped a multi-tenant SaaS MVP on schedule.
+
+## Frequently asked questions
+
+### What features does a SaaS MVP need?
+
+Only the essentials: authentication and accounts, the one core workflow done well, billing (Stripe), basic roles, transactional email, and a minimal admin view with basic observability. Everything else can wait for v2.
+
+### What should I leave out of an MVP?
+
+SSO and enterprise features, complex RBAC, native mobile (if web covers it), extensive settings and integrations, and internationalization — unless one is genuinely day-one critical. Ask: does it prove core value or let you charge/operate safely?

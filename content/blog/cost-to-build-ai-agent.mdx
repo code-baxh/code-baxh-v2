@@ -1,0 +1,89 @@
+---
+title: "How much does it cost to build an AI agent?"
+description: "AI agent development cost explained: the three tiers, why integrations and evaluation drive the price, build vs running cost, and how to cap agent loops."
+date: "2026-08-27"
+updated: "2026-08-27"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["ai agents", "cost", "llm"]
+cover: ""
+---
+
+A prototype AI agent that proves the loop on your real data sits in the **low five figures (USD)**. A production agent for one well-defined workflow — scoped tools, approval gates, evaluation, audit logging — typically runs into the **five figures**. Multi-system agents with write access across several systems of record start in the **high five figures and up**.
+
+Those ranges are wider than a chatbot's for one reason: an agent takes actions. The cost is driven by **integrations, evaluation, and the guardrails that make it safe to let software act on your systems** — not by the model, which is very often the smallest line on the invoice.
+
+If you are weighing an agent against a simpler assistant, our [chatbot cost breakdown](/blog/cost-to-build-ai-chatbot) is the fair comparison. An agent is roughly double for the same subject matter, and the delta is almost entirely safety engineering.
+
+## The three tiers of AI agent
+
+Quotes vary wildly because "agent" covers three very different things. Pinning your tier is the single biggest lever on cost:
+
+| Tier | What it does | Typical build | Best for |
+| --- | --- | --- | --- |
+| Read-only agent | Gathers, enriches, and summarises across systems; proposes but never commits | Low five figures | Triage, research, enrichment, drafting |
+| Production agent | Takes scoped actions in one workflow, with human approval on consequential steps | Five figures | One recurring multi-step process |
+| Multi-system agent | Acts across several systems of record with role-based access and audit evidence | High five figures and up | Replacing a process that spans teams and tools |
+
+*Ranges are directional; the factors below are what move your number inside them.*
+
+## What actually drives the cost
+
+- **Number of systems, not number of features.** Each system the agent touches adds credentials, an access review, error handling, and a new set of states to evaluate. Two systems is not twice one — it is closer to three times.
+- **Write access versus read access.** Reading is cheap. Writing attracts approval gates, reversibility design, audit logging, and usually a security review. The same agent costs substantially more the day it is allowed to change something.
+- **Evaluation.** Building a task set with known-correct outcomes is real engineering, and it is the line teams try to cut first. It is also the only thing separating an agent that works in a demo from one that works in week six — see [reducing LLM hallucinations](/blog/reduce-llm-hallucinations) for why unmeasured quality drifts.
+- **Exception handling.** Deciding what the agent does when it is unsure is often more work than the happy path, and it is what makes the difference between escalation and a confidently wrong action.
+- **Compliance evidence.** In regulated environments, the artefacts proving what the agent may do and did do can rival the build itself.
+- **Model choice barely matters.** Swapping between [OpenAI and Anthropic](/blog/openai-vs-anthropic-claude) models is a configuration change in a well-built pipeline, so it is not worth optimising early.
+
+## Build cost vs running cost
+
+Budget two numbers. Agents differ from chatbots here in a way that catches teams out: a chatbot spends tokens per conversation, but an agent spends tokens per *step*, and a single task can be dozens of steps.
+
+| Cost | One-off (build) | Ongoing (monthly) |
+| --- | --- | --- |
+| Engineering | The bulk of the build | Maintenance as your systems change |
+| LLM usage | — | Per step, not per task — the multiplier that surprises people |
+| Integrations | Setup and approval per system | Breakage when an upstream API changes |
+| Evaluation | Building the task set | Re-running it after model or prompt changes |
+| Oversight | — | Human review time, falling as autonomy widens |
+
+> **The line item that runs away**
+>
+> An agent that retries on failure without a step cap can turn one task into hundreds of model calls. Cap steps and set a per-run token budget in code — not in the prompt, which is a suggestion the agent can route around. Our [guide to cutting LLM API costs](/blog/reduce-llm-api-costs) covers caching and model routing, both of which apply per step and so compound harder for agents than for chatbots.
+
+## How to keep an AI agent affordable
+
+- **Start read-only.** You get most of the value before you pay for write-access approvals and reversibility design, and you learn whether the agent is any good at deciding before you let it act.
+- **One workflow, not a platform.** Agents earn back on repetition of a specific task. Building a general-purpose agent is how budgets disappear without a single process being automated.
+- **Route by difficulty.** Use a cheaper, faster model for routine steps and reserve the top-tier model for genuinely hard decisions. Because agents spend per step, this compounds far more than it does for a chatbot.
+- **Cache aggressively.** Agents re-read the same records constantly across a run; caching retrieval and tool results is often the single largest saving available.
+- **Cap and observe.** Step caps, per-run token budgets, and cost-per-run dashboards make a runaway loop impossible rather than merely unlikely.
+
+## When an AI agent is not worth the money
+
+If the task runs a handful of times a month, the engineering will not pay back — agents earn on repetition. If the process is rigid with no exceptions, a plain script costs a fraction and is easier to debug. And if nobody can define what a correct outcome looks like, you cannot build the evaluation set, which means you cannot know whether the agent is working, which means you should not be paying for one yet.
+
+We would rather tell you that on the first call than six weeks in. It is worth asking any agency the same question directly — our [guide to vetting development agencies](/blog/questions-to-ask-software-development-agency) has the rest of the list.
+
+## Frequently asked questions
+
+### Why does an AI agent cost more than a chatbot?
+
+Because it acts rather than answers. A chatbot's worst failure is a wrong reply; an agent's is a wrong action in a system of record. Closing that gap means scoped tool permissions, human approval gates, reversibility design, step-level audit logging, and an evaluation harness — and that safety engineering, not the model, is the cost difference.
+
+### What is the cheapest useful AI agent we can build?
+
+A read-only agent in the low five figures. It gathers, enriches, and summarises across your systems and proposes actions without committing them, so it skips write-access approvals and reversibility work entirely. Most teams find the proposal is the valuable part, because the effort was always in the deciding rather than the clicking.
+
+### How much does it cost to run an AI agent each month?
+
+It depends on runs per month and steps per run, and the second number is the one people miss. Agents spend tokens per step rather than per task, so a single job can be dozens of model calls. With step caps, caching, and cheaper models routed to routine steps, running cost is usually modest against the labour replaced — without them it is unbounded.
+
+### Can we start small and expand the agent later?
+
+Yes, and it is the pattern we recommend. Start with one workflow, read-only, behind human approval. Once the evaluation scores and audit log justify it, widen autonomy and add systems. Adding a tool to a working agent is a contained change; the framework, evaluation harness, and logging are already paid for.
+
+### Do we need to fine-tune a model for an AI agent?
+
+Almost never. Agent quality comes from tool design, clear scoping, and evaluation, not from model weights. Fine-tuning adds weeks and cost while helping with tone and format rather than decisions — see [prompt engineering vs fine-tuning vs RAG](/blog/prompt-engineering-vs-fine-tuning-vs-rag) for when each actually applies.

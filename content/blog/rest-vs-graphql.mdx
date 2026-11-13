@@ -1,0 +1,46 @@
+---
+title: "REST vs GraphQL: which API should your product use?"
+description: "REST vs GraphQL compared: how they differ, when REST wins, when GraphQL wins, and a sensible default API choice for most products and teams."
+date: "2026-04-20"
+updated: "2026-04-20"
+author: "bilal-khursheed"
+category: "Web"
+tags: ["rest", "graphql", "api design", "backend"]
+cover: ""
+---
+
+REST is simpler, cache-friendly, and perfect for straightforward resources; GraphQL lets clients request exactly the data they need in a single round trip, which shines for complex, nested data and many different client types. Default to REST for most APIs, and reach for GraphQL when clients genuinely need flexible, aggregated queries.
+
+## Quick comparison
+
+- Data fetching: REST returns fixed shapes per endpoint; GraphQL returns exactly the fields the client asks for.
+- Round trips: REST often needs several calls for nested data; GraphQL can fetch it in one.
+- Caching: REST benefits from simple HTTP caching; GraphQL caching is more involved.
+- Complexity: REST is simpler to build and reason about; GraphQL adds a schema, resolvers, and tooling.
+- Over/under-fetching: GraphQL avoids it by design; REST can over- or under-fetch.
+
+## When REST wins
+
+- Straightforward CRUD resources and public APIs.
+- You want easy HTTP caching and a low-complexity backend.
+- A small number of well-understood clients.
+
+## When GraphQL wins
+
+- Rich, nested, interrelated data (dashboards, feeds, product catalogs).
+- Many client types (web, mobile, partners) with different data needs.
+- You want to avoid over-fetching on mobile and slow networks.
+
+## Our default
+
+We build most products on a clean, typed, documented REST API — it's simpler to operate and easier for future teams to own. We introduce GraphQL when the data is genuinely graph-shaped and diverse clients need query flexibility, not because it's fashionable.
+
+## Frequently asked questions
+
+### REST or GraphQL — which should I use?
+
+Default to REST for straightforward resources and public APIs; it's simpler and cache-friendly. Use GraphQL when clients need flexible, nested data or you have many client types with different data needs.
+
+### Is GraphQL better than REST?
+
+Not universally. GraphQL avoids over- and under-fetching and is great for complex, nested data, but it adds schema and tooling complexity. REST is simpler and cache-friendly. Choose based on your data shape and clients.
