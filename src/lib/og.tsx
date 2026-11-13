@@ -1,10 +1,20 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
 export const ogSize = { width: 1200, height: 630 };
 export const ogContentType = "image/png";
 
-/** Shared Open Graph card. Each route passes its own eyebrow and title. */
-export function renderOg({ eyebrow, title }: { eyebrow: string; title: string }) {
+/** The real CodeBaxh logo (CB mark + wordmark, the variant made for dark backgrounds), read once per build. */
+let logo: Promise<string> | undefined;
+const logoSrc = () =>
+  (logo ??= readFile(join(process.cwd(), "public/logo/codebaxh-logo-dark.png")).then(
+    (b) => `data:image/png;base64,${b.toString("base64")}`,
+  ));
+
+/** Shared Open Graph card, shown when a page is shared. Each route passes its own eyebrow and title. */
+export async function renderOg({ eyebrow, title }: { eyebrow: string; title: string }) {
+  const src = await logoSrc();
   return new ImageResponse(
     (
       <div
@@ -21,24 +31,9 @@ export function renderOg({ eyebrow, title }: { eyebrow: string; title: string })
           color: "#eef0f5",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <div
-            style={{
-              width: 56,
-              height: 56,
-              borderRadius: 14,
-              backgroundColor: "#fab81e",
-              color: "#171001",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 26,
-              fontWeight: 700,
-            }}
-          >
-            CB
-          </div>
-          <div style={{ fontSize: 30, fontWeight: 700, letterSpacing: 4 }}>CODEBAXH</div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- ImageResponse renders plain <img>, not next/image */}
+          <img src={src} width={322} height={84} alt="CodeBaxh" />
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <div style={{ fontSize: 26, letterSpacing: 5, textTransform: "uppercase", color: "#fbc23c" }}>{eyebrow}</div>
