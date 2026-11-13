@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Check } from "lucide-react";
 import { PageHero } from "@/components/layout/page-hero";
 import { CaseStudyCard } from "@/components/cards/case-study-card";
+import { PostCard } from "@/components/blog/post-card";
 import { CtaBand } from "@/components/sections/cta-band";
 import { FaqList } from "@/components/sections/faq-list";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -12,6 +13,7 @@ import { caseStudies } from "@/content/case-studies";
 import { serviceImage } from "@/content/images";
 import { processSteps } from "@/content/process";
 import { services } from "@/content/services";
+import { coversFor, postsForService, toMeta } from "@/lib/blog";
 import { serviceSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 
@@ -23,7 +25,7 @@ export async function generateMetadata({ params }: PageProps<"/services/[slug]">
   const { slug } = await params;
   const s = services.find((x) => x.slug === slug);
   if (!s) return {};
-  return pageMetadata({ title: s.name, description: s.metaDescription, path: `/services/${s.slug}` });
+  return pageMetadata({ title: s.metaTitle, description: s.metaDescription, path: `/services/${s.slug}` });
 }
 
 export default async function ServicePage({ params }: PageProps<"/services/[slug]">) {
@@ -31,6 +33,9 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
   const s = services.find((x) => x.slug === slug);
   if (!s) notFound();
   const related = caseStudies.filter((c) => s.relatedCaseStudies.includes(c.slug));
+  // Hub-to-spoke links: the guides that feed this service (set by `service:` in each post's frontmatter).
+  const guides = postsForService(s.slug);
+  const guideCovers = coversFor(guides);
   const parent = s.category === "ai" ? { name: "AI Services", path: "/ai" } : { name: "Services", path: "/services" };
 
   return (
@@ -146,6 +151,25 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
             {related.map((c) => (
               <li key={c.slug}>
                 <CaseStudyCard study={c} />
+              </li>
+            ))}
+          </ul>
+        </Section>
+      ) : null}
+
+      {guides.length ? (
+        <Section className="border-t border-line">
+          <Reveal>
+            <SectionHeading
+              eyebrow="From the blog"
+              title="Related guides."
+              lead={`What we have written about ${s.name.toLowerCase()}: cost, timelines and the trade-offs behind each decision.`}
+            />
+          </Reveal>
+          <ul className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {guides.map((p) => (
+              <li key={p.slug}>
+                <PostCard post={toMeta(p, guideCovers.get(p.slug))} />
               </li>
             ))}
           </ul>

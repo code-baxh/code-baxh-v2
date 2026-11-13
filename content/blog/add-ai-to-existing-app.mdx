@@ -1,42 +1,136 @@
 ---
 title: "How to add AI features to an existing app"
-description: "A practical guide to adding AI features to an existing app: layer an AI service beside your stack, ground it with RAG, and ship one feature first."
+description: "How to add AI to an existing app: five integration patterns compared, a data-readiness checklist, and how to roll out behind a feature flag and measure it."
 date: "2026-03-14"
-updated: "2026-03-14"
+updated: "2026-11-13"
 author: "bilal-khursheed"
 category: "AI"
 tags: ["ai integration", "rag", "llm", "product development"]
 cover: ""
+service: "ai-integration"
 ---
 
-You can add AI features to an existing app without rebuilding it. The approach is to layer a new AI service alongside your current stack: expose the data the feature needs via an API, put RAG and LLM calls behind a new endpoint, and surface the feature inside your existing UI. Start with one high-value use case rather than 'add AI everywhere'.
+You can add AI features to an existing app without rebuilding it. Put a small AI service beside your current stack, give it the data it needs through an API, and ship **one feature behind a feature flag** to a slice of users before widening it. A working prototype takes **1–2 weeks**; a production assistant grounded in your own data takes **4–6 weeks**.
 
-## How to add AI incrementally
+## Which AI integration pattern fits your feature?
 
-- Pick one high-value use case where AI clearly saves time or money.
-- Expose the data that feature needs through an API your AI service can call.
-- Build a small AI service/endpoint alongside your app — no rewrite of the core.
-- Ground it with RAG so answers come from your data, not the model's imagination.
-- Add guardrails and an evaluation set before you widen the rollout.
-- Ship behind a feature flag so you can test with real users safely.
+Most AI features in existing products fall into five patterns. They differ in effort, in what can go wrong, and in how much a mistake costs.
 
-## Good first features
+| Pattern | What it does | Typical first use | Relative effort | Main risk |
+| --- | --- | --- | --- | --- |
+| Summarization | Condenses long records, threads or documents | Ticket or case summaries, meeting notes, weekly digests | Small | Leaving out or inventing details |
+| Semantic search | Finds content by meaning using embeddings | Search across docs, products or past tickets | Small to medium | Misses exact codes and names unless combined with keyword search |
+| RAG assistant | Answers questions from your content, with citations | Help center or internal knowledge Q&A | Medium; 4–6 weeks for production | Confident wrong answers without evaluation |
+| Classification and extraction | Turns free text into labels or structured fields | Ticket triage, lead routing, pulling fields from invoices | Small to medium | Silent misclassification at scale |
+| Agents | Plans and takes actions through tools | Multi-step workflows across systems | Large; 6–10 weeks for one workflow, 12+ across several systems | Wrong actions, cost per step, security |
 
-- Search and Q&A over your own content or documentation.
-- Summarization of long records, threads, or documents.
-- Drafting assistance (replies, descriptions, reports).
-- Classification and routing (tagging, triage, prioritization).
+The decision rule: start as high in the table as the problem allows. Summarization, search and classification make good first features because a person still reviews the output and a mistake is cheap. Anthropic's guide to [building effective agents](https://www.anthropic.com/engineering/building-effective-agents) gives the same advice: find the simplest solution possible and only increase complexity when needed. Our comparison of [agents, chatbots and RAG](/blog/ai-agents-vs-chatbots-vs-rag) covers where the bigger patterns are worth it.
 
-## Our approach
+### A note on classification and extraction
 
-We add a swappable AI layer beside your existing app rather than rewriting it, ground it in your data, and prove one feature before expanding. That keeps risk low, cost controlled, and the model easy to change as the landscape shifts.
+These are the most underrated patterns. Model APIs can now return output that matches a schema you supply: OpenAI's [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) constrains completed, non-refusal output to your JSON Schema, so a triage feature gets a valid category every time instead of free text to parse. You still validate business rules in code, such as whether that category exists for this customer.
+
+## How do you choose the first feature?
+
+Pick the feature that scores well on all five of these, not the one that demos best:
+
+1. **Frequent.** A task people do many times a day or week, so small savings add up.
+2. **Measurable today.** You can already time it or count it, so you can prove the change.
+3. **Reviewed by a person.** Someone sees the output before it matters, at least at first.
+4. **Data within reach.** The inputs already exist in your app or a system it can call.
+5. **Cheap to get wrong.** A bad output costs a few seconds of correction, not a refund or a compliance issue.
+
+"Summarize long support threads for the agent who picks them up" scores well on all five. "An AI assistant that can do anything in the app" scores well on none. If two candidates tie, pick the one with the simplest data access.
+
+## Is your data ready? A checklist
+
+Most AI integration delays come from data, not models. Before committing to a timeline, check:
+
+- **Location.** You know where the source data lives and can read it through an API or a read replica, without manual exports.
+- **Quality.** It is current, deduplicated and does not contradict itself. If two help pages disagree, the AI will repeat both.
+- **Permissions.** You can tell who may see each record (tenant, role, team) and can filter by it at query time. An AI feature must never show a user data they could not open in the app itself; our guide to [multi-tenant auth and RBAC](/blog/multi-tenant-saas-auth-rbac) covers the model.
+- **Personal data.** You know which fields hold personal or sensitive data, whether they need to reach the model at all, and whether your provider's data-processing terms cover them.
+- **Change rate.** You know how often the data changes, which decides between a nightly re-index and an incremental sync.
+- **Ground truth.** You have examples of good output, such as past summaries, correctly tagged tickets or answered questions, to build an evaluation set from.
+- **Ownership.** Someone is responsible for keeping the content accurate after launch.
+
+If three or more of these are unclear, spend the first week on a data audit rather than code. It is cheaper than discovering the gaps in week four.
+
+## How do you integrate AI without a rewrite?
+
+The pattern we use is an AI layer beside the app, not inside its core:
+
+1. **A separate AI module or service** that the app calls through an internal API. Your existing code stays as it is.
+2. **The model behind an interface**, so the provider can change without touching product code. Our [OpenAI vs Anthropic comparison](/blog/openai-vs-anthropic-claude) covers why swappability matters.
+3. **Data through existing access paths.** The AI layer reads through your APIs or service layer, with the same permission checks, never with raw database credentials.
+4. **Background jobs for slow work.** Summaries and classification run asynchronously and are stored; only interactive chat needs streaming.
+5. **Versioned outputs.** Store the model and prompt version with each result, so you can trace and regenerate.
+6. **Logging from day one.** Record the input, retrieved context, output, latency and cost for every call.
+
+In code, the feature check and permission check stay in your app, and the AI call is one line behind an interface:
+
+```ts
+interface Summarizer {
+  summarize(input: { text: string; maxWords: number }): Promise<string>;
+}
+
+async function getThreadSummary(threadId: string, user: User) {
+  if (!(await flags.isEnabled("ai-thread-summary", user))) return null;
+  const thread = await threads.getForUser(threadId, user); // existing permission checks
+  return summarizer.summarize({ text: thread.body, maxWords: 120 });
+}
+```
+
+For a RAG feature, the same layer owns ingestion, retrieval and citations; [building a RAG pipeline](/blog/building-a-rag-pipeline) walks through each stage. Our [contract analysis](/work/legal-contract-ai) build uses a multi-agent RAG pipeline to turn 500 to 1,000 page legal contracts into a queryable knowledge base that answers with cited sources.
+
+## How do you roll out behind a flag and measure it?
+
+A feature flag lets you ship the code early and control who sees the feature. [OpenFeature](https://openfeature.dev/), a CNCF project, defines a vendor-neutral API for feature flags, so you can start with a simple in-house flag and move to a flag service later without rewriting the checks. Roll out in stages:
+
+1. **Internal only.** Your own team uses it on real data for a week.
+2. **Shadow mode** for classification and extraction: generate outputs without showing them, and compare with what people actually chose.
+3. **Beta cohort.** A small share of accounts, or customers who opt in, with the flag set per tenant.
+4. **Staged widening**, only while the metrics hold, with the flag kept as a kill switch.
+
+Define success before the beta starts, and compare users with the flag on against those without it:
+
+| Metric | What it tells you | Example |
+| --- | --- | --- |
+| Task outcome | Whether the feature helps | Time to resolve a ticket, time to complete the workflow |
+| Adoption | Whether people choose to use it | Share of eligible users using it weekly |
+| Acceptance | Whether the output is good enough | Share of outputs used without edits, or how much they are edited |
+| Quality | Whether it is correct | Evaluation-set score, thumbs-down rate, reported errors |
+| Cost | Whether it pays for itself | Model cost per use and per active user |
+| Latency | Whether it feels fast enough | 95th-percentile time to result |
+
+Run the evaluation set on every prompt, model or data change, and block releases that regress; our guide to [evaluating RAG systems](/blog/evaluating-rag-systems) covers building one. Watch cost from the first day of the beta, because usage grows with adoption; [reducing LLM API costs](/blog/reduce-llm-api-costs) covers caching and model routing.
+
+## How long does it take and what does it cost?
+
+A prototype on your real data takes 1–2 weeks and answers the key question: is the output good enough to be worth shipping? A single production feature such as summarization or classification usually sits in the four figures to low five figures (USD). A production RAG assistant takes 4–6 weeks and five figures. A production agent takes 6–10 weeks for one workflow; a multi-system agent takes 12+ weeks and starts in the high five figures; [the cost of an AI agent](/blog/cost-to-build-ai-agent) explains why. Fixed-scope pricing works well here because the first feature is small and well defined; our [engagement models](/engagement) explain how we structure it.
 
 ## Frequently asked questions
 
 ### Can I add AI to my existing app without rebuilding it?
 
-Yes. Layer a separate AI service beside your current stack, expose the data it needs via an API, ground it with RAG, and surface the feature in your existing UI. Start with one high-value feature behind a flag.
+Yes. Layer a separate AI service beside your current stack, expose the data it needs through your existing APIs with the same permission checks, and surface the feature in your current UI. Start with one high-value feature behind a flag, measure it against users without it, and expand only when the numbers hold.
 
 ### What's a good first AI feature to add?
 
-Start where AI clearly saves time: search/Q&A over your own content, summarization, drafting assistance, or classification and routing. Prove one feature before expanding.
+Start where AI clearly saves time and a person still reviews the output: summarization of long records, semantic search over your own content, classification and routing, or drafting assistance. Pick a task that is frequent and already measurable, so you can prove the improvement. Prove one feature before expanding.
+
+### Do I need to move my data to a new database for AI?
+
+Usually not. If you run PostgreSQL, embeddings can live next to your existing data with the pgvector extension. Otherwise the AI layer keeps its own search index, synced from your systems of record, while your app's database stays the source of truth.
+
+### Will adding AI slow down my app?
+
+Not if it is built around the slow parts. Run summaries and classification as background jobs and store the results, stream responses for chat, and set timeouts with a fallback so the page still works if the model API is slow or down.
+
+### Which AI model provider should we use?
+
+Choose per feature by measuring quality, latency and cost on your own data, not by benchmark headlines. Keep the provider behind an interface so you can switch when prices or models change, which they do often.
+
+### How long does it take to add an AI feature to an existing app?
+
+A prototype on your real data takes 1–2 weeks. A single production feature such as summarization or classification is usually a short project, a production RAG assistant takes 4–6 weeks, and a production agent takes 6–10 weeks for one workflow, or 12+ weeks across several systems. The state of your data is the biggest variable.

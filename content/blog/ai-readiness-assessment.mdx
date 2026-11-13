@@ -1,0 +1,135 @@
+---
+title: "AI readiness assessment: a checklist before you build"
+description: "An AI readiness checklist for product teams: seven areas to check, how to score a first use case on value and feasibility, and the red flags that mean not yet."
+date: "2026-11-13"
+updated: "2026-11-13"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["ai strategy", "ai readiness", "ai"]
+cover: ""
+service: "ai-strategy-consulting"
+---
+
+An AI readiness assessment checks **seven things** before you build: a clear use case, usable data, access and permissions, a success metric, risk and compliance, a budget for ongoing usage, and a named owner. If one workflow passes all seven, start with a **1–2 week prototype** on real data. If **two or more** are missing, fix those first, because a model will not fix them for you.
+
+## What is an AI readiness assessment?
+
+It is a structured check that a specific AI feature can be built, measured and run safely, done before anyone writes code. The important word is specific. A company is not "ready for AI" in general; a workflow is ready, or it is not. Support replies might be ready this month while contract review needs months of data clean-up.
+
+So we assess readiness per use case, and each candidate gets a verdict: build now, fix something first, or drop.
+
+## The AI readiness checklist
+
+| Area | Ready when | Ask |
+| --- | --- | --- |
+| Use case clarity | You can name the user, the task, the input and the output in one sentence, without the word "AI" | What does the person do today, step by step, and which step should change? |
+| Data availability and quality | Real examples of the input exist, are reachable, reasonably current and representative | Can you export 50 real examples this week? Who knows which ones are correct? |
+| Access and permissions | The system can read the data through an API or export, and you know who may see what | Does the assistant need to respect the same permissions as the source system? |
+| Success metrics | There is a baseline today and a target you would accept | How long does the task take now, and how often is it wrong? |
+| Risk and compliance | You know what happens when the output is wrong, and who reviews it | Does it affect decisions about people, money or safety? What data leaves your systems? |
+| Budget for ongoing usage | Model usage, monitoring and maintenance are budgeted monthly, not just the build | What does one request cost, and how many will you have at full adoption? |
+| Team ownership | A named product owner, a domain expert who reviews outputs, and an engineer who maintains it | Who decides whether it is good enough, and who fixes it when it is not? |
+
+### Data is where most assessments fail
+
+Teams usually overestimate their data. The documents sit in scanned PDFs, inboxes or a tool with no export, and nobody agrees which answers are right. The fix is cheap if found early: collect a sample of real inputs and correct outputs before choosing an approach.
+
+The shape of the data also decides the architecture. Facts that change, such as policies, product data and documentation, call for retrieval rather than training; our comparison of [prompt engineering, fine-tuning and RAG](/blog/prompt-engineering-vs-fine-tuning-vs-rag) explains when each fits.
+
+### Permissions are a design input, not an afterthought
+
+An internal assistant that can read every document will happily show salary data to the whole company. If the source system has permissions, the AI feature must enforce the same ones at retrieval time. Before sending real data, check what your model provider's terms say about how it is used and retained.
+
+### A metric you can test every week
+
+"Better answers" is not a metric. "Correct answer with a citation on at least 85% of a 100-question test set, reviewed by the support lead" is. Build that test set before the feature, so every change can be measured against it; our guide to [evaluating RAG systems](/blog/evaluating-rag-systems) shows how.
+
+## How do you pick and score a first use case?
+
+List every candidate, then score each one from 1 to 5 on value and on feasibility.
+
+| Criterion | Scores high when |
+| --- | --- |
+| Value: frequency | The task happens many times a day, not a few times a month |
+| Value: cost today | It takes skilled people's time or causes expensive errors |
+| Value: impact | It touches revenue, customer experience or a known bottleneck |
+| Feasibility: data | Real examples exist and are easy to reach |
+| Feasibility: error tolerance | A wrong output is caught by a person or is cheap to correct |
+| Feasibility: integration | It fits one system or screen rather than five |
+| Feasibility: risk | It does not decide outcomes for people, money or safety on its own |
+
+Average each group and plot the candidates. Your first project comes from the top-right: high value and high feasibility. High value with low feasibility comes later, once the first project has built the data pipelines. Low value with high feasibility is a fine demo and a poor investment.
+
+An illustrative scoring:
+
+| Candidate | Value | Feasibility | Verdict |
+| --- | --- | --- | --- |
+| Draft replies to support tickets for agents to edit | 4 | 5 | Build first: frequent, reviewed by a person, data in the helpdesk |
+| Answer staff questions over internal policies | 3 | 4 | Strong second, once permissions are mapped |
+| Extract fields from supplier invoices | 3 | 3 | Viable if scans are readable; test on a sample first |
+| Approve or reject credit applications automatically | 5 | 1 | Not yet: high-stakes decisions about people, with heavy regulatory obligations |
+
+The strongest first use cases keep a person in the loop: drafting for review is far more forgiving than acting alone, and the corrections become your quality data.
+
+The score also points to the type of build. A chatbot prototype takes 1–2 weeks, a production RAG assistant with citations and evaluation takes 4–6 weeks, and a production agent takes 6–10 weeks for one workflow, or 12+ weeks when it acts across several systems. Our comparison of [AI agents, chatbots and RAG](/blog/ai-agents-vs-chatbots-vs-rag) explains the differences, and [adding AI to an existing app](/blog/add-ai-to-existing-app) covers how a first feature fits into a product you already run.
+
+## Which red flags mean "not yet"?
+
+Any one of these is a reason to pause and fix the foundation first:
+
+- **Nobody can describe the task without saying "AI".** If the goal is to have AI rather than to change a workflow, there is nothing to measure.
+- **The data does not exist yet, or nobody can reach it.** Knowledge in people's heads has to be written down first.
+- **There is no baseline.** If no one knows how long the task takes or how often it goes wrong today, you cannot show the feature helped.
+- **Every output must be perfect and no one reviews it.** Language models make mistakes, so a design with no review step will fail. Our guide to [reducing hallucinations](/blog/reduce-llm-hallucinations) covers how far you can push accuracy.
+- **It makes high-stakes decisions about people and nobody has checked the obligations.** Hiring, credit and access to services carry legal duties in many jurisdictions.
+- **The budget covers the build but not the running.** Usage costs scale with traffic; see [reducing LLM API costs](/blog/reduce-llm-api-costs) for how to keep them in check.
+- **No one owns it after launch.** Prompts, data and models drift. An AI feature without an owner degrades quietly.
+- **A simpler tool would do.** Search, a rules engine or a better form often solves the problem for less. Saying so early is part of an honest assessment.
+
+## Which frameworks help with AI risk?
+
+You do not need a compliance program to build a first prototype, but two references are worth knowing early. This is general information, not legal advice.
+
+The [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework) is voluntary guidance from the US National Institute of Standards and Technology, released in January 2023. It organizes AI risk work into four functions: Govern, Map, Measure and Manage. NIST also publishes a [Generative AI Profile](https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf) (NIST AI 600-1) covering risks specific to generative models, with suggested actions. Even a small team can use the Map function as a checklist: who is affected, what can go wrong, and how you would know.
+
+The EU's [Artificial Intelligence Act](https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng) (Regulation (EU) 2024/1689) takes a risk-based approach. Some practices are prohibited outright, systems in listed high-risk areas such as employment and creditworthiness carry heavy obligations, and some systems, such as chatbots, carry transparency duties like telling people they are interacting with an AI. Its obligations phase in over several years and the regulation was amended in 2026, so check the current consolidated text with a lawyer if your product serves people in the EU.
+
+## What does a short AI strategy engagement produce?
+
+When there are several candidates, the data is messy or the feature carries real risk, a short, time-boxed strategy engagement answers the checklist with evidence. It should produce:
+
+- A review of your product, data and current workflows
+- A ranked list of use cases, with reasons for and against each
+- Feasibility findings from a small test on your own data
+- Recommended architecture and model choices, with the model kept swappable
+- The running-cost drivers and how to control them
+- A risk and data-handling assessment
+- A phased roadmap, with a definition of good enough for each feature, that your team or ours can build from
+
+If the use case is already clear and small, skip the strategy work and build the prototype; it answers the same questions faster. A use case like our [contract analysis system](/work/legal-contract-ai), which turns 500 to 1,000 page contracts into a knowledge base that answers with cited sources, passes the clarity test in one sentence. Our [engagement models](/engagement) explain how strategy work and builds are scoped.
+
+## Frequently asked questions
+
+### What is an AI readiness assessment?
+
+It is a check, done before building, that a specific AI use case has clear goals, usable data, the right access, a success metric, managed risk, a running budget and an owner. It produces a verdict per use case: build now, fix something first, or drop.
+
+### Do we need a strategy engagement before building an AI feature?
+
+Not always. If the use case is clear and small, a 1–2 week prototype on real data is the faster way to learn. Strategy work pays off when there are several options, the data is messy, or the feature carries real risk to customers or the business.
+
+### How much data do we need to start?
+
+Less than most teams think for retrieval-based features: a representative set of real documents and around 50 to 100 example questions with agreed correct answers is enough to test feasibility. Fine-tuning needs far more labeled examples, which is one reason most products start with prompts and retrieval instead.
+
+### What is a good first AI use case?
+
+A frequent task, done by skilled people, where a person reviews the output before it reaches a customer. Drafting replies, summarizing documents and answering questions over internal knowledge are common first choices. Avoid anything that decides outcomes for people or money on its own.
+
+### Does the EU AI Act apply to companies outside the EU?
+
+It can. The regulation can reach providers and deployers outside the EU when their AI systems are placed on the EU market or their outputs are used in the EU. How it applies depends on what your system does and who uses it, so take legal advice.
+
+### What does an AI feature cost to run after launch?
+
+The main lines are model usage, which is tokens per request multiplied by traffic, plus monitoring, evaluation runs and maintenance as models and data change. Caching, routing simple requests to smaller models and trimming context all reduce the bill. Estimate the cost per request during the prototype, before committing to a launch.

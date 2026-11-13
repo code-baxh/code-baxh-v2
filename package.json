@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "ship": "bash scripts/ship.sh"
+    "ship": "bash scripts/ship.sh",
+    "indexnow": "node scripts/indexnow-ping.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

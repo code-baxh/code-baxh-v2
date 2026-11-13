@@ -13,6 +13,8 @@ export function GET() {
     "",
     `> ${site.description}`,
     "",
+    `Full text of every service, case study and article: ${abs("/llms-full.txt")}`,
+    "",
     "## Key pages",
     `- [Services](${abs("/services")})`,
     `- [AI services](${abs("/ai")})`,

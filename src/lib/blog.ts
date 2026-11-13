@@ -4,6 +4,8 @@ import matter from "gray-matter";
 import GithubSlugger from "github-slugger";
 import { z } from "zod";
 import { blogPools, images, type ImageKey } from "@/content/images";
+import { services } from "@/content/services";
+import type { Faq } from "@/content/types";
 
 const DIR = path.join(process.cwd(), "content", "blog");
 export const POSTS_PER_PAGE = 9;
@@ -24,15 +26,58 @@ const frontmatter = z.object({
   category: z.string().min(1),
   tags: z.array(z.string()).default([]),
   cover: z.string().optional().default(""),
+  /** Slug of the service this post feeds. Drives the in-article CTA and the service page's "Related guides". */
+  service: z.string().optional(),
+  /** Shorter <title> when `title` (the H1) runs past about 60 characters. */
+  metaTitle: z.string().optional(),
 });
 
-export type PostMeta = z.infer<typeof frontmatter> & { slug: string; readingMinutes: number };
-export type Post = PostMeta & { body: string; headings: { depth: 2 | 3; text: string; id: string }[] };
+export type PostMeta = z.infer<typeof frontmatter> & { slug: string; readingMinutes: number; wordCount: number };
+export type Post = PostMeta & { body: string; headings: { depth: 2 | 3; text: string; id: string }[]; faqs: Faq[] };
+
+/** Markdown to plain text for schema answers: keeps link text, drops emphasis and code ticks. */
+const plain = (md: string) =>
+  md
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[*_`]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+/**
+ * Reads the "## Frequently asked questions" section (### question, then answer paragraphs)
+ * so the visible FAQ can be mirrored as FAQPage schema.
+ */
+function extractFaqs(content: string): Faq[] {
+  const start = content.search(/^##\s+(Frequently asked questions|FAQs?)\s*$/im);
+  if (start === -1) return [];
+  const section = content.slice(start).split("\n").slice(1);
+  const end = section.findIndex((l) => /^##\s/.test(l));
+  const lines = end === -1 ? section : section.slice(0, end);
+  const faqs: Faq[] = [];
+  let q: string | null = null;
+  let a: string[] = [];
+  const flush = () => {
+    if (q && a.join(" ").trim()) faqs.push({ q: plain(q), a: plain(a.join(" ")) });
+  };
+  for (const line of lines) {
+    const m = /^###\s+(.+)$/.exec(line);
+    if (m) {
+      flush();
+      q = m[1];
+      a = [];
+    } else if (q) a.push(line);
+  }
+  flush();
+  return faqs;
+}
 
 function read(slug: string): Post {
   const raw = fs.readFileSync(path.join(DIR, `${slug}.mdx`), "utf8");
   const { data, content } = matter(raw);
   const fm = frontmatter.parse(data);
+  if (fm.service && !services.some((s) => s.slug === fm.service)) {
+    throw new Error(`content/blog/${slug}.mdx: unknown service "${fm.service}" in frontmatter`);
+  }
   const words = content.split(/\s+/).filter(Boolean).length;
   const slugger = new GithubSlugger();
   const headings: Post["headings"] = [];
@@ -45,7 +90,15 @@ function read(slug: string): Post {
       headings.push({ depth: m[1].length as 2 | 3, text, id: slugger.slug(text) });
     }
   }
-  return { ...fm, slug, readingMinutes: Math.max(1, Math.round(words / 220)), body: content, headings };
+  return {
+    ...fm,
+    slug,
+    readingMinutes: Math.max(1, Math.round(words / 220)),
+    wordCount: words,
+    body: content,
+    headings,
+    faqs: extractFaqs(content),
+  };
 }
 
 let cache: Post[] | null = null;
@@ -93,6 +146,7 @@ export function toMeta(post: Post, cover: ImageKey = coverFor(post.slug)): PostM
   const meta: Partial<Post> = { ...post, cover };
   delete meta.body;
   delete meta.headings;
+  delete meta.faqs;
   return meta as PostMeta;
 }
 
@@ -115,5 +169,12 @@ export function relatedPosts(post: Post, n = 3) {
     .slice(0, n)
     .map((x) => x.p);
 }
+
+/** Posts that feed a service, newest first: the hub-to-spoke links on each service page. */
+export const postsForService = (serviceSlug: string, n = 6) =>
+  getAllPosts().filter((p) => p.service === serviceSlug).slice(0, n);
+
+/** Posts written by one team member, newest first. */
+export const postsByAuthor = (authorSlug: string) => getAllPosts().filter((p) => p.author === authorSlug);
 
 export { formatDate } from "./format";

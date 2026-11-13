@@ -1,42 +1,148 @@
 ---
 title: "How to build an AI customer support chatbot with RAG"
-description: "Build an AI support chatbot that deflects real tickets: ground it in your help content with RAG, integrate your helpdesk, and add human handoff."
+description: "How to build an AI support chatbot with RAG: what to automate vs escalate, human handoff design, deflection and resolution metrics, and an evaluation set."
 date: "2026-01-18"
-updated: "2026-01-18"
+updated: "2026-11-13"
 author: "bilal-khursheed"
 category: "AI"
 tags: ["chatbots", "rag", "customer support"]
 cover: ""
+service: "ai-chatbot-development"
 ---
 
-To build an AI customer support chatbot that actually helps, ground it in your own help content with RAG, connect it to your helpdesk, add a confident human-handoff, and evaluate its answers. That combination lets it deflect real tickets without inventing answers — the failure mode that erodes trust fastest.
+To build an AI customer support chatbot that resolves real tickets, ground it in your help content with retrieval-augmented generation (RAG), connect it to your helpdesk, design a human handoff that carries context, and test it against a fixed evaluation set. A prototype over your real help center takes **1–2 weeks**. A production RAG assistant with citations, handoff and evaluation takes **4–6 weeks**.
 
-## The build
+## How does an AI support chatbot work?
 
-- Ingest your help docs, past tickets, and knowledge base into a vector index.
-- Retrieve the most relevant chunks for each question (RAG), and re-rank for quality.
-- Generate answers grounded strictly in retrieved content, with links to sources.
-- Integrate your helpdesk (Zendesk, Intercom, etc.) so the bot has context and can log conversations.
-- Add a clear human handoff when confidence is low or the user asks.
-- Track deflection rate and answer accuracy with analytics and an evaluation set.
+A support bot is a RAG system with a helpdesk attached. Each message goes through the same path:
 
-## Where support bots fail
+1. **Identify the customer** if they are signed in, so the bot knows their plan, region and open tickets.
+2. **Classify the request**: a how-to question, an account lookup, a policy question, or something that must go to a person.
+3. **Retrieve** the most relevant passages from your help center, policies and resolved tickets, using hybrid search and re-ranking.
+4. **Generate** an answer from those passages only, with links to the source articles.
+5. **Decide**: answer, ask a clarifying question, or hand off to an agent.
+6. **Log** the conversation, the retrieved sources and the outcome to your helpdesk and analytics.
 
-- Hallucination: answering without grounding, so it confidently makes things up.
-- No handoff: trapping frustrated users instead of escalating to a human.
-- Stale content: the knowledge base drifts and answers go wrong.
-- No evaluation: quality silently degrades and nobody notices.
+Steps 3 and 4 are the standard [RAG pipeline](/blog/building-a-rag-pipeline). What makes a support bot different is steps 2, 5 and 6: deciding what it may handle, getting out of the way when it should, and proving it helped.
 
-## Our approach
+## What should a support chatbot automate, and what should it escalate?
 
-We build support chatbots that are grounded, evaluated, and measured on real deflection — with the model kept swappable so you're never locked to one provider's pricing or quirks. It's the difference between a demo and a bot your customers actually trust.
+Draw this line before writing any prompts. A useful rule: automate questions where the answer is already written down and the cost of a wrong answer is low; escalate anything that moves money, changes an account, or needs judgment.
+
+| Request type | Automate or escalate | Why |
+| --- | --- | --- |
+| How-to questions covered by your docs | Automate | The answer exists; cite the article so the customer can check it |
+| Order, shipment or account status | Automate, read-only | A scoped API lookup after the customer is authenticated |
+| Policy questions (returns, eligibility, limits) | Automate, quoting the policy | Quote the policy text and link it; escalate any exception request |
+| Refunds, credits, cancellations | Escalate, or agent approves | Money movement needs a person or an approval step |
+| Billing disputes, complaints, legal threats | Escalate immediately | High stakes and high emotion; a bot makes both worse |
+| Bug reports and outages | Collect details, then escalate | The bot gathers steps, browser and account, and opens the ticket |
+| Security, account takeover, data requests | Escalate immediately | Identity checks and legal obligations belong with trained staff |
+| Questions the docs do not answer | Say so, offer a human | Guessing here is where hallucinations come from |
+
+The policy row matters more than it looks. In [Moffatt v. Air Canada](https://decisions.civilresolutionbc.ca/crt/crtd/en/525448/1/document.do), British Columbia's Civil Resolution Tribunal held the airline liable for negligent misrepresentation after its website chatbot gave a customer wrong information about bereavement fares, and rejected the argument that the chatbot was responsible for its own actions. Treat every bot answer as a statement from your company. For policy questions, quote the source text rather than paraphrasing it.
+
+Once a bot starts issuing refunds or editing accounts, it is no longer a chatbot but an agent, with different risks and costs. Our comparison of [agents, chatbots and RAG](/blog/ai-agents-vs-chatbots-vs-rag) covers where that line sits.
+
+## How do you design the human handoff?
+
+Design the handoff as a feature with its own triggers, data and copy.
+
+### When to hand off
+
+- **The customer asks for a person.** Honor it the first time, in any phrasing. Making someone ask three times is the fastest way to lose their trust.
+- **Retrieval finds nothing relevant.** If no passage scores above your threshold, or the model returns its "not found" answer, offer a human instead of improvising.
+- **The topic is on the escalate list.** A lightweight classifier or keyword rules catch refunds, disputes, cancellations and security issues before the bot attempts them.
+- **Frustration signals.** The same question rephrased twice, negative sentiment, or all-caps messages.
+- **The conversation is looping.** Two failed answers in a row is a reasonable limit.
+
+### What the agent receives
+
+The agent should never have to ask "how can I help?" again. Pass the full transcript, the detected intent, the articles the bot showed, the customer's identity and plan, and the reason for the handoff. Most helpdesks support this natively. In Zendesk, for example, a bot transfers a conversation with the [Switchboard passControl operation](https://developer.zendesk.com/documentation/conversations/messaging-platform/programmable-conversations/switchboard/), which accepts metadata that can set ticket fields such as priority and tags, and the recent conversation history is injected into the ticket for the agent.
+
+### What the customer sees
+
+Tell them a person is joining and roughly how long it will take. Outside support hours, say so plainly, create the ticket, and confirm they will get an email reply. Keep a visible "talk to a person" link in every conversation.
+
+## Which metrics show the bot is actually working?
+
+Deflection is the easiest number to fool yourself with: a customer who gives up and emails you tomorrow counts as deflected. Track it alongside metrics that catch that.
+
+| Metric | What it measures | Watch for |
+| --- | --- | --- |
+| Containment (deflection) rate | Share of conversations that end without a human | Rises when customers give up, not only when they are helped |
+| Verified resolution rate | Share of bot conversations confirmed resolved, by the customer or by no repeat contact | The headline number; report it instead of raw deflection |
+| Recontact rate | Same customer, same topic, within a set window such as 7 days | The best check on false deflection |
+| Escalation rate and reasons | How often the bot hands off, and why | Tells you which content gaps to fix first |
+| Answer accuracy | Correct, grounded answers on the evaluation set and on sampled live chats | Drops after content or prompt changes |
+| CSAT on bot conversations | Satisfaction compared with agent-handled conversations | A large gap means the bot is answering things it should not |
+| Handoff quality | Agent rating of whether the context was sufficient | Agents re-asking questions means the handoff payload is thin |
+| Cost per resolved conversation | Model and infrastructure cost divided by verified resolutions | Compare with the cost of an agent-handled ticket |
+
+Set the baseline before launch: pull a month of tickets, group them by contact reason, and mark which reasons the bot is meant to handle. That gives you a realistic ceiling for resolution and stops the team chasing a number that the contact mix cannot support.
+
+## How do you build an evaluation set for a support bot?
+
+An evaluation set is a fixed list of questions with known good outcomes that you run on every change to prompts, content, retrieval or model.
+
+Build it from real tickets, not invented questions. Take a few hundred recent conversations across your top contact reasons and, for each, record the question, the facts a correct answer must contain, the source article, and the expected behavior: answer, ask for clarification, or hand off.
+
+```json
+{
+  "id": "returns-014",
+  "question": "Can I return a sale item after 30 days?",
+  "expected_behavior": "answer",
+  "must_include": ["sale items", "final sale", "returns policy link"],
+  "source": "/help/returns-policy",
+  "category": "policy"
+}
+```
+
+Then add the cases that break bots:
+
+- **Should-escalate cases**: refund demands, disputes, security issues. The correct outcome is a handoff, not an answer.
+- **Not-in-the-docs questions**, where the correct answer is "I don't have that information" plus a handoff.
+- **Adversarial input**: requests for discounts, attempts to override instructions, abusive messages.
+- **Multi-turn conversations** where the key detail appears two messages back.
+
+Anthropic's guidance on [building evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests) makes the same points: mirror your real task distribution, include edge cases, and favor more automatically graded questions over fewer hand-graded ones. Grade with code where you can (did it cite a real article, did it hand off when expected) and with a model-based grader for faithfulness, calibrated against human review. Our guide to [evaluating RAG systems](/blog/evaluating-rag-systems) covers the metrics and scoring in depth.
+
+## Where do support bots fail?
+
+- **Stale or contradictory content.** The help center changes and the index does not, or two pages disagree and the bot repeats both. Sync incrementally and fix the content before blaming the model.
+- **Trapping users.** No visible human option, or a handoff that loses the conversation.
+- **Paraphrased policy.** The model rewords a policy into something it does not say. Quote it instead.
+- **Data leaks between customers.** Account lookups must use the authenticated customer's identity, never an ID typed into the chat.
+- **No evaluation.** Every change is a guess; see [how to reduce LLM hallucinations](/blog/reduce-llm-hallucinations) for the techniques that keep answers grounded.
+
+## How long does it take and what does it cost?
+
+A prototype over a slice of your real help content takes **1–2 weeks**. A production RAG assistant with citations, helpdesk handoff, evaluation and one channel takes **4–6 weeks**, depending mostly on the state of your content; our [AI chatbot timeline](/blog/how-long-to-build-ai-chatbot) breaks the weeks down.
+
+Build cost typically sits in the five figures, driven by integrations and evaluation rather than the chat widget, as our [AI chatbot cost guide](/blog/cost-to-build-ai-chatbot) explains. Running cost is model usage multiplied by conversation volume; see [reducing LLM API costs](/blog/reduce-llm-api-costs). We scope it as a fixed-price build paid by milestone; see our [engagement models](/engagement).
 
 ## Frequently asked questions
 
 ### How do I build an AI customer support chatbot?
 
-Ground it in your help content with RAG, retrieve and re-rank relevant chunks, generate answers strictly from those sources with links, integrate your helpdesk, add a human handoff, and measure deflection and accuracy with an evaluation set.
+Ground it in your help content with RAG, retrieve and re-rank relevant passages, and generate answers only from those sources with links. Connect it to your helpdesk, decide up front what it automates and what it escalates, and design a handoff that passes the full context to an agent. Measure verified resolution and accuracy against an evaluation set built from real tickets.
 
 ### How do I stop a support chatbot from hallucinating?
 
-Ground answers in retrieved content (RAG), require the model to answer only from provided sources with citations, add a confident handoff to humans when unsure, and evaluate accuracy continuously so quality doesn't drift.
+Ground answers in retrieved content, require the model to answer only from the provided sources with citations, and give it an explicit "not found" answer that leads to a human. Quote policies rather than paraphrasing them. Then evaluate accuracy on every change so quality does not drift.
+
+### What is a good deflection rate for a support chatbot?
+
+There is no universal number, because it depends on your contact mix. A product whose tickets are mostly how-to questions can contain far more than one whose tickets are mostly billing disputes. Measure verified resolution and recontact rate rather than raw deflection, and set your target from a baseline of last month's tickets grouped by contact reason.
+
+### Should a support chatbot be able to issue refunds or change accounts?
+
+Not at first. Start read-only: answer questions and look up status. When you add actions, gate the ones that move money or change accounts behind an agent's approval, log every action, and evaluate them separately. At that point you are building an agent, which takes longer and needs stronger guardrails.
+
+### Can the chatbot use our past support tickets?
+
+Yes, and resolved tickets are often the best source for questions your docs do not cover. Remove personal data before indexing them, prefer recent tickets, and rank official help articles above ticket replies when they conflict.
+
+### How long does it take to build an AI support chatbot?
+
+A prototype over your real help content takes 1–2 weeks. A production RAG assistant with citations, helpdesk handoff, evaluation and one channel takes 4–6 weeks. Adding actions across several systems moves it into agent territory, at 8–10+ weeks.

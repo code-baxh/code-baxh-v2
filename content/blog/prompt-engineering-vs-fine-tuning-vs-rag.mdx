@@ -1,88 +1,126 @@
 ---
 title: "Prompt engineering vs fine-tuning vs RAG: which do you need?"
-description: "Prompt engineering, fine-tuning, and RAG compared: what each does, what it costs, and how to choose the right one — or combination — for your AI feature."
+description: "Prompt engineering vs fine-tuning vs RAG: a decision table of what each changes, its cost and build time, when each fits, and how to combine them."
 date: "2026-07-14"
-updated: "2026-07-14"
+updated: "2026-11-13"
 author: "bilal-khursheed"
 category: "AI"
 tags: ["prompt engineering", "fine-tuning", "rag", "llm"]
 cover: ""
+service: "ai-integration"
 ---
 
-**Prompt engineering** shapes the model's behavior with instructions and examples. **RAG** gives the model your knowledge at query time by retrieving relevant content. **Fine-tuning** changes the model's weights to bake in a consistent style, format, or narrow skill. Reach for them **in that order** — most needs are solved by prompting plus RAG, and fine-tuning is rarely the first answer.
+Start with **prompt engineering**, add **RAG** when the model needs your knowledge, and **fine-tune** only when a measured gap in style, format or a narrow task remains. Prompting changes the instructions and takes hours to days. RAG changes what the model can see, and a production assistant takes **4–6 weeks**. Fine-tuning changes the model's weights and **adds 2–4 weeks**. Most production AI features need only the first two.
 
 The costly mistake is jumping straight to fine-tuning for a problem that a better prompt or retrieval would have solved in an afternoon.
 
-## What each one actually does
+## What does each approach change?
 
-- **Prompt engineering:** carefully written instructions, examples, and structure in the prompt. Cheapest, fastest, and often enough on its own.
-- **RAG (retrieval-augmented generation):** fetch relevant documents from your data and pass them to the model so it answers from your knowledge, with citations.
-- **Fine-tuning:** train the base model on your examples so it internalizes a style, tone, or narrow task — changing the model itself, not the prompt.
+- **Prompt engineering:** carefully written instructions, examples and output structure in each request. Cheapest, fastest, and often enough on its own.
+- **RAG (retrieval-augmented generation):** fetch relevant passages from your data at query time and pass them to the model, so it answers from your knowledge, with citations.
+- **Fine-tuning:** train a base model on your examples so it internalizes a style, format or narrow task. It changes the model itself, not the prompt.
 
-## At a glance
+OpenAI's guide to [optimizing LLM accuracy](https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy) frames the same split as two axes: **context optimization** when the model lacks knowledge (RAG), and **LLM optimization** when its behavior is inconsistent (fine-tuning). Prompt engineering sits at the start of both. Diagnose which kind of failure you have before choosing a fix.
 
-|   | Prompt engineering | RAG | Fine-tuning |
+## The decision table
+
+| | Prompt engineering | RAG | Fine-tuning |
 | --- | --- | --- | --- |
-| Best for | Behavior, format, reasoning | Answering from your knowledge | Consistent style / narrow skill |
-| Changes the model? | No | No | Yes (weights) |
-| Uses your data? | A little (examples) | Yes, at query time | Yes, as training data |
-| Effort / cost | Low | Medium | High |
-| Updating info | Instant | Re-index content | Re-train |
+| What it changes | The instructions and examples in each request | What the model can see: your content, retrieved per question | The model's weights |
+| What it fixes | Format, tone, reasoning steps | Missing, private or changing knowledge; citations | Style or format that prompting cannot hold at scale; narrow repetitive tasks |
+| What it does not fix | Knowledge the model lacks | Behavior the prompt cannot control | Missing or changing facts |
+| Build time | Hours to days | Prototype in 1–2 weeks; production in 4–6 weeks | Adds 2–4 weeks to the build |
+| Build cost | Lowest | Medium: ingestion, retrieval, evaluation | Highest: training data, training runs, evaluation |
+| Running cost | Longer prompts add tokens to every call | Retrieved passages add input tokens; an index to host | Retraining, plus hosting if you run your own model |
+| Updating information | Edit the prompt, instantly | Re-index the changed documents | Collect new data and retrain |
+| When it fits | Always, first | The answer depends on your data | Prompting and RAG plateau on a measured gap |
 
-*Try them top-to-bottom; most production systems combine the first two.*
+*Try them top to bottom; most production systems combine the first two.*
 
-## When to use prompt engineering
+## When is prompt engineering enough?
 
-- You need a specific output format, tone, or reasoning approach.
+- You need a specific output format, tone or reasoning approach.
 - You can steer the model with a few good examples (few-shot).
-- You're still iterating — prompts change in seconds, models don't.
+- The model already knows what it needs to know.
+- You are still iterating: prompts change in seconds, models don't.
 
-## When to use RAG
+OpenAI's accuracy guide calls prompt engineering "typically the best place to start" and often the only method needed for summarization, translation and code generation. Before you start, have three things in place, which [Anthropic's prompt engineering guide](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview) also assumes: written success criteria, a way to test against them, and a first draft prompt.
 
-- The model needs to answer from your documents, product data, or knowledge base.
-- Your information changes and must stay current — re-index instead of re-train.
-- You need citations and grounding to [reduce hallucinations](/blog/reduce-llm-hallucinations). This is the backbone of most [grounded chatbots](/blog/ai-agents-vs-chatbots-vs-rag).
+Techniques that carry most of the weight: clear instructions with the reason behind each rule, two to five examples of good output, a JSON schema enforced by the provider's structured output mode, and splitting a complex task into smaller chained steps. Some failures are not prompt problems at all. If the issue is latency or cost, a different model tier may fix it faster; our [OpenAI vs Anthropic comparison](/blog/openai-vs-anthropic-claude) covers the tiers.
 
-## When to use fine-tuning
+## When do you need RAG?
 
-- You need a consistent style, tone, or output format at scale that prompting can't reliably hold.
+- The model needs to answer from your documents, product data or knowledge base.
+- Your information changes and must stay current: re-index instead of retrain.
+- Users need citations to check answers, which is the core of how you [reduce hallucinations](/blog/reduce-llm-hallucinations).
+- Different users may see different content, so permissions must apply per question.
+
+The original [RAG paper](https://arxiv.org/abs/2005.11401) named two open problems that retrieval was meant to help with: providing provenance for answers, and updating what a model knows without retraining it. That is still why RAG is the backbone of most [grounded chatbots and assistants](/blog/ai-agents-vs-chatbots-vs-rag). Our [contract analysis system](/work/legal-contract-ai), which turns 500 to 1,000 page contracts into a knowledge base that answers with cited sources, is built on a multi-agent RAG pipeline.
+
+RAG quality is decided mostly by retrieval and evaluation, not the model. Our guides to [building a RAG pipeline](/blog/building-a-rag-pipeline) and [evaluating RAG systems](/blog/evaluating-rag-systems) cover both.
+
+## When is fine-tuning worth it?
+
+- You need a consistent style, tone or output format at scale that prompting can't reliably hold.
 - You have a narrow, repetitive task (classification, extraction) where a smaller tuned model is cheaper and faster.
-- You have a solid set of high-quality training examples — fine-tuning is only as good as its data.
+- You have a solid set of high-quality training examples, because fine-tuning is only as good as its data.
+
+How much data? OpenAI's [fine-tuning guide](https://developers.openai.com/api/docs/guides/supervised-fine-tuning) sets a minimum of 10 examples, recommends starting with 50 well-crafted demonstrations, and advises investing in fine-tuning only after you have evals. If 50 examples make no difference, it suggests rethinking the task or prompt before adding data.
+
+Check availability before you plan around it. At the time of writing (November 2026), [OpenAI says](https://developers.openai.com/api/docs/guides/supervised-fine-tuning) it is winding down its fine-tuning platform: it is closed to new users, and eligible existing customers can create training jobs only until January 6, 2027. Fine-tuning today usually means an open-weight model you train and host yourself, or a cloud platform's tuning service for the models it supports. Either way you take on training runs, retraining and often hosting. A fine-tune on a hosted service is also tied to its base model: OpenAI's fine-tuned models stop working when their base model shuts down.
 
 > **The most common mistake**
 >
-> Teams fine-tune to "teach the model our information." Fine-tuning teaches form, not facts — and facts that change will go stale in the weights. For knowledge that must be current and citable, use RAG. Fine-tune for how it answers, not what it knows.
+> Teams fine-tune to "teach the model our information." Fine-tuning teaches form, not facts, and facts that change will go stale in the weights. For knowledge that must be current and citable, use RAG. Fine-tune for how it answers, not what it knows.
 
-## They combine
+## How do they combine?
 
-Real systems layer these: a well-engineered prompt, RAG for knowledge, and — only if needed — a fine-tuned model for a specific style or task. Start simple, measure, and add complexity only when a cheaper approach stops clearing the bar. That's how we [add AI to existing products](/blog/add-ai-to-existing-app).
+Real systems layer these: a well-engineered prompt, RAG for knowledge, and, only if needed, a fine-tuned model for a specific style or task. Common shapes:
+
+| Feature | Typical combination | Why |
+| --- | --- | --- |
+| Support assistant over help docs | Prompt + RAG | Answers must be current and cited |
+| Internal knowledge search with permissions | Prompt + RAG with access filters | Users see only what they are allowed to |
+| High-volume ticket or document classification | Prompt + a small, cheap model; fine-tune if accuracy plateaus | Volume makes per-call cost matter |
+| Drafting in a strict house style | Prompt with examples; fine-tune if style drifts at scale | Style is form, which fine-tuning can teach |
+
+Start simple, measure, and add complexity only when a cheaper approach stops clearing the bar. That is how we [add AI to existing products](/blog/add-ai-to-existing-app).
+
+## A decision order you can follow
+
+1. **Write success criteria and a test set** of real inputs with known-good outputs.
+2. **Prompt engineer** until the scores stop improving.
+3. **Sort the remaining failures.** Wrong or missing facts point to RAG. Correct facts in the wrong shape point to better structure or, later, fine-tuning.
+4. **Add RAG** and measure retrieval and answers separately.
+5. **Fine-tune only for a gap you can measure** and have the examples to fix, and budget the extra 2–4 weeks.
+6. **Re-run the test set on every change**, including model upgrades.
 
 ## How we choose
 
-We start with prompting, add RAG when the model needs your knowledge, and fine-tune only when there's a clear, measured reason — always against an evaluation set. See our [AI integration service](/services/ai-integration) or [book a free discovery call](/start-a-project).
+We start with prompting, add RAG when the model needs your knowledge, and fine-tune only when there is a clear, measured reason, always against an evaluation set. A typical first step is a 1–2 week prototype on a slice of your real data; our [AI chatbot timeline](/blog/how-long-to-build-ai-chatbot) shows how that grows into a production build, and our [engagement models](/engagement) explain how we scope it.
 
 ## Frequently asked questions
 
 ### What's the difference between fine-tuning and RAG?
 
-RAG gives the model your knowledge at query time by retrieving documents, so information stays current and citable. Fine-tuning changes the model's weights to bake in a style or skill. Use RAG for facts, fine-tuning for form.
+RAG gives the model your knowledge at query time by retrieving documents, so information stays current and citable. Fine-tuning changes the model's weights to bake in a style, format or narrow skill. Use RAG for facts and fine-tuning for form.
 
 ### Which is cheaper — prompting, RAG, or fine-tuning?
 
-Prompt engineering is cheapest and fastest, RAG is moderate, and fine-tuning is the most expensive and involved. That's also the order in which you should try them.
+Prompt engineering is cheapest and fastest, RAG is moderate, and fine-tuning is the most expensive and involved: it needs curated training data, training runs, evaluation and retraining, and it adds 2–4 weeks to a build. That is also the order in which you should try them.
 
 ### Can I use RAG and fine-tuning together?
 
-Yes — it's common. Fine-tune for a consistent format or tone, and use RAG to supply current, citable knowledge. They solve different problems and compose well.
+Yes. Fine-tune for a consistent format or tone, and use RAG to supply current, citable knowledge. They solve different problems and compose well, but add the fine-tune only after prompting plus RAG has been measured and falls short.
 
 ### Does fine-tuning add knowledge to a model?
 
-Not reliably. Fine-tuning teaches patterns, style, and format, but facts baked into weights go stale and can't be cited. For knowledge, use RAG instead.
+Not reliably. Fine-tuning teaches patterns, style and format, but facts baked into weights go stale and can't be cited. For knowledge, use RAG instead.
 
 ### When is prompt engineering enough on its own?
 
-When you need a specific format, tone, or reasoning approach and the model already has the knowledge. A good prompt with a few examples solves a surprising share of use cases with zero extra infrastructure.
+When you need a specific format, tone or reasoning approach and the model already has the knowledge. A good prompt with a few examples and an enforced output schema solves a surprising share of use cases with no extra infrastructure. Summarization, translation and code generation often need nothing more.
 
 ### Do I need to fine-tune to reduce hallucinations?
 
-Usually not. Grounding the model in your data with RAG, plus guardrails and evaluation, reduces hallucinations more reliably than fine-tuning — and keeps answers current and citable.
+Usually not. Grounding the model in your data with RAG, instructing it to cite sources and say when it doesn't know, and measuring faithfulness on every change reduces hallucinations more reliably than fine-tuning, and keeps answers current and citable.

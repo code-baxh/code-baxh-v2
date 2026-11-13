@@ -1,39 +1,136 @@
 ---
 title: "How much does it cost to build a mobile app?"
-description: "A straight answer on mobile app development cost: what drives the price, cross-platform vs native, and how to keep your first app MVP affordable."
+description: "Mobile app cost by tier, from prototype to complex app: timelines, cost drivers, React Native vs native, app store fees and the running costs after launch."
 date: "2026-05-29"
-updated: "2026-05-29"
+updated: "2026-11-13"
 author: "bilal-khursheed"
 category: "Mobile"
 tags: ["mobile apps", "cost", "react native"]
 cover: ""
+service: "mobile-app-development"
 ---
 
-A focused, cross-platform mobile app MVP typically starts in the low five figures (USD) and rises with backend complexity, integrations, and design polish. Building cross-platform with React Native is usually meaningfully cheaper than building two separate native apps, because it's one codebase for iOS and Android.
+A focused, cross-platform **mobile app MVP** typically costs in the **low five figures (USD)** and takes **5–7 weeks**. A production app on **both iOS and Android** runs to **five figures** over **10–16 weeks**. Complex apps with offline sync, in-app payments or real-time features reach the **high five figures to six figures** over **20+ weeks**. The backend the app talks to, not the number of screens, usually sets the price.
 
-## What drives mobile app cost
+## Mobile app development cost at a glance
 
-- Platforms: one cross-platform codebase vs two native apps (Swift + Kotlin).
-- Backend and API: most apps need a server, database, and auth behind them.
-- Integrations: payments, push notifications, maps, and third-party APIs each add work.
-- Offline and real-time: sync, offline support, and live updates raise complexity.
-- Design polish: a refined, animated, branded UI takes more time than a functional one.
-- App store setup: accounts, review, and release process.
+| Tier | What it includes | Typical timeline | Budget band (USD) |
+| --- | --- | --- | --- |
+| Clickable prototype | Designed screens and tappable flows, sometimes a thin working slice on a real device, to test the idea with users | 2–4 weeks | Four figures to low five figures |
+| MVP | One core flow end to end, sign-up and login, a working backend, and a TestFlight or internal-track build on one platform | 5–7 weeks | Low five figures |
+| Full app | The full feature set on iOS and Android, offline handling, push notifications, analytics, crash reporting and store submission | 10–16 weeks | Five figures to high five figures |
+| Complex app | Offline-first sync, in-app payments, real-time features, background location, or deep integration with systems you do not control | 20+ weeks | High five figures to six figures and up |
 
-## Cross-platform vs native cost
+These bands assume a senior team building cross-platform with React Native and a modern backend. Two separate native codebases add roughly **40–60%** to the build. The timelines match our breakdown of [how long a mobile app takes to build](/blog/how-long-to-build-mobile-app), which walks through where each week goes.
 
-Two native apps mean two codebases, often two skill sets, and roughly double the UI work. React Native gives you one codebase that ships to both stores, which is why most startups building an MVP start there — and only go native when a specific feature or performance need demands it.
+## What drives the cost of a mobile app?
 
-## How to keep it affordable
+### 1. The backend behind the app
 
-Scope to the core loop that proves the idea, reuse a single backend across web and mobile, and ship cross-platform. We build React Native apps on architecture that scales, so v1 becomes the foundation for v2 rather than a rewrite. You get a fixed estimate after a free discovery call.
+The app is a client. Accounts, data, notifications, payments and admin tools all need a server, a database and an API. If that backend already exists, the mobile budget goes into the app itself. If it does not, you are building two products, and the backend is often the larger one.
+
+A managed backend can shrink this line for simple apps; our comparison of [Supabase and Firebase](/blog/supabase-vs-firebase) covers when that works and when you will outgrow it.
+
+### 2. States, not screens
+
+A design with twelve screens can hide forty states: loading, empty, offline, slow network, expired session, permission denied. Each one needs a design decision and code, which is why estimates built by counting screens come in low.
+
+### 3. Device and platform coverage
+
+Shipping to both stores means testing on small Android phones, large tablets and older OS versions, not just the flagship on your desk. Tablet-specific layouts or a watch or widget extension add work on top.
+
+### 4. Native features and integrations
+
+Camera, maps, Bluetooth, health data, biometrics and background location each bring permissions, platform-specific behavior and their own review questions. Third-party SDKs for payments, identity or analytics bring sandbox quirks and version upgrades.
+
+### 5. Offline and real-time
+
+Offline-first is an architecture, not a feature: local storage, a sync queue and rules for resolving conflicts when two devices change the same record. Real-time updates need sockets or a push channel and careful handling of dropped connections. Both are expensive, and far cheaper to plan on day one than to retrofit.
+
+### 6. Design polish
+
+A clean interface built on a component library is efficient. Custom animation and gesture-driven navigation take noticeably longer, because motion has to be tuned on real devices. For an MVP, clear and functional usually wins.
+
+### 7. Store readiness
+
+Icons, screenshots for every required size, privacy labels, data-safety declarations, age ratings, in-app account deletion and store copy. None of it is engineering, all of it is mandatory, and teams routinely leave it out of the budget.
+
+## Is React Native cheaper than native development?
+
+Usually, yes, because one codebase serves both stores.
+
+| | Cross-platform (React Native) | Two native apps (Swift and Kotlin) |
+| --- | --- | --- |
+| Codebases | One, with small native modules where needed | Two, built and maintained separately |
+| UI work | Built once, adjusted per platform | Built twice |
+| Team | One team with JavaScript and TypeScript skills | iOS and Android specialists |
+| Relative cost | Baseline | Roughly 40–60% more for the same features |
+| Feature parity | Both platforms ship together | Platforms drift unless managed carefully |
+| Best for | Most business, consumer and marketplace apps | Heavy graphics, AR, or deep use of the newest platform APIs |
+
+React Native can call native code when it needs to, so it does not lock you out of device features. Native earns its extra cost when performance or platform depth is the product: a game, a camera-first app, or one that must adopt each new OS capability on release day. Flutter is the other serious cross-platform option; we compare the two in [React Native vs Flutter](/blog/react-native-vs-flutter).
+
+There is also a cheaper option than either: not building a store app at all. If your product does not need the camera, push notifications, offline use or background location, a responsive web app or PWA costs less and skips app review entirely. See [web app vs mobile app vs PWA](/blog/web-app-vs-mobile-app-vs-pwa).
+
+## What do the App Store and Google Play charge?
+
+The account fees are small. The commission on digital sales is not.
+
+- **Apple Developer Program:** 99 USD per membership year at the time of writing (November 2026), with prices varying by region. Nonprofits, accredited educational institutions and government entities can request a fee waiver ([Apple's enrollment page](https://developer.apple.com/programs/enroll/)).
+- **Google Play Console:** a one-time 25 USD registration fee ([Play Console Help](https://support.google.com/googleplay/android-developer/answer/6112435)).
+- **Apple's commission:** developers new to the App Store, or with up to 1 million USD in proceeds in the prior calendar year, can join the [App Store Small Business Program](https://developer.apple.com/app-store/small-business-program/) for a reduced 15% commission on paid apps and in-app purchases.
+- **Google's service fee:** Google revised its fee structure in several markets during 2026, and the rate now depends on the country, the type of transaction and the programs you are enrolled in. Check the current table in Play Console Help before you model revenue.
+
+Whether a purchase must use store billing depends on what you sell. Digital content and premium features used inside the app generally go through the store. Physical goods and real-world services, such as a delivery or a booking, normally go through a payment processor; see [choosing a payment gateway](/blog/choosing-a-payment-gateway). Getting this wrong is a common reason for rejection.
+
+Review is usually quick, but a new app's first submission draws more scrutiny than updates, so budget one rejection cycle. The usual triggers are missing privacy disclosures, no in-app account deletion, and a login wall the reviewer cannot get past.
+
+## What does a mobile app cost to run after launch?
+
+Build cost is only part of the budget. Plan for these from the start:
+
+| Cost | What drives it |
+| --- | --- |
+| Store accounts | Apple's annual membership; Google's one-off registration |
+| Backend hosting and database | Users, data volume and how chatty the app is with the API |
+| Push, crash reporting and analytics | Usually free or cheap at MVP scale, rising with users and events |
+| Store commission or payment fees | A share of digital sales through the stores, or processor fees on physical goods and services |
+| OS and SDK upgrades | Each major iOS and Android release, plus store rules that require recent SDKs |
+| Maintenance and support | Bug fixes, dependency updates and small improvements, usually a monthly allocation |
+
+The upgrade line is the one founders miss. Google Play requires apps to target a recent Android version: from August 31, 2026, new apps and app updates must target Android 16 (API level 36), and existing apps that fall behind stop being available to new users on newer devices ([Android developer documentation](https://developer.android.com/google/play/requirements/target-sdk)). An app nobody touches for a year is not finished; it is falling out of compliance. A post-launch support plan, like the one described in [what hypercare covers](/blog/hypercare-post-launch-support), keeps that work routine.
+
+## How to keep a mobile app affordable
+
+1. **Check it needs to be an app.** If the web does the job, it is the cheapest mobile strategy there is.
+2. **Go cross-platform by default.** One codebase for both stores, with native modules only where a feature demands them.
+3. **Build one backend for web and mobile.** A single API serving both clients avoids paying for the same business logic twice.
+4. **Cut the multi-week subsystems from v1.** Push notifications, offline mode and in-app purchases are each a project of their own. Ship the core flow, then let usage tell you which you need.
+5. **Settle the core flows before the build starts.** Design arriving screen by screen causes rework on every shared component.
+6. **Start with discovery.** A short [discovery phase](/blog/discovery-phase-software-project) turns the idea into a written scope, which is what makes a fixed price possible.
+
+## How we estimate a mobile app
+
+We start with a discovery call, then send a written scope that lists the flows, the states behind them and the backend work, with milestones and a fixed price for each. You get builds on real devices every week. On the [wedding planning marketplace](/work/mydasma-wedding-platform) and the [transit rewards app](/work/transit-rewards-app) we shipped, the schedule was set by the backend and the store-readiness work rather than the screens, so both appear in our estimates from day one. Our [engagement models](/engagement) explain how fixed-scope and retainer work are priced.
 
 ## Frequently asked questions
 
 ### How much does it cost to build a mobile app?
 
-A focused cross-platform app MVP typically starts in the low five figures (USD) and scales with backend, integrations, and design polish. We provide a fixed estimate after a free discovery call.
+A focused cross-platform app MVP typically starts in the low five figures (USD) and scales with backend, integrations and design polish. A production app on both stores runs to five figures, and complex apps with offline sync, payments or real-time features reach the high five figures and beyond. We provide a fixed estimate after a free discovery call.
 
 ### Is cross-platform cheaper than native?
 
-Usually, yes. React Native is one codebase for iOS and Android, versus two native codebases (Swift + Kotlin) that roughly double the UI work. Native is worth it only when a specific feature or performance need requires it.
+Usually, yes. React Native is one codebase for iOS and Android, versus two native codebases (Swift and Kotlin) that roughly double the UI work and add around 40–60% to the build. Native is worth it only when a specific feature or performance need requires it.
+
+### How much does it cost to publish an app on the App Store and Google Play?
+
+The account fees are small: Apple charges 99 USD per membership year and Google charges a one-time 25 USD registration fee, at the time of writing. The larger costs are the store-readiness work (screenshots, privacy labels, data-safety forms) and any commission on digital sales. Budget time for at least one review cycle on a first submission.
+
+### How much does it cost to maintain a mobile app?
+
+Plan for a monthly allocation that covers bug fixes, dependency updates and the annual iOS and Android releases, plus backend hosting. Store rules require apps to target recent SDKs, so an app left untouched gradually loses availability. The amount grows with the number of integrations and native features.
+
+### Do I need a backend for my mobile app?
+
+Almost always, if the app has accounts, shared data, notifications or payments. A managed backend can cover simple cases cheaply, while products with real business logic need their own API. Scope the backend at the same time as the app, because discovering it late is the most common reason mobile budgets double.

@@ -22,9 +22,17 @@ export const site = {
     phoneSweden: "+46 76 954 46 49",
     phonePakistan: "+92 343 552 7709",
   },
+  /** Company profiles. They feed Organization `sameAs`, the signal search and AI engines use to confirm the entity. */
   social: {
     linkedin: "https://www.linkedin.com/company/code-baxh/",
+    upwork: "https://www.upwork.com/agencies/1746999947359457280/",
+    github: "https://github.com/code-baxh",
   },
+  /**
+   * Last meaningful content change to the evergreen pages (YYYY-MM-DD). Used as sitemap
+   * lastModified so the value stays stable across builds. Bump it on a real content change.
+   */
+  contentUpdated: "2026-11-13",
   locations: [
     { city: "Stockholm", country: "Sweden", countryCode: "SE", role: "Product delivery team" },
     { city: "Islamabad", country: "Pakistan", countryCode: "PK", role: "Engineering team" },

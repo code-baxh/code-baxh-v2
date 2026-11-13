@@ -4,6 +4,7 @@ export const services: Service[] = [
   {
     slug: "saas-development",
     name: "SaaS Development",
+    metaTitle: "SaaS Development Company | Multi-Tenant SaaS",
     category: "core",
     icon: "layers",
     summary:
@@ -72,6 +73,7 @@ export const services: Service[] = [
   {
     slug: "mvp-development",
     name: "MVP Development",
+    metaTitle: "MVP Development for Startups | Launch in Weeks",
     category: "core",
     icon: "rocket",
     summary: "A tightly scoped first version in front of real users in weeks, built so v2 is not a rewrite.",
@@ -136,6 +138,7 @@ export const services: Service[] = [
   {
     slug: "web-development",
     name: "Web Development",
+    metaTitle: "Web Development Company | Next.js & React",
     category: "core",
     icon: "globe",
     summary: "Custom full-stack web applications in TypeScript, React and Node.js.",
@@ -202,6 +205,7 @@ export const services: Service[] = [
   {
     slug: "nextjs-development",
     name: "Next.js Development",
+    metaTitle: "Next.js Development Agency | App Router & SSR",
     category: "core",
     icon: "zap",
     summary: "Fast, search-friendly Next.js builds, migrations and performance work.",
@@ -262,6 +266,7 @@ export const services: Service[] = [
   {
     slug: "mobile-app-development",
     name: "Mobile Apps",
+    metaTitle: "React Native App Development | iOS & Android",
     category: "core",
     icon: "smartphone",
     summary: "iOS and Android apps from one React Native codebase.",
@@ -327,6 +332,7 @@ export const services: Service[] = [
   {
     slug: "api-backend-development",
     name: "API & Backend",
+    metaTitle: "API & Backend Development | Node.js & Python",
     category: "core",
     icon: "server",
     summary: "Secure, documented APIs and backends in Node.js, Python or PHP.",
@@ -405,6 +411,7 @@ export const services: Service[] = [
   {
     slug: "cloud-devops",
     name: "Cloud & DevOps",
+    metaTitle: "Cloud & DevOps Services | AWS, Azure & CI/CD",
     category: "core",
     icon: "cloud",
     summary: "CI/CD, infrastructure and monitoring on AWS and Azure.",
@@ -466,6 +473,7 @@ export const services: Service[] = [
   {
     slug: "payment-gateway-integration",
     name: "Payment Gateway Integration",
+    metaTitle: "Payment Gateway Integration | Stripe & Billing",
     category: "core",
     icon: "card",
     summary: "Stripe, PayPal and regional payment gateways integrated for checkout, subscriptions and invoicing.",
@@ -532,6 +540,7 @@ export const services: Service[] = [
   {
     slug: "ai-strategy-consulting",
     name: "AI Strategy & Consulting",
+    metaTitle: "AI Strategy Consulting | Use Cases & Roadmaps",
     category: "ai",
     icon: "compass",
     summary: "Find where AI pays for itself in your product, and what to leave alone.",
@@ -598,6 +607,7 @@ export const services: Service[] = [
   {
     slug: "ai-integration",
     name: "AI Integration",
+    metaTitle: "AI Integration Services | RAG & LLM Features",
     category: "ai",
     icon: "plug",
     summary: "LLM features added to the product you already run, without a rebuild.",
@@ -663,6 +673,7 @@ export const services: Service[] = [
   {
     slug: "rag-knowledge-assistants",
     name: "RAG & Knowledge Assistants",
+    metaTitle: "RAG Development Services | Knowledge Assistants",
     category: "ai",
     icon: "book",
     summary: "Assistants that answer from your documents and cite their sources.",
@@ -729,6 +740,7 @@ export const services: Service[] = [
   {
     slug: "ai-chatbot-development",
     name: "AI Chatbots",
+    metaTitle: "AI Chatbot Development | Custom RAG Chatbots",
     category: "ai",
     icon: "message",
     summary: "Support and sales chatbots grounded in your content, with human handover.",
@@ -799,6 +811,7 @@ export const services: Service[] = [
   {
     slug: "ai-agent-development",
     name: "AI Agents & Automation",
+    metaTitle: "AI Agent Development Company | Custom AI Agents",
     category: "ai",
     icon: "bot",
     summary: "Agents that complete multi-step work across your tools, with approvals where it matters.",
@@ -870,6 +883,7 @@ export const services: Service[] = [
   {
     slug: "voice-call-ai",
     name: "Voice & Call AI",
+    metaTitle: "Voice AI Development | Call Analysis & Agents",
     category: "ai",
     icon: "audio",
     summary: "Transcription, call analysis and voice agents for phone-heavy teams.",
@@ -937,6 +951,7 @@ export const services: Service[] = [
   {
     slug: "llm-evaluation-guardrails",
     name: "LLM Evaluation & Guardrails",
+    metaTitle: "LLM Evaluation & Guardrails | AI Testing",
     category: "ai",
     icon: "shield",
     summary: "Test sets, automated evals and guardrails so quality is measured, not guessed.",
@@ -1004,6 +1019,7 @@ export const services: Service[] = [
   {
     slug: "llm-cost-optimisation",
     name: "LLM Cost Optimisation",
+    metaTitle: "LLM Cost Optimization | Reduce AI API Costs",
     category: "ai",
     icon: "gauge",
     summary: "Model routing, caching and prompt work that cut spend without hurting answers.",
@@ -1071,6 +1087,7 @@ export const services: Service[] = [
   {
     "slug": "custom-software-development",
     "name": "Custom Software Development",
+    "metaTitle": "Custom Software Development Services",
     "category": "core",
     "icon": "code",
     "summary": "Software designed around how your business works, when off-the-shelf tools no longer fit.",
@@ -1145,6 +1162,7 @@ export const services: Service[] = [
   {
     "slug": "enterprise-software-development",
     "name": "Enterprise Software Development",
+    "metaTitle": "Enterprise Software Development Services",
     "category": "core",
     "icon": "building",
     "summary": "Secure, scalable systems for larger organisations, with the integration, access control and governance they require.",
@@ -1221,6 +1239,7 @@ export const services: Service[] = [
   {
     "slug": "qa-testing",
     "name": "QA & Testing",
+    "metaTitle": "QA Testing Services | Manual & Automated Testing",
     "category": "core",
     "icon": "check",
     "summary": "Manual and automated testing across web, mobile and APIs, so releases are predictable and defects are caught early.",
@@ -1295,6 +1314,7 @@ export const services: Service[] = [
   {
     "slug": "requirements-documentation",
     "name": "Requirements Gathering & Documentation",
+    "metaTitle": "Requirements Gathering & Documentation | BRD & SRS",
     "category": "core",
     "icon": "file",
     "summary": "Workshops, analysis and clear documents that turn an idea into a scope engineers can build and stakeholders can sign off.",
@@ -1364,6 +1384,7 @@ export const services: Service[] = [
   {
     "slug": "support-hypercare",
     "name": "Post-Production Support & Hypercare",
+    "metaTitle": "Post-Launch Support & Hypercare Services",
     "category": "core",
     "icon": "life",
     "summary": "Close monitoring after go-live, then ongoing support, maintenance and improvement under agreed response times.",

@@ -1,42 +1,154 @@
 ---
 title: "How to add subscription billing to your SaaS with Stripe"
-description: "A practical guide to SaaS subscription billing with Stripe: products and prices, Checkout, webhooks as the source of truth, and feature gating."
+description: "Stripe subscription billing for SaaS: what to do in each subscription state, webhook idempotency and ordering, proration examples, and dunning that works."
 date: "2026-02-02"
-updated: "2026-02-02"
+updated: "2026-11-13"
 author: "bilal-khursheed"
 category: "SaaS"
 tags: ["stripe", "billing", "subscriptions", "saas"]
 cover: ""
+service: "payment-gateway-integration"
 ---
 
-To add subscription billing to a SaaS with Stripe: model your plans as products and prices in Stripe, use Stripe Checkout (or Elements) for signup, sync subscription state to your database via webhooks, and gate features by plan. The most important principle is that webhooks — not client-side redirects — are the source of truth for what a customer is actually paying for.
+Model each plan as a Stripe product and price, send sign-ups through Stripe Checkout, and let webhooks, not the success redirect, update a subscription record on the tenant in your database. Your app then gates features from that record. Stripe defines **eight subscription statuses**, and handling each one correctly is most of the work: a production-ready integration takes **2–3 weeks**, of which the payment form is about a day.
 
-## The billing flow
+## How does Stripe subscription billing fit together?
 
-- Define products and prices (monthly/annual tiers) in Stripe.
-- Send customers to Stripe Checkout (fastest) or build with Elements for a custom flow.
-- Use the Stripe customer portal so users can upgrade, downgrade, and manage cards themselves.
-- Listen to webhooks (subscription created/updated/deleted, payment succeeded/failed) and update your database.
-- Gate features by the plan stored in your database, scoped to the tenant.
+- **Product and Price.** The product is the plan ("Team"); each price is an amount, currency and interval. Reference prices by a `lookup_key` so amounts can change without a deploy.
+- **Customer.** In B2B SaaS this is the tenant, not the person who typed in the card. One Stripe customer per tenant keeps invoices, cards and tax IDs together.
+- **Subscription.** Links a customer to prices and carries the `status` your app cares about.
+- **Invoice and PaymentIntent.** Created each billing period to collect payment. Their outcomes drive the subscription status.
 
-## Get these right
+Your database keeps a copy of the subscription (status, price, period end, cancel flag) on the tenant row, and your authorization layer reads that copy, so feature checks never wait on Stripe. Our guide to [multi-tenant SaaS architecture](/blog/how-to-build-a-multi-tenant-saas) covers the tenant-to-customer mapping. For sign-up, start with Stripe Checkout and the hosted customer portal: Stripe maintains both, they handle card authentication, and customers can change plans and cards without you building those screens.
 
-- Treat webhooks as the source of truth — never trust a success redirect alone.
-- Make webhook handlers idempotent so retries don't double-apply.
-- Handle proration on upgrades/downgrades and mid-cycle changes.
-- Handle failed payments and dunning so churn isn't silent.
-- Account for tax (Stripe Tax) or use a merchant of record if global tax is a burden.
+## What should your app do in each subscription state?
 
-## Our approach
+The [Stripe subscription lifecycle](https://docs.stripe.com/billing/subscriptions/overview) has eight statuses. Each needs a deliberate decision about access and messaging.
 
-We build webhook-driven billing where subscription state lives in your database, tied to the tenant, and feature gating reads from it — then test the whole thing with Stripe test clocks so renewals, upgrades, and failures are proven before launch.
+| Status | What it means | What your app should do | Access |
+| --- | --- | --- | --- |
+| `incomplete` | First payment failed or needs authentication; the customer has 23 hours to pay | Show "finish setting up payment"; do not provision yet | No |
+| `incomplete_expired` | The first payment never succeeded within 23 hours; Stripe will not bill it | Treat as an abandoned sign-up; create a new subscription if they return | No |
+| `trialing` | In a trial period | Provision fully; ask for a card before the trial ends if you have none | Yes |
+| `active` | In good standing | Provision the plan's features | Yes |
+| `past_due` | A renewal payment failed or was not attempted; Stripe may be retrying | Banner and email asking for a new card; keep access for a set grace period | Time-limited |
+| `unpaid` | Retries are exhausted and your settings chose this outcome | Revoke access or switch to read-only; keep the data | No |
+| `canceled` | Ended; a terminal state that cannot be reactivated | Revoke access; a returning customer needs a new subscription | No |
+| `paused` | A trial ended without a payment method and you configured trials to pause | No invoices are created; ask for a card, then resume | No |
+
+Two details catch teams out. A customer who cancels at the end of the period keeps their current status, with `cancel_at_period_end` set to true, until `customer.subscription.deleted` fires when the period ends; show "your plan ends on" instead of cutting access when they click cancel. And `active` does not mean every invoice is paid: by default, only the most recent invoice decides the status.
+
+To keep this manageable, map Stripe's statuses onto two or three access states of your own (for example `full`, `grace`, `locked`) and have feature checks read only those. Our guide to [authentication and RBAC in a multi-tenant SaaS](/blog/multi-tenant-saas-auth-rbac) shows where those checks belong.
+
+## Which webhook events do you need?
+
+Renewals, retries, portal changes and trial endings all happen while the customer is not on your site, so webhooks carry the state. These are the events almost every SaaS needs:
+
+| Event | When it fires | Typical handling |
+| --- | --- | --- |
+| `checkout.session.completed` | A customer finishes Checkout | Link the Stripe customer and subscription to the tenant |
+| `customer.subscription.created` | A subscription is created (may be `incomplete`) | Sync the subscription record |
+| `customer.subscription.updated` | Renewals, plan changes, status changes, scheduled cancellation | Sync the record; your main signal |
+| `customer.subscription.deleted` | The subscription ends | Mark canceled; revoke access |
+| `customer.subscription.trial_will_end` | 3 days before a trial ends | Remind the customer; check a card is on file |
+| `invoice.paid` | An invoice is paid | Confirm the subscription is `active`, then extend access |
+| `invoice.payment_failed` | A payment attempt fails | Start dunning messages |
+| `invoice.payment_action_required` | The bank wants the customer to authenticate | Email a link to complete authentication |
+
+Subscribe only to the events you handle; listening to everything adds load without adding safety.
+
+## How do you handle duplicate and out-of-order webhooks?
+
+Stripe's [webhook documentation](https://docs.stripe.com/webhooks) is explicit: the same event can arrive more than once, events are not guaranteed to arrive in the order they were created, and failed deliveries in live mode are retried for up to three days. Design for that.
+
+1. **Verify the signature against the raw request body.** Frameworks that parse JSON first break verification.
+2. **Return a 2xx fast, then process on a queue.** Slow handlers time out and trigger retries, and renewal spikes at the start of a month can swamp a synchronous endpoint.
+3. **Record processed event IDs** under a unique constraint, so a repeat delivery is a no-op.
+4. **Re-fetch instead of trusting the payload.** Treat each event as "something changed", retrieve the current subscription and write its full state. Whichever event arrives last writes the latest truth, so order stops mattering. Never order events by their `created` timestamp; it is in seconds and can tie.
+
+```ts
+// Queue worker; the queue retries on failure
+async function handleStripeEvent(event: Stripe.Event) {
+  await db.transaction(async (tx) => {
+    const isNew = await tx.processedEvents.insertIgnore(event.id); // unique on event_id
+    if (!isNew) return;
+
+    const subscriptionId = subscriptionIdFrom(event);
+    if (!subscriptionId) return;
+
+    const sub = await stripe.subscriptions.retrieve(subscriptionId);
+    await tx.tenantSubscriptions.upsert({
+      tenantId: sub.metadata.tenant_id,
+      stripeSubscriptionId: sub.id,
+      status: sub.status,
+      priceId: sub.items.data[0].price.id,
+      currentPeriodEnd: sub.items.data[0].current_period_end,
+      cancelAtPeriodEnd: sub.cancel_at_period_end,
+    });
+  });
+}
+```
+
+Recording the event ID and the state change in one transaction means a failed sync is not marked as processed, so the retry does the work. Put `tenant_id` in the subscription metadata when you create the Checkout session, and every event traces back to a tenant.
+
+## How does proration work on upgrades and downgrades?
+
+When a customer changes plan mid-cycle, Stripe [calculates prorations](https://docs.stripe.com/billing/subscriptions/prorations) to the second by default. Stripe's own example: moving from a 10 USD monthly plan to a 20 USD plan halfway through the month credits 5 USD for unused time on the old plan and debits 10 USD for the rest of the month on the new one, a net charge of 5 USD.
+
+The reverse change at the same point (20 USD down to 10 USD) gives a 10 USD credit and a 5 USD debit, leaving the customer 5 USD in credit. Stripe does not refund it; it reduces their next invoice.
+
+What happens to those amounts depends on `proration_behavior`:
+
+| Setting | What happens | When we use it |
+| --- | --- | --- |
+| `create_prorations` (default) | Proration items are created and usually added to the next invoice | Seat increases you are happy to bill at renewal |
+| `always_invoice` | Prorations are invoiced and charged immediately | Upgrades, so customers pay before using the higher tier |
+| `none` | No proration; the new price applies from the next invoice | Downgrades at period end, or when the latest invoice is unpaid |
+
+Our default: **upgrades take effect now with `always_invoice`; downgrades take effect at period end.** That avoids credits customers do not understand and stops anyone upgrading for a day on credit. Show the amount before the customer confirms by creating a preview invoice, passing the same `proration_date` to the preview and the update so the figure does not drift. And if the latest invoice is unpaid, disable proration: Stripe warns that otherwise a customer can be credited for time on a higher plan they never paid for.
+
+## How should you handle failed payments and dunning?
+
+Cards expire and get replaced constantly. Without dunning, customers who meant to keep paying quietly drop off.
+
+Stripe's side is [Smart Retries](https://docs.stripe.com/billing/revenue-recovery/smart-retries), on by default for new accounts with up to 8 retries within 2 weeks; you can widen the window to 2 months. Hard declines, such as a card reported stolen, are not retried until the customer adds a new payment method. When retries run out, your settings decide whether the subscription is canceled, marked `unpaid`, left `past_due` or paused.
+
+Your side is the experience around those retries:
+
+- **First `invoice.payment_failed`:** email the billing contact a link to the customer portal and show a banner to account admins, not every member.
+- **During retries:** keep access. Most failures are fixed by a card update.
+- **When retries end:** switch to read-only rather than deleting anything, so a customer who pays a week later picks up where they left off.
+
+The grace period and read-only behavior are business decisions; agree them with the product owner before writing code.
+
+## What else should you decide before launch?
+
+- **Tax.** With Stripe you are the seller, so sales tax and VAT are your obligation. Stripe Tax calculates and collects, but where you must register is a business question. If that burden outweighs the fees, compare a merchant of record in [Stripe vs Paddle vs Lemon Squeezy](/blog/stripe-vs-paddle-vs-lemonsqueezy).
+- **Plan count.** Launch with as few prices as you can; each tier, add-on and coupon multiplies the cases to test. Our [SaaS MVP feature checklist](/blog/saas-mvp-feature-checklist) explains why billing is v1 but plan complexity is not.
+- **Testing.** Use Stripe's test cards for declines and 3D Secure, and test clocks to fast-forward through trial endings, renewals and retries. Our [QA strategy for startups](/blog/qa-testing-strategy-for-startups) shows how to keep that proportionate.
+
+## How we build Stripe billing
+
+We store subscription state on the tenant, drive it from idempotent, order-independent webhook handlers, and map Stripe statuses onto a few access states the authorization layer reads, then prove renewals, upgrades and failures with test clocks before launch. Our [Stripe integration timeline](/blog/how-long-to-integrate-stripe) shows where the 2–3 weeks go, and the [multi-tenant SaaS MVP](/work/multi-tenant-saas-mvp) we shipped had subscription billing, tenant isolation and role-based access live at launch. Our [engagement models](/engagement) explain how a fixed-scope billing build is priced.
 
 ## Frequently asked questions
 
 ### How do I add subscriptions to my SaaS with Stripe?
 
-Model plans as Stripe products and prices, use Checkout or Elements for signup, sync subscription state to your database via webhooks, and gate features by the stored plan. Add the Stripe customer portal so users manage their own subscriptions.
+Model plans as Stripe products and prices, use Checkout for sign-up, and sync subscription state to your database through webhooks. Store that state on the tenant and gate features from it rather than calling Stripe on every request. Add the Stripe customer portal so customers can upgrade, downgrade and update cards themselves.
 
 ### Should I use Stripe webhooks or client redirects?
 
-Webhooks are the source of truth. A client-side success redirect can be missed or spoofed; webhooks reliably tell your backend when a subscription is created, updated, paid, or failed. Make handlers idempotent to handle retries.
+Webhooks are the source of truth. A success redirect can be missed if the customer closes the tab, and it can be faked; webhooks tell your backend reliably when a subscription is created, updated, paid or failed. Make handlers idempotent and order-independent, because Stripe can deliver an event more than once and out of order.
+
+### How long does it take to build Stripe subscription billing?
+
+A production-ready subscription integration usually takes 2–3 weeks, covering trials, plan changes with proration, failed payments, the customer portal and full webhook handling. One-off payments take 3–5 days, and usage-based or Connect billing takes 4–6 weeks.
+
+### Should customers keep access while a payment is past due?
+
+Usually yes, for a defined grace period. Most failed renewals are fixed by a card update during Stripe's retry window, and cutting access immediately punishes customers who intend to pay. Show a clear banner, email the billing contact, and move to read-only once retries are exhausted.
+
+### Do I need Stripe Tax?
+
+If you sell where you are registered for sales tax or VAT, you must calculate and collect it correctly, and Stripe Tax automates that on invoices. It does not decide where you must register; that is a question for your accountant. If you would rather hand off global tax compliance entirely, compare a merchant of record such as Paddle.

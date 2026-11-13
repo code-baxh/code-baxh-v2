@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">) {
   const { slug } = await params;
   const c = caseStudies.find((x) => x.slug === slug);
   if (!c) return {};
-  return pageMetadata({ title: c.title, description: c.summary, path: `/work/${c.slug}` });
+  return pageMetadata({ title: c.metaTitle ?? c.title, description: c.summary, path: `/work/${c.slug}` });
 }
 
 function Block({ title, paragraphs }: { title: string; paragraphs: string[] }) {

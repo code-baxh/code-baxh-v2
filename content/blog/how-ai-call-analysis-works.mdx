@@ -1,0 +1,144 @@
+---
+title: "How AI call analysis works for sales and support teams"
+description: "How AI call analysis works: recording and consent, speech-to-text, diarization, LLM scoring, CRM sync and real-time alerts, plus accuracy and build vs buy."
+date: "2026-11-13"
+updated: "2026-11-13"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["voice ai", "call analysis", "speech recognition", "ai"]
+cover: ""
+service: "voice-call-ai"
+---
+
+AI call analysis turns phone and video calls into structured data in **six stages**: record the call with consent, transcribe it with speech-to-text, separate the speakers (diarization), analyze the transcript with a language model for summaries, intent, sentiment and QA scores, sync the results to your CRM, and raise **real-time alerts** on calls that need attention. Accuracy depends most on **audio quality** and **domain vocabulary**.
+
+## What does an AI call analysis pipeline look like?
+
+| Stage | What it does | Key decision | Typical failure |
+| --- | --- | --- | --- |
+| Recording and consent | Captures the audio and the caller's notice or consent | Where audio comes from, and one channel per speaker or mixed | Mixed mono audio that makes everything downstream harder |
+| Speech-to-text | Converts audio to a timestamped transcript | Batch after the call, or streaming during it | Misheard product names, numbers and competitor names |
+| Speaker diarization | Labels who said each line | Rely on separate channels, or a diarization model | An objection attributed to the rep instead of the customer |
+| LLM analysis | Produces summaries, intent, sentiment, QA scores and next steps | A fixed schema and rubric, with evidence quotes | Confident scores with nothing in the transcript to support them |
+| CRM sync | Writes results to the contact, deal or ticket | Which fields, and how calls are matched to records | Duplicates, or results attached to the wrong contact |
+| Real-time alerts | Flags hot leads, churn risk or compliance issues as they happen | Rules, model scoring, or both | Alert fatigue from too many low-value notifications |
+
+## Stage 1: Recording and consent
+
+Audio usually comes from your telephony or contact-center platform, a VoIP provider, or a meeting tool's recording API. The most useful technical choice is **dual-channel recording**: the rep on one channel, the customer on the other. It makes speaker separation nearly free and helps transcription when people talk over each other.
+
+Treat consent as part of the pipeline: play the recording notice, store whether consent was given with the recording, and skip analysis where it was not. Keep audio encrypted, with a retention period you have decided on.
+
+## Stage 2: Speech-to-text
+
+Speech-to-text (automatic speech recognition, or ASR) turns audio into a transcript with word-level timestamps. Modern models are far more robust than older systems: the [Whisper paper](https://arxiv.org/abs/2212.04356) describes training on 680,000 hours of multilingual audio and reports that the resulting models approach human accuracy and robustness. Benchmarks are not your calls, though, so test candidate models on a sample of your own recordings.
+
+The first architectural choice is timing:
+
+- **Batch** transcription runs after the call ends. It is cheaper, more accurate and enough for summaries, QA scoring and CRM notes.
+- **Streaming** transcription runs during the call with a delay of a second or two. You need it only for real-time alerts or live agent assistance.
+
+## Stage 3: Speaker diarization
+
+Diarization answers "who spoke when". Without it, the model cannot tell whether "that's too expensive" came from the customer (a buying objection) or the rep. With dual-channel audio, the channel tells you the speaker. With mixed audio, a diarization model clusters the voices, and you map each to a role: the speaker who gives the company greeting is usually the rep. Errors are worst when people interrupt each other and on calls with several participants, so check speaker attribution on your test sample, not only the words.
+
+## Stage 4: LLM analysis
+
+A language model reads the diarized transcript and returns structured output against a fixed schema:
+
+- **Summary**: what the customer wanted, what was agreed, and next steps.
+- **Intent and lead score**: buying signals, budget and timeline mentions.
+- **Sentiment**: how the customer's tone changed over the call.
+- **QA scorecard**: required disclosures, identity checks, objection handling.
+- **Entities**: products, competitors, order numbers and dates.
+
+```json
+{
+  "intent": "evaluating",
+  "lead_score": 72,
+  "next_step": "Send pricing for the team plan by Friday",
+  "objections": [
+    { "type": "price", "quote": "That's more than we pay now", "speaker": "customer", "at": "08:14" }
+  ],
+  "qa": { "greeting": true, "disclosure_read": false }
+}
+```
+
+Two rules keep this trustworthy. First, require an **evidence quote and timestamp** for every score and flag, so a manager can jump to that moment in the recording, and discard any score without one; our guide to [reducing LLM hallucinations](/blog/reduce-llm-hallucinations) explains why. Second, write the QA rubric as explicit criteria with examples, the way you would brief a new human reviewer.
+
+## Stage 5: CRM sync
+
+Results only change behavior if they land where reps and managers already work. Match each call to a contact by phone number or calendar invite, then write the summary, scores and next steps to the contact, deal or ticket. Make the sync idempotent, so a retried job updates the existing record instead of creating a duplicate. Each CRM has its own API limits and data model; [the cost of a custom API integration](/blog/cost-of-custom-api-integration) covers what drives that work.
+
+## Stage 6: Real-time alerts
+
+Real-time alerting runs on the streaming transcript: a rolling window is checked against simple rules (a competitor named, "cancel", a pricing question) and, where rules are too blunt, scored by a model. When a call crosses a threshold, the right person is notified in Slack, Teams or the CRM while the call is live.
+
+Alert fatigue is the main risk. Start with two or three alert types someone has agreed to act on, and remove any that rarely lead to an action.
+
+For an example, our [AI call analysis](/work/ai-call-analysis) build transcribes customer calls, scores lead intent with GPT and NLP, and alerts sales teams to hot opportunities in real time.
+
+## What affects call analysis accuracy?
+
+| Factor | Why it matters | What helps |
+| --- | --- | --- |
+| Audio quality | Phone audio is low-bandwidth and often compressed; noise and crosstalk add errors | Dual-channel recording at the best quality your platform offers; avoid re-encoding |
+| Accents and languages | Accuracy varies by accent, language and code-switching within a call | Test models on calls from your actual callers; enable language detection |
+| Domain vocabulary | Product names, competitors and acronyms are misheard as common words | Custom vocabularies, plus a glossary the LLM uses to correct the transcript |
+| Overlapping speech | Interruptions confuse both transcription and speaker labels | Separate channels; check speaker attribution, not just words |
+| Rubric clarity | Vague QA criteria give inconsistent scores | Written criteria with examples, calibrated against human reviewers |
+
+Domain vocabulary is usually the cheapest fix. Many speech-to-text services let you supply terms to recognize; AWS, for example, documents [custom vocabularies](https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html) for domain-specific terms such as brand names and acronyms.
+
+## What about privacy and consent?
+
+This is a high-level overview, not legal advice; check your obligations with a lawyer where you and your callers are.
+
+- **Recording consent rules vary by jurisdiction.** US federal law, at [18 U.S.C. § 2511](https://www.law.cornell.edu/uscode/text/18/2511), generally allows recording when one party to the call consents, but some states, California among them, require the consent of every party. Other countries have their own rules, and one call can cross several jurisdictions, so many teams simply notify every caller.
+- **GDPR applies to EU callers.** Recordings and transcripts are personal data under the [GDPR](https://eur-lex.europa.eu/eli/reg/2016/679/oj). You need a lawful basis for recording and for analyzing, must tell callers what you do with their data, keep it no longer than necessary, and honor access and deletion requests.
+- **Vendors are processors.** Your speech-to-text and LLM providers handle call data on your behalf, so you need data processing agreements and clarity on where data is stored and whether it is used for training.
+- **Redact what you do not need.** Strip card numbers and other sensitive details from transcripts before analysis, and limit who can play back recordings.
+
+## Should you build or buy call analysis?
+
+| Option | Best when | Trade-offs |
+| --- | --- | --- |
+| Buy a conversation intelligence platform | Standard sales or support coaching, a common CRM, no unusual data needs | Fast to start; per-seat pricing; limited control over scoring logic and data location |
+| Use your contact-center suite's built-in analytics | You already run calls through a platform that offers it | Little integration work; analysis stays generic |
+| Build on speech-to-text and LLM APIs | Custom scoring, your own product or CRM, data that must stay in your cloud, or high volume | You own the pipeline, evaluation and maintenance |
+
+A hybrid is common: buy the speech-to-text, build the analysis and integration layer, where the logic specific to your business lives. Our comparison of [custom software and off-the-shelf tools](/blog/custom-software-vs-off-the-shelf) covers the general trade-off. A custom pipeline is typically a five-figure build, and running cost is usage-based: transcription per audio minute plus model tokens per call, which [reducing LLM API costs](/blog/reduce-llm-api-costs) helps keep in check. Like other AI prototypes, a first version over a batch of your recorded calls takes about 1–2 weeks and shows quickly whether the scores are useful.
+
+## What should you measure?
+
+- **Word error rate** on a hand-checked sample of your own calls, with product names checked separately.
+- **Speaker attribution accuracy** on the same sample.
+- **QA score agreement** between the model and your human reviewers on the same calls.
+- **Lead score validity**: whether high-scoring calls convert more often than low-scoring ones.
+- **Alert precision and timing**: the share of alerts acted on, and how far into the call they fire.
+- **Adoption**: whether reps and managers actually use the summaries and scores.
+- **Cost per analyzed call minute**, tracked monthly as volume grows.
+
+Roll it out to one team first, behind a feature flag, and compare against a team without it; [adding AI to an existing app](/blog/add-ai-to-existing-app) describes that rollout. Our [engagement models](/engagement) explain how we price a build.
+
+## Frequently asked questions
+
+### How accurate is AI call transcription?
+
+Modern speech-to-text is accurate on clear audio, but your results depend on audio quality, accents and specialist vocabulary. Measure word error rate on a hand-checked sample of your own calls rather than relying on published benchmarks. Dual-channel recording and a custom vocabulary are the two cheapest improvements.
+
+### Is it legal to record and analyze sales calls with AI?
+
+Often yes, with the right notice and consent, but the rules vary by jurisdiction. Some places require one party's consent and others require every party's, and the GDPR adds obligations for EU callers. Notify every caller, record that consent was given, and get legal advice for the regions you operate in.
+
+### Can AI call analysis work in real time?
+
+Yes. Streaming speech-to-text produces a transcript during the call, and rules or a model can check it continuously to raise alerts on buying signals, churn risk or compliance issues. Real-time analysis costs more and is slightly less accurate than batch, so most teams use it only for the alerts that need it.
+
+### Should we build or buy call analysis software?
+
+Buy if your needs match a standard sales or support coaching tool and your CRM is supported. Build when you need custom scoring, integration with your own product, control over where data is stored, or better economics at high volume. Many teams take a middle path: buy the transcription, build the analysis.
+
+### What does AI call analysis cost to run?
+
+Running cost is usage-based: speech-to-text priced per minute of audio, plus language model tokens for each call analyzed. Real-time streaming costs more than batch analysis. Track cost per analyzed call minute from the start, and use smaller models for routine tasks such as tagging.
