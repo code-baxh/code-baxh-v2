@@ -59,7 +59,8 @@
   --color-ok: var(--ok);
   --color-todo: var(--todo);
   --font-sans: var(--ff-body), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--ff-display), ui-sans-serif, system-ui, sans-serif;
+  /* Headings use the body face (Geist), as on the live site. */
+  --font-display: var(--ff-body), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--ff-mono), ui-monospace, SFMono-Regular, monospace;
   --radius-card: 1.25rem;
 }

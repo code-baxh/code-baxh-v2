@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -10,20 +10,9 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 import "./globals.css";
 
-const display = Space_Grotesk({ variable: "--ff-display", subsets: ["latin"], display: "swap" });
-const body = IBM_Plex_Sans({
-  variable: "--ff-body",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
-const mono = JetBrains_Mono({
-  variable: "--ff-mono",
-  subsets: ["latin"],
-  weight: ["500"],
-  display: "swap",
-  preload: false,
-});
+// Same typefaces as the live site: Geist for body text and headings, Geist Mono for labels and code.
+const sans = Geist({ variable: "--ff-body", subsets: ["latin"], display: "swap" });
+const mono = Geist_Mono({ variable: "--ff-mono", subsets: ["latin"], display: "swap", preload: false });
 
 const homeTitle = "CodeBaxh | Software Development & AI Company";
 
@@ -68,7 +57,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${display.variable} ${body.variable} ${mono.variable} antialiased`}
+      className={`${sans.variable} ${mono.variable} antialiased`}
     >
       <body className="flex min-h-dvh flex-col">
         <Providers>
