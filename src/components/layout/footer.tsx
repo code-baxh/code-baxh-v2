@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { mainNav, site } from "@/config/site";
+import { services } from "@/content/services";
 import { Logo } from "./logo";
 
 function LinkedInIcon() {
@@ -9,6 +10,25 @@ function LinkedInIcon() {
     </svg>
   );
 }
+
+/** Sitewide links to the main commercial service pages (the full list lives on /services and /ai). */
+const footerServiceSlugs = [
+  "saas-development",
+  "mvp-development",
+  "web-development",
+  "mobile-app-development",
+  "custom-software-development",
+  "ai-integration",
+  "ai-agent-development",
+  "ai-chatbot-development",
+  "rag-knowledge-assistants",
+  "payment-gateway-integration",
+];
+const footerServices = footerServiceSlugs.map((slug) => {
+  const s = services.find((x) => x.slug === slug);
+  if (!s) throw new Error(`Footer links to unknown service "${slug}"`);
+  return { href: `/services/${s.slug}`, label: s.name };
+});
 
 const company = [
   { href: "/process", label: "Process" },
@@ -22,7 +42,7 @@ const company = [
 export function Footer() {
   return (
     <footer className="border-t border-line">
-      <div className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 py-16 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+      <div className="mx-auto grid w-full max-w-[92rem] gap-12 px-5 py-16 sm:px-8 md:grid-cols-3 lg:grid-cols-[1.4fr_1fr_1.2fr_1fr_1.2fr]">
         <div>
           <Logo />
           <p className="mt-5 max-w-xs text-sm text-muted">
@@ -42,6 +62,18 @@ export function Footer() {
           <h2 className="eyebrow">Explore</h2>
           <ul className="mt-4 space-y-1">
             {mainNav.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="inline-flex min-h-9 items-center text-sm text-muted hover:text-fg">
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <nav aria-label="Footer: services">
+          <h2 className="eyebrow">Services</h2>
+          <ul className="mt-4 space-y-1">
+            {footerServices.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="inline-flex min-h-9 items-center text-sm text-muted hover:text-fg">
                   {l.label}

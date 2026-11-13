@@ -7,6 +7,7 @@ author: "bilal-khursheed"
 category: "SaaS"
 tags: ["stripe", "billing", "subscriptions", "saas"]
 cover: ""
+service: "payment-gateway-integration"
 ---
 
 To add subscription billing to a SaaS with Stripe: model your plans as products and prices in Stripe, use Stripe Checkout (or Elements) for signup, sync subscription state to your database via webhooks, and gate features by plan. The most important principle is that webhooks — not client-side redirects — are the source of truth for what a customer is actually paying for.

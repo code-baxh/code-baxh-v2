@@ -7,6 +7,7 @@ author: "bilal-khursheed"
 category: "AI"
 tags: ["rag", "evaluation", "llm", "retrieval"]
 cover: ""
+service: "llm-evaluation-guardrails"
 ---
 
 To evaluate a retrieval-augmented generation (RAG) system, measure retrieval and generation separately, then measure the whole pipeline. Retrieval is judged on whether the right passages were found. Generation is judged on whether the answer is supported by those passages and addresses the question. Both are scored against a fixed test set, and the same set is rerun on every change so that quality drops are caught before users see them.

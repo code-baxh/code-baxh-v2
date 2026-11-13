@@ -10,6 +10,11 @@ export type Service = {
   icon: string;
   /** One sentence for cards. */
   summary: string;
+  /**
+   * <title> without the brand: lead with the search term (the name and headline are
+   * written for people, not queries). " | CodeBaxh" is appended when the total fits in 60.
+   */
+  metaTitle: string;
   /** 140 to 160 characters, unique per service. Plain text, write "&" literally. */
   metaDescription: string;
   /** H1 of the detail page. */
@@ -36,6 +41,8 @@ export type CaseStudy = {
   clientNamePermission: boolean;
   /** Title that never contains the client name. */
   title: string;
+  /** Optional shorter <title> when `title` runs past about 60 characters. */
+  metaTitle?: string;
   /** Short label, e.g. "PropTech SaaS". */
   sector: string;
   /** Used by the filter on /work. */

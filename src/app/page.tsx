@@ -5,6 +5,7 @@ import { Reveal } from "@/components/ui/reveal";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { ServiceIcon } from "@/components/ui/service-icon";
 import { CaseStudyCard } from "@/components/cards/case-study-card";
+import { PostCard } from "@/components/blog/post-card";
 import { CtaBand } from "@/components/sections/cta-band";
 import { FaqList } from "@/components/sections/faq-list";
 import { Hero } from "@/components/hero/hero";
@@ -18,6 +19,7 @@ import { processSteps } from "@/content/process";
 import { team } from "@/content/team";
 import { homeFaqs } from "@/content/faqs";
 import { site } from "@/config/site";
+import { coversFor, getAllPosts, toMeta } from "@/lib/blog";
 import { cn } from "@/lib/utils";
 
 const trust = [
@@ -28,6 +30,9 @@ const trust = [
 ];
 
 export default function HomePage() {
+  // Newest guides get a link from the homepage, so fresh posts are found and crawled quickly.
+  const latest = getAllPosts().slice(0, 3);
+  const latestCovers = coversFor(latest);
   return (
     <>
       <Hero />
@@ -242,8 +247,33 @@ export default function HomePage() {
         </ul>
       </Section>
 
-      {/* FAQ */}
+      {/* Latest guides */}
       <Section tone="ink">
+        <div className="flex flex-col items-center gap-4">
+          <Reveal>
+            <SectionHeading
+              eyebrow="From the blog"
+              title="Practical guides from the team."
+              lead="Cost, timelines and the trade-offs behind building software and AI products."
+            />
+          </Reveal>
+          <ButtonLink href="/blog" variant="ghost">
+            All articles <ArrowRight aria-hidden className="size-4" />
+          </ButtonLink>
+        </div>
+        <ul className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {latest.map((p, i) => (
+            <li key={p.slug}>
+              <Reveal delay={i * 0.06} className="h-full">
+                <PostCard post={toMeta(p, latestCovers.get(p.slug))} />
+              </Reveal>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      {/* FAQ */}
+      <Section tone="paper">
         <div className="mx-auto grid max-w-4xl gap-10">
           <Reveal>
             <SectionHeading eyebrow="FAQ" title="Common questions." />

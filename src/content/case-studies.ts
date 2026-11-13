@@ -10,6 +10,7 @@ export const caseStudies: CaseStudy[] = [
     clientName: "Zoneomics",
     clientNamePermission: false,
     title: "A GIS zoning platform that turns research into instant reports",
+    metaTitle: "GIS Zoning SaaS Platform: Case Study",
     sector: "PropTech SaaS",
     category: "SaaS",
     summary:
@@ -370,6 +371,7 @@ export const caseStudies: CaseStudy[] = [
     clientName: "",
     clientNamePermission: false,
     title: "An AI business consultancy chatbot for multi-department strategy",
+    metaTitle: "AI Business Consultant Chatbot: Case Study",
     sector: "AI business tooling",
     category: "AI",
     summary:

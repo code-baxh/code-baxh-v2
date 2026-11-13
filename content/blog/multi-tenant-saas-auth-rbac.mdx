@@ -7,6 +7,7 @@ author: "bilal-khursheed"
 category: "SaaS"
 tags: ["saas", "authentication", "rbac", "multi-tenancy"]
 cover: ""
+service: "saas-development"
 ---
 
 In a multi-tenant SaaS, authentication and permissions must be scoped to a tenant. The flow is: authenticate the user, resolve which tenant (or tenants) they belong to and their role there, then enforce role-based permissions within that tenant — with tenant context flowing through every request and row-level security as a backstop against mistakes.

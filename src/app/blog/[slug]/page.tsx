@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypeSlug from "rehype-slug";
@@ -9,9 +10,10 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { Photo } from "@/components/ui/photo";
+import { services } from "@/content/services";
 import { team } from "@/content/team";
 import { categorySlug, coverFor, coversFor, formatDate, getAllPosts, getPost, relatedPosts, toMeta } from "@/lib/blog";
-import { articleSchema } from "@/lib/schema";
+import { articleSchema, faqSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
@@ -22,7 +24,7 @@ export async function generateMetadata({ params }: PageProps<"/blog/[slug]">) {
   const { slug } = await params;
   const p = getPost(slug);
   if (!p) return {};
-  return pageMetadata({ title: p.title, description: p.description, path: `/blog/${p.slug}`, type: "article" });
+  return pageMetadata({ title: p.metaTitle ?? p.title, description: p.description, path: `/blog/${p.slug}`, type: "article" });
 }
 
 export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
@@ -31,12 +33,15 @@ export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
   if (!post) notFound();
   const author = team.find((m) => m.slug === post.author) ?? team[0];
   const related = relatedPosts(post);
+  const service = services.find((x) => x.slug === post.service);
   // Related cards must not repeat each other or the article cover above them.
   const relatedCovers = coversFor([post, ...related]);
 
   return (
     <>
       <JsonLd data={articleSchema({ ...post, author })} />
+      {/* Mirrors the visible "Frequently asked questions" section of the post. */}
+      {post.faqs.length ? <JsonLd data={faqSchema(post.faqs)} /> : null}
       <article>
         <header className="bg-noise relative overflow-hidden border-b border-line">
           <div aria-hidden className="glow-hero absolute inset-0" />
@@ -86,11 +91,27 @@ export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
         </div>
 
         <div className="mx-auto grid w-full max-w-6xl gap-12 px-5 py-12 sm:px-8 lg:grid-cols-[1fr_17rem]">
-          <div className="prose">
-            <MDXRemote
-              source={post.body}
-              options={{ mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeSlug] } }}
-            />
+          <div className="min-w-0">
+            <div className="prose">
+              <MDXRemote
+                source={post.body}
+                options={{ mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeSlug] } }}
+              />
+            </div>
+            {/* Spoke-to-hub link: every post points at the service it feeds. */}
+            {service ? (
+              <aside aria-label="Related service" className="card mt-12 max-w-[46rem] p-6 sm:p-8">
+                <p className="eyebrow">How we can help</p>
+                <p className="mt-3 text-xl font-semibold">{service.headline}</p>
+                <p className="mt-2 text-muted">{service.summary}</p>
+                <Link
+                  href={`/services/${service.slug}`}
+                  className="mt-5 inline-flex min-h-11 items-center gap-2 font-medium text-accent-text hover:underline"
+                >
+                  Explore our {service.name} service <ArrowRight aria-hidden className="size-4" />
+                </Link>
+              </aside>
+            ) : null}
           </div>
           {post.headings.length ? (
             <aside className="order-first lg:order-none">

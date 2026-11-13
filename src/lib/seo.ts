@@ -14,11 +14,15 @@ type Args = {
 
 const SUFFIX = ` | ${site.name}`;
 const PAD = " From CodeBaxh, a software development and AI company.";
+const SHORT_PAD = " From CodeBaxh, a software and AI company.";
 
 /** Keeps meta descriptions inside the range search engines show in full (about 120 to 160 characters). */
 export function fitDescription(text: string) {
   let d = text.trim();
-  if (d.length < 120 && d.length + PAD.length <= 160) d += PAD;
+  if (d.length < 120) {
+    if (d.length + PAD.length <= 160) d += PAD;
+    else if (d.length + SHORT_PAD.length <= 160) d += SHORT_PAD;
+  }
   if (d.length <= 160) return d;
   const cut = d.slice(0, 157);
   return `${cut.slice(0, cut.lastIndexOf(" ")).replace(/[,;:.]$/, "")}…`;
