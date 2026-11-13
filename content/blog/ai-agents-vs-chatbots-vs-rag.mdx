@@ -1,0 +1,42 @@
+---
+title: "AI agents vs chatbots vs RAG: what your business needs"
+description: "AI agents, chatbots, and RAG explained simply: what each does, which your business actually needs, and how they combine in real production systems."
+date: "2026-05-22"
+updated: "2026-05-22"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["ai agents", "chatbots", "rag"]
+cover: ""
+---
+
+These three terms get used interchangeably, but they solve different problems. A chatbot is a conversational interface; RAG (Retrieval-Augmented Generation) grounds answers in your own data so they're accurate; an agent uses tools to take actions on your behalf. Most businesses need RAG first — accurate answers from their data — and an agent only where taking actions adds real value.
+
+## The three, defined
+
+- Chatbot: the conversational layer users talk to. On its own, it will happily make things up.
+- RAG: retrieves relevant chunks of your data via vector search and passes them to the model, so answers are grounded and traceable.
+- Agent: given tools (search, APIs, actions), it plans and executes steps — booking, updating records, running workflows.
+
+## Which do you need?
+
+- Answering questions from your docs/help content accurately: RAG (usually behind a chatbot UI).
+- Just a scripted conversational flow: a chatbot may be enough.
+- Taking actions across systems (create, update, trigger): an agent — but only with guardrails.
+
+## How they combine
+
+Real systems layer them: a chat interface on top, RAG for grounded answers, and agent tools for the few places actions genuinely help. The mistake is building a complex autonomous agent when a grounded chatbot would have solved the problem more reliably and cheaply.
+
+## Our approach
+
+We start with the simplest thing that works — usually grounded RAG — and add agentic tools only where they earn their keep, always with guardrails and an evaluation set. That keeps the system accurate, debuggable, and cost-controlled.
+
+## Frequently asked questions
+
+### What's the difference between an AI agent and a chatbot?
+
+A chatbot is a conversational interface that responds to messages. An agent uses tools to take actions — calling APIs, updating records, running multi-step workflows. An agent can power a chatbot, but most chatbots don't need full agentic autonomy.
+
+### Do I need an AI agent or just RAG?
+
+If you need accurate answers from your own data, RAG (often behind a chat UI) is usually enough. Add an agent only where taking real actions across systems adds value — and always with guardrails and evaluation.

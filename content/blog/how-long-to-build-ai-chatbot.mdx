@@ -1,0 +1,97 @@
+---
+title: "How long does it take to build an AI chatbot?"
+description: "How long it takes to create, develop, or train a chatbot: 1–2 weeks for a prototype, 4–6 weeks for a production RAG assistant, 8–10+ for multi-system bots."
+date: "2026-08-08"
+updated: "2026-08-08"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["chatbots", "timeline", "rag"]
+cover: ""
+---
+
+A production AI chatbot grounded in your own data typically takes **4–6 weeks** to ship. A scoped prototype you can click through takes **1–2 weeks**. A multi-system assistant that takes actions across your tools — with human handoff, guardrails, and evaluation — runs **8–10+ weeks**. The spread comes almost entirely from three things: the state of your data, how many systems the bot must touch, and how much proof you need that it won't say something wrong to a customer.
+
+This is the timeline companion to our cost breakdown — if you're budgeting rather than scheduling, read [how much an AI chatbot costs](/blog/cost-to-build-ai-chatbot) alongside this.
+
+## What are the realistic timeline tiers?
+
+| Tier | Timeline | What you get | Right for |
+| --- | --- | --- | --- |
+| Scoped prototype | 1–2 weeks | A working chat UI over one model with a slice of your real docs; enough to test answer quality on your actual questions | Validating the idea before committing budget |
+| Production RAG assistant | 4–6 weeks | Retrieval over your full knowledge base with citations, brand-safe prompting, analytics, one channel (web widget or Slack), and an evaluation set | Customer support, internal Q&A, sales assist |
+| Multi-system agent | 8–10+ weeks | Everything above plus actions (create tickets, update CRM, trigger workflows), human handoff, role-based access, and audit logging | Automation where the bot does work, not just answers |
+
+*Chatbot delivery timelines we quote, assuming API access and source content exist on day one.*
+
+## Where do the weeks actually go?
+
+Here's the week-by-week shape of a typical 5-week production build — the middle tier above. The model integration is the fast part; the work that makes it trustworthy is what takes time.
+
+- **Week 1 — discovery and data audit.** Define the questions the bot must answer, the ones it must refuse, and where the truth lives (help docs, PDFs, Notion, tickets). Messy or contradictory source content found here is the single most common cause of delay.
+- **Week 2 — retrieval pipeline.** Ingest, chunk, and index the content; wire retrieval-augmented generation (RAG) so answers come from your data with citations rather than the model's imagination. Our [RAG pipeline guide](/blog/building-a-rag-pipeline) covers this architecture in detail.
+- **Week 3 — answer quality.** Build an evaluation set of real questions with known-correct answers, then iterate on chunking, retrieval, and prompting until accuracy holds. This is the step teams skip when a chatbot embarrasses them later.
+- **Week 4 — integration and guardrails.** Embed the widget or connect the channel, add refusal behavior for out-of-scope and sensitive topics, rate limiting, and abuse handling; wire analytics so you can see what users actually ask.
+- **Week 5 — hardening and launch.** Load testing, fallback behavior when the model API degrades, human-handoff path, and a soft launch to a subset of users before full rollout.
+
+## How long does it take to train a chatbot?
+
+For most business chatbots, **zero** — because they are never trained. This is the single most common misconception in chatbot scoping, and it changes the schedule dramatically once you understand it.
+
+Retrieval-augmented generation looks your content up at question time and answers from the passages it retrieves. There is no training run, so "updating the bot" means re-indexing documents — minutes, not weeks. A stock model plus good retrieval is what ships in the overwhelming majority of production business chatbots.
+
+Actual fine-tuning — adjusting a model's weights on your examples — adds **2–4 weeks** once you count assembling a labelled dataset, running training, and evaluating the result against the stock model. It is worth it for consistent tone or a rigid output format. It is not worth it for facts: fine-tuning teaches style, retrieval teaches truth. Teams who fine-tune hoping to fix wrong answers usually end up with a model that is confidently wrong in a more on-brand voice.
+
+> **The practical rule**
+>
+> If your goal is "the bot should know our products, policies, and docs", you need retrieval, and your chatbot development time does not include any training at all. Only reach for fine-tuning after retrieval is working and a specific tone or format problem remains.
+
+## What makes a chatbot build take longer?
+
+- **Source content that disagrees with itself.** If your pricing page and your help docs give different answers, the bot will too. Cleanup adds 1–2 weeks and is worth every day.
+- **Waiting on API access.** Every system the bot reads from or writes to needs credentials, and enterprise approval loops for those regularly cost more calendar time than the engineering.
+- **Compliance review.** Legal or security sign-off for what the bot may say and log — common in fintech and health — can add weeks that have nothing to do with code.
+- **Fine-tuning when you don't need it.** Most business chatbots need retrieval, not fine-tuning; training custom models adds weeks and rarely improves grounded accuracy. Our [prompting vs fine-tuning vs RAG comparison](/blog/prompt-engineering-vs-fine-tuning-vs-rag) explains when each applies.
+
+## How do you compress the timeline?
+
+The builds that ship fastest share three decisions: they start with **one channel** (a web widget, not web + WhatsApp + Slack at once), **one job** (support Q&A, not support plus sales plus onboarding), and **existing content** (docs that already answer the questions, so week one isn't spent writing them). Widening scope later is cheap; starting wide is how six weeks becomes twelve.
+
+Model choice barely moves the schedule — swapping between [OpenAI](https://openai.com/api/pricing/) and [Anthropic](https://www.anthropic.com/pricing) models is a configuration change in a well-built pipeline, so you can defer that decision without cost. Pick per task later; see our [OpenAI vs Claude comparison](/blog/openai-vs-anthropic-claude) for how we choose.
+
+> **From our own builds**
+>
+> We shipped a [conversational AI business consultant](/work/ai-business-consultant-chatbot) and RAG systems that analyze 500–1,000-page legal contracts ([case study](/work/legal-contract-ai)). The pattern held both times: the model was never the bottleneck — data quality and integration approvals were.
+
+## When should you not build a custom chatbot?
+
+If you handle under a few hundred support conversations a month, an off-the-shelf tool or a well-organized FAQ page usually beats a custom build on cost — revisit custom when volume, integration needs, or answer quality outgrow it. An honest agency should tell you this in the first call; it's one of the questions in our [guide to vetting development agencies](/blog/questions-to-ask-software-development-agency).
+
+## Frequently asked questions
+
+### How fast can we have something to try?
+
+A clickable prototype over a slice of your real content takes one to two weeks. It won't be production-ready, but it answers the key question — is the answer quality good enough on your data — before you commit a full budget.
+
+### Can the chatbot use our internal documents?
+
+Yes — that's retrieval-augmented generation (RAG): the bot retrieves relevant passages from your docs and answers from them with citations, rather than from the model's general training. It's the default architecture for business chatbots.
+
+### Do we need to fine-tune a model?
+
+Usually not. Fine-tuning helps with tone and format, not facts; retrieval handles facts. Most production business chatbots ship with a stock model, good retrieval, and careful prompting.
+
+### What does an AI chatbot cost to run after launch?
+
+Ongoing costs are model API usage (typically modest at support-ticket volumes), hosting, and periodic content re-indexing. Budget for a monthly review of unanswered questions — that's what keeps quality improving.
+
+### How long does it take to make a simple chatbot?
+
+One to two weeks for something real. A simple chatbot over a single source of content — one help centre, one product manual — needs a chat interface, an indexed copy of that content, and refusal behaviour for anything outside it. What pushes a simple bot past two weeks is almost never the model; it is discovering that the source content contradicts itself and has to be cleaned first.
+
+### Can you build a chatbot in a week?
+
+Yes, as a prototype. In a week we can put a working chat interface over a slice of your real documents so you can test answer quality on your own questions. What a week does not buy is production hardening: evaluation against a scored question set, guardrails for sensitive topics, human handoff, load testing, and analytics. Those are what separate a demo from something you put in front of customers, and they are most of the 4-to-6-week timeline.
+
+### What is a realistic chatbot development time for a small business?
+
+Four to six weeks for a production support assistant, assuming your help content already exists and you start with one channel. Small businesses ship fastest when they resist the urge to launch on web, WhatsApp, and Slack simultaneously — one channel first, then widen. If your support volume is under a few hundred conversations a month, price an off-the-shelf tool before commissioning a custom build; it often wins on cost at that scale.

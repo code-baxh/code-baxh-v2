@@ -1,0 +1,68 @@
+---
+title: "How much does a custom API integration cost?"
+description: "What custom API integrations really cost: low four figures for a simple one-way connection, four to five figures for bidirectional sync — and the six drivers."
+date: "2026-08-08"
+updated: "2026-08-08"
+author: "bilal-khursheed"
+category: "Web"
+tags: ["api integration", "backend", "cost"]
+cover: ""
+---
+
+A straightforward custom API integration — one external system, standard authentication, data flowing one direction — typically costs in the **low four figures** and ships in **one to two weeks**. Bidirectional sync with webhooks, retries, and error handling runs **four to five figures over 2–4 weeks**. Multi-system orchestration where several tools must stay consistent is a **five-figure, 4–8 week** project. The honest answer to 'how much' is always 'what happens when it fails?' — because production-grade failure handling, not the happy path, is where most of the budget goes.
+
+## What are the typical cost tiers?
+
+| Tier | Scope | Typical cost | Timeline |
+| --- | --- | --- | --- |
+| Simple one-way | Read or write to one API on a schedule or trigger; standard OAuth/key auth; basic logging | Low four figures | 1–2 weeks |
+| Bidirectional sync | Two systems staying consistent: webhooks, retries, conflict rules, idempotency, monitoring | Four to five figures | 2–4 weeks |
+| Multi-system orchestration | 3+ systems, a system of record, transformation layer, queueing, alerting, admin visibility | Five figures | 4–8 weeks |
+
+*Ranges assume sandbox access and API documentation exist; we give fixed estimates after a discovery call.*
+
+## What actually drives the cost?
+
+- **Direction of data flow.** Reading from an API is cheap; keeping two systems mutually consistent is not. Bidirectional sync forces conflict resolution rules — which system wins when both changed the same record?
+- **Webhook reliability.** Providers deliver webhooks out of order, twice, or occasionally not at all. Production integrations need idempotency keys, replay handling, and reconciliation jobs — [Stripe's webhook best-practices docs](https://docs.stripe.com/webhooks) are a good picture of what robust handling involves.
+- **Auth complexity.** An API key is an afternoon; OAuth with refresh tokens, per-user connections, and scope management is days.
+- **Rate limits and data volume.** Syncing 500 records is a loop; syncing 5 million means batching, backoff, and progress tracking that survives restarts.
+- **Legacy or undocumented systems.** SOAP endpoints, CSV drops, or an internal API with no docs can double a timeline before any business logic is written.
+- **Compliance.** If the data is payments or health records, logging, encryption, and access-control requirements add real work.
+
+## Should you build custom or use Zapier?
+
+If the job is 'when X happens, do Y' at low volume with standard apps, don't hire anyone — [Zapier](https://zapier.com/pricing) or Make will do it for a subscription fee, today. Custom integration earns its cost when one of four things is true: volume makes per-task pricing worse than engineering, the logic between systems is genuinely custom, latency matters (webhooks vs polling), or the connection is core product rather than internal plumbing — you can't build your product's key feature on a no-code automation you don't control.
+
+A useful pattern: prototype the workflow in Zapier to prove the value, then build custom when it proves out and volume grows. The Zapier bill becomes your business case.
+
+## Why do production integrations cost more than demos?
+
+A demo integration moves data when everything works. A production integration keeps working when the API is down for an hour, a webhook arrives twice, a token expires mid-sync, or the provider ships a breaking change. That gap — retries with backoff, idempotency, dead-letter queues, alerting, and a reconciliation path — is routinely half the engineering effort, and it's precisely the half that's invisible in a proposal from a team that hasn't operated integrations in production.
+
+It's the same lesson as billing: the edge cases are the product. We wrote about this pattern in [Stripe subscription billing](/blog/stripe-subscription-billing-saas), and it shaped how we built an [omnichannel messaging platform](/work/omnichannel-messaging-saas) that unifies Facebook, Instagram, SMS, and web chat — an integration-heavy product where webhook handling *is* the core feature.
+
+## How do you keep the cost down?
+
+- **Have sandbox access and API credentials ready on day one.** Waiting on access approvals is the most common non-technical delay.
+- **Nominate one system of record per data type.** Half of sync complexity disappears when 'who wins' is decided upfront.
+- **Write the field mapping before engineering starts.** A spreadsheet mapping fields between systems — including the awkward ones that don't map — surfaces the hard decisions while they're still cheap.
+- **Start one-way if you can.** Push data in the direction that delivers value first; add the reverse path once the first direction is proven.
+
+## Frequently asked questions
+
+### How long does a custom API integration take?
+
+One to two weeks for a simple one-way integration, two to four for bidirectional sync with proper error handling, four to eight for multi-system orchestration — assuming API access exists on day one.
+
+### What information do you need for an accurate quote?
+
+Which systems, which data, which direction it flows, roughly how many records per day, and what should happen when something fails. With those five answers we can give a fixed estimate after a discovery call.
+
+### Can you work with an API that has poor documentation?
+
+Yes — it's common, especially with internal or legacy systems. Expect discovery time to reverse-engineer behavior, and treat the timeline ranges above as starting points rather than commitments until that's done.
+
+### Who maintains the integration after launch?
+
+Your choice: we hand over documented, monitored code your team owns, or keep maintaining it under a support arrangement. Either way you own the code and the accounts from day one.

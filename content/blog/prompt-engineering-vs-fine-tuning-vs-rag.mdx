@@ -1,0 +1,88 @@
+---
+title: "Prompt engineering vs fine-tuning vs RAG: which do you need?"
+description: "Prompt engineering, fine-tuning, and RAG compared: what each does, what it costs, and how to choose the right one — or combination — for your AI feature."
+date: "2026-07-14"
+updated: "2026-07-14"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["prompt engineering", "fine-tuning", "rag", "llm"]
+cover: ""
+---
+
+**Prompt engineering** shapes the model's behavior with instructions and examples. **RAG** gives the model your knowledge at query time by retrieving relevant content. **Fine-tuning** changes the model's weights to bake in a consistent style, format, or narrow skill. Reach for them **in that order** — most needs are solved by prompting plus RAG, and fine-tuning is rarely the first answer.
+
+The costly mistake is jumping straight to fine-tuning for a problem that a better prompt or retrieval would have solved in an afternoon.
+
+## What each one actually does
+
+- **Prompt engineering:** carefully written instructions, examples, and structure in the prompt. Cheapest, fastest, and often enough on its own.
+- **RAG (retrieval-augmented generation):** fetch relevant documents from your data and pass them to the model so it answers from your knowledge, with citations.
+- **Fine-tuning:** train the base model on your examples so it internalizes a style, tone, or narrow task — changing the model itself, not the prompt.
+
+## At a glance
+
+|   | Prompt engineering | RAG | Fine-tuning |
+| --- | --- | --- | --- |
+| Best for | Behavior, format, reasoning | Answering from your knowledge | Consistent style / narrow skill |
+| Changes the model? | No | No | Yes (weights) |
+| Uses your data? | A little (examples) | Yes, at query time | Yes, as training data |
+| Effort / cost | Low | Medium | High |
+| Updating info | Instant | Re-index content | Re-train |
+
+*Try them top-to-bottom; most production systems combine the first two.*
+
+## When to use prompt engineering
+
+- You need a specific output format, tone, or reasoning approach.
+- You can steer the model with a few good examples (few-shot).
+- You're still iterating — prompts change in seconds, models don't.
+
+## When to use RAG
+
+- The model needs to answer from your documents, product data, or knowledge base.
+- Your information changes and must stay current — re-index instead of re-train.
+- You need citations and grounding to [reduce hallucinations](/blog/reduce-llm-hallucinations). This is the backbone of most [grounded chatbots](/blog/ai-agents-vs-chatbots-vs-rag).
+
+## When to use fine-tuning
+
+- You need a consistent style, tone, or output format at scale that prompting can't reliably hold.
+- You have a narrow, repetitive task (classification, extraction) where a smaller tuned model is cheaper and faster.
+- You have a solid set of high-quality training examples — fine-tuning is only as good as its data.
+
+> **The most common mistake**
+>
+> Teams fine-tune to "teach the model our information." Fine-tuning teaches form, not facts — and facts that change will go stale in the weights. For knowledge that must be current and citable, use RAG. Fine-tune for how it answers, not what it knows.
+
+## They combine
+
+Real systems layer these: a well-engineered prompt, RAG for knowledge, and — only if needed — a fine-tuned model for a specific style or task. Start simple, measure, and add complexity only when a cheaper approach stops clearing the bar. That's how we [add AI to existing products](/blog/add-ai-to-existing-app).
+
+## How we choose
+
+We start with prompting, add RAG when the model needs your knowledge, and fine-tune only when there's a clear, measured reason — always against an evaluation set. See our [AI integration service](/services/ai-integration) or [book a free discovery call](/start-a-project).
+
+## Frequently asked questions
+
+### What's the difference between fine-tuning and RAG?
+
+RAG gives the model your knowledge at query time by retrieving documents, so information stays current and citable. Fine-tuning changes the model's weights to bake in a style or skill. Use RAG for facts, fine-tuning for form.
+
+### Which is cheaper — prompting, RAG, or fine-tuning?
+
+Prompt engineering is cheapest and fastest, RAG is moderate, and fine-tuning is the most expensive and involved. That's also the order in which you should try them.
+
+### Can I use RAG and fine-tuning together?
+
+Yes — it's common. Fine-tune for a consistent format or tone, and use RAG to supply current, citable knowledge. They solve different problems and compose well.
+
+### Does fine-tuning add knowledge to a model?
+
+Not reliably. Fine-tuning teaches patterns, style, and format, but facts baked into weights go stale and can't be cited. For knowledge, use RAG instead.
+
+### When is prompt engineering enough on its own?
+
+When you need a specific format, tone, or reasoning approach and the model already has the knowledge. A good prompt with a few examples solves a surprising share of use cases with zero extra infrastructure.
+
+### Do I need to fine-tune to reduce hallucinations?
+
+Usually not. Grounding the model in your data with RAG, plus guardrails and evaluation, reduces hallucinations more reliably than fine-tuning — and keeps answers current and citable.

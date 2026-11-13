@@ -1,0 +1,126 @@
+---
+title: "The discovery phase of a software project, explained"
+description: "What a software discovery phase involves, the documents and decisions it produces, and how it reduces delivery risk before the main build budget is committed."
+date: "2026-10-27"
+updated: "2026-10-27"
+author: "muhammad-usman-mustafa"
+category: "Business"
+tags: ["discovery", "project planning", "requirements", "risk"]
+cover: ""
+---
+
+A discovery phase is a short, structured piece of work at the start of a software project. Its purpose is to turn an idea into a defined scope, a technical approach and an estimate that can be trusted. It costs a small fraction of the build and removes the most expensive kind of risk: finding out halfway through that you are building the wrong thing, or that it will cost far more than planned.
+
+## Why discovery exists
+
+At the start of any project, uncertainty is at its highest. Nobody has yet written down every rule, checked every integration or agreed what the first release must contain. Estimates made at this point are guesses with a wide margin of error.
+
+Discovery narrows that margin. It does so by asking the questions that would otherwise surface during development, when answers are slower and changes cost more. It is cheaper to change a diagram than to change working code, and cheaper to change working code than a live system with users and data.
+
+## What happens during discovery
+
+The activities vary with the project, but most discovery phases include the following.
+
+### Stakeholder interviews and workshops
+
+The team speaks to the sponsor, the people who will use the system and the people who will support it. The aim is to understand goals, current pain points and constraints, and to surface disagreements early. Two departments often hold different views of the same process, and it is better to learn that in a workshop than in user acceptance testing.
+
+### Process and user mapping
+
+The current process is mapped as it really runs, including the informal steps and the spreadsheets. Then the future process is drafted. User roles are identified along with what each needs to do.
+
+### Requirements definition
+
+Needs are written down as requirements or user stories, each with enough detail to estimate. They are then prioritised. A common method is MoSCoW: must have, should have, could have, and will not have this time.
+
+### Technical investigation
+
+Engineers assess the areas of greatest technical uncertainty. This may include reviewing an existing codebase, reading third-party API documentation, testing an integration with real credentials, checking data quality, or building a small proof of concept for anything unproven.
+
+### Experience design
+
+Key journeys are sketched as wireframes or a clickable prototype. Putting something visual in front of users is the fastest way to find misunderstandings.
+
+### Planning and estimation
+
+With scope and approach clearer, the team produces an estimate, a release plan and a list of risks with mitigations.
+
+## What discovery produces
+
+Discovery should end with tangible outputs that you own and could take to any delivery team.
+
+| Deliverable | What it contains | Who uses it |
+| --- | --- | --- |
+| Scope document or backlog | Prioritised requirements or user stories with acceptance criteria | Product owner, delivery team |
+| Process maps and user roles | Current and future workflows, roles and permissions | Business stakeholders, designers |
+| Wireframes or prototype | Key screens and journeys | Users, designers, developers |
+| Architecture outline | Main components, data model, integrations, hosting approach | Engineers, IT and security teams |
+| Risk register | Risks, likelihood, impact and mitigations | Sponsor, project manager |
+| Estimate and release plan | Effort ranges, phases, dependencies and assumptions | Sponsor, finance |
+| Open questions log | Decisions still needed and who owns each | Everyone |
+
+The estimate should be a range with stated assumptions, not a single figure. A single number implies a certainty that does not exist.
+
+## How discovery reduces risk
+
+Software projects fail in a small number of familiar ways. Discovery addresses each directly.
+
+- **Scope risk.** Unstated expectations become written requirements. What is out of scope is recorded as clearly as what is in.
+- **Technical risk.** Integrations and unproven ideas are tested before the plan depends on them.
+- **Budget risk.** The estimate rests on a defined scope and identified unknowns, so it is narrower and easier to defend.
+- **Adoption risk.** Real users see a prototype and say what would stop them using it.
+- **Alignment risk.** Stakeholders agree priorities in one room, in writing, before money is spent on building.
+- **Supplier risk.** You see how a delivery partner works on a small engagement before committing to a large one.
+
+Discovery also creates a legitimate decision point. Sometimes the right outcome is to reduce scope, buy a product instead, or not proceed. Finding that out early is a success, not a failure.
+
+## How long it takes and who is involved
+
+Duration depends on the size of the problem, the number of stakeholders and how quickly people can make time. As an indicative guide across the industry, discovery for a small, well-understood product can take days, while a large system with several integrations and departments can take considerably longer.
+
+A typical discovery team includes a business analyst or product lead, a designer and a senior engineer or architect. From the client side, it needs a sponsor with authority to decide, and access to the people who do the work today. The single biggest factor in a good discovery is the availability of those people.
+
+## When you can keep it short
+
+A full discovery phase is not always necessary. A lighter version is reasonable when:
+
+- A detailed, current specification already exists and has been reviewed by engineers.
+- The work is a small enhancement to a system the team already knows.
+- You are building a quick prototype specifically to learn, and are prepared to discard it.
+
+Even then, a short review is worth doing. Specifications written without engineering input often contain gaps that only appear when someone tries to estimate them.
+
+## Signs of a poor discovery
+
+Not all discovery work is equal. Be cautious if you see any of these:
+
+1. The output is a slide deck with no backlog, no architecture and no estimate.
+2. No engineer took part, so technical risks were not examined.
+3. Users were never consulted, only managers.
+4. The estimate is a single number with no assumptions.
+5. The deliverables are written so that only the same supplier could use them.
+6. Everything was marked as a must-have.
+
+## What happens next
+
+At the end of discovery you should be able to choose with confidence between three paths: proceed to build, adjust the scope and budget, or stop. If you proceed, the backlog and architecture become the starting point for delivery, and the first release should target the must-have items only.
+
+CodeBaxh is a software development and AI company, and discovery is the first stage of our [process](/process). The outputs feed directly into our [requirements documentation](/services/requirements-documentation) and [custom software development](/services/custom-software-development) work. To talk through whether your project needs a full discovery or a lighter one, use the [project enquiry form](/start-a-project).
+
+## Frequently asked questions
+
+### Is discovery just a way to charge before the real work starts?
+
+It should not be. A proper discovery produces documents and decisions you own and could hand to any team. Its value is in the errors and overruns it prevents. If the outputs would be useless without the same supplier, that is a warning sign.
+
+### Can we skip discovery if we already have a specification?
+
+You can shorten it. Have engineers review the specification, check the riskiest integrations and confirm the estimate. This review often finds missing rules, unclear permissions or unstated non-functional requirements.
+
+### What do you need from us during discovery?
+
+A decision-maker who can attend key sessions, access to the people who run the process today, examples of current documents and data, and access to any systems that must be integrated.
+
+### Does discovery guarantee the final cost?
+
+No. It makes the estimate much more reliable by defining scope and exposing unknowns. Requirements can still change during the build, which is why a change process and a contingency allowance are part of a sound plan.

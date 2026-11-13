@@ -1,0 +1,141 @@
+---
+title: "BRD vs SRS vs user stories: which document do you need?"
+description: "BRD, SRS and user stories explained: what each requirements document is for, who reads it, when to write it, and a short worked example of all three."
+date: "2026-10-24"
+updated: "2026-10-24"
+author: "muhammad-usman-mustafa"
+category: "Business"
+tags: ["requirements", "brd", "srs", "user stories"]
+cover: ""
+---
+
+A business requirements document (BRD) explains why a project exists and what the business needs from it. A software requirements specification (SRS) describes what the system must do in enough detail to design, build and test it. User stories break that work into small, user-focused pieces a team can deliver one at a time. They are not competing formats. They answer different questions for different readers.
+
+## The three documents at a glance
+
+| | BRD | SRS | User stories |
+| --- | --- | --- | --- |
+| Main question | Why are we doing this, and what does the business need? | What exactly must the system do? | What does this user need next, and how will we know it works? |
+| Written by | Business analyst with the sponsor | Business analyst or systems analyst with engineers | Product owner with the delivery team |
+| Read by | Sponsors, department heads, finance | Engineers, testers, architects, auditors | Developers, testers, designers |
+| Level of detail | Low: goals, scope, constraints | High: functions, data, rules, quality attributes | Small and focused, with acceptance criteria |
+| Changes | Rarely after approval | Under change control | Continuously |
+| Typical size | A few pages to a few dozen | Often long | One card each, many cards |
+
+## The business requirements document
+
+A BRD sets out the business case in plain language. It should be readable by someone who has never seen a line of code.
+
+A sound BRD usually covers:
+
+- The problem or opportunity and the current situation.
+- Objectives and how success will be measured.
+- Scope, including what is explicitly out of scope.
+- Stakeholders and their interests.
+- Business requirements, stated as needs, not solutions.
+- Assumptions, constraints, dependencies and known risks.
+
+### Example BRD requirement
+
+> **BR-07.** Branch managers must be able to approve staff leave requests without contacting head office, so that requests are answered within two working days.
+
+Notice what it does not say. It does not mention screens, buttons or databases. It states a need and the reason for it.
+
+## The software requirements specification
+
+The SRS turns business needs into precise statements about system behaviour. The usual reference is ISO/IEC/IEEE 29148, which replaced the older IEEE 830 standard, though many teams use a lighter template.
+
+An SRS typically contains:
+
+- Functional requirements, each with a unique identifier.
+- Non-functional requirements such as performance, security, availability and accessibility.
+- Data requirements and business rules.
+- External interfaces and integrations.
+- Roles and permissions.
+- Constraints and assumptions.
+
+Good SRS requirements are specific, testable and traceable back to a business requirement.
+
+### Example SRS requirements
+
+> **FR-112.** The system shall display to a branch manager all leave requests with status "Pending" submitted by employees assigned to that manager's branch.
+>
+> **FR-113.** When a branch manager approves a request, the system shall set its status to "Approved", record the approver and the UTC timestamp, and deduct the approved days from the employee's leave balance.
+>
+> **FR-114.** The system shall reject an approval if it would reduce the employee's leave balance below zero, and shall display the remaining balance to the manager.
+>
+> **NFR-021.** The pending requests list shall load within two seconds for a branch with up to 500 employees under normal load.
+>
+> Traces to: BR-07.
+
+A tester can write test cases directly from these statements. That is the standard an SRS requirement should meet.
+
+## User stories
+
+A user story describes one small piece of value from the user's point of view. The common format is "As a role, I want a capability, so that a benefit". A story is a reminder of a conversation, not a full specification, so it needs acceptance criteria to be complete.
+
+### Example user story
+
+> **As a** branch manager, **I want** to approve or reject a pending leave request from my phone, **so that** my team gets an answer quickly.
+>
+> **Acceptance criteria**
+>
+> - Given I am signed in as a branch manager, when I open "Requests", then I see only pending requests from my branch.
+> - Given a pending request, when I tap "Approve", then the status becomes "Approved" and the employee is notified.
+> - Given a request that exceeds the employee's balance, when I tap "Approve", then I see an error with the remaining balance and the status does not change.
+> - Given I reject a request, then I must enter a reason before it is saved.
+
+The story is small enough to build and test in a short iteration. The acceptance criteria use the Given, When, Then pattern, which maps neatly onto automated tests.
+
+## How the three fit together
+
+The documents form a chain. Each business requirement should be traceable to one or more system requirements, and each system requirement to the stories and tests that deliver it.
+
+1. The BRD establishes the need and gets approval to proceed.
+2. The SRS, or an equivalent set of detailed requirements, defines the behaviour the system must have.
+3. User stories slice that behaviour into deliverable pieces and order them by value.
+4. Test cases confirm each story and each requirement.
+
+A traceability matrix records these links. It lets you answer two useful questions: "Which requirements does this change affect?" and "Has every requirement been built and tested?"
+
+## Which do you need?
+
+Not every project needs all three in full.
+
+- **Small product or early MVP.** A short brief covering goals and scope, plus a well-kept backlog of user stories, is usually enough. Record non-functional requirements separately so they are not lost.
+- **Fixed-scope or fixed-price project.** A detailed specification protects both sides. Without one, there is no shared definition of "done" and every disagreement becomes a negotiation.
+- **Enterprise, regulated or tendered work.** Expect a BRD for sign-off, an SRS under change control, and user stories for delivery. Auditors and procurement teams will ask for traceability.
+- **Replacing a legacy system.** The SRS matters more than usual, because much of the current behaviour is undocumented and must be discovered and written down.
+
+Agile delivery does not remove the need for the first two questions. Someone still has to agree why the project exists and what rules the system must follow. The difference is that detail is added progressively, not all at the start.
+
+## Common mistakes
+
+- **Solutions written as requirements.** "Add a dropdown for region" is a design choice. The requirement is that users can filter by region.
+- **Untestable wording.** Words such as "fast", "user-friendly" and "secure" need numbers or criteria.
+- **Missing non-functional requirements.** Performance, security and availability are often left out of story backlogs entirely.
+- **Stories without acceptance criteria.** The team then guesses, and the guess is discovered at the demo.
+- **No change control.** Requirements will change. What matters is that changes are recorded, assessed and agreed.
+- **Documents nobody maintains.** An SRS that no longer matches the system is worse than none, because people trust it.
+
+## Getting requirements written
+
+Requirements work is a skill in its own right. It needs someone who can interview stakeholders, spot contradictions and write statements that engineers and testers can act on. CodeBaxh is a software development and AI company, and our [requirements documentation](/services/requirements-documentation) service produces BRDs, SRS documents and story backlogs, either as a standalone engagement or as the first stage of a build. Our [process](/process) page shows where this sits in a project. To start, use the [project enquiry form](/start-a-project).
+
+## Frequently asked questions
+
+### Is an SRS still relevant for agile teams?
+
+Yes, in an adapted form. Agile teams still need agreed business rules, data definitions and non-functional requirements. Many keep these in a living specification alongside the backlog instead of one large document signed off at the start.
+
+### Who should write the BRD?
+
+A business analyst usually writes it, working closely with the project sponsor and the people who run the process. The sponsor should approve it, because it defines what the business is asking for.
+
+### What is the difference between a PRD and a BRD?
+
+A product requirements document (PRD) is common in product companies. It describes a product or feature, its users and its behaviour, and often blends content that a BRD and SRS would hold separately. A BRD focuses on the business need and case.
+
+### How detailed should acceptance criteria be?
+
+Detailed enough that a tester who was not in the conversation could decide whether the story passes. Cover the main path, the important error cases and any permission rules.

@@ -1,0 +1,73 @@
+---
+title: "How long does it take to build a SaaS MVP?"
+description: "A realistic SaaS MVP timeline: a phase-by-phase table, what slows builds down, what speeds them up, and how a tightly scoped multi-tenant SaaS MVP comes together."
+date: "2026-06-18"
+updated: "2026-06-18"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["saas", "mvp", "timeline"]
+cover: ""
+---
+
+A focused SaaS MVP typically takes **8 to 14 weeks** from kickoff to launch. The timeline is driven less by raw feature count and more by scope discipline, integration complexity, and how quickly decisions get made.
+
+## A realistic phase-by-phase timeline
+
+Here is how a typical build breaks down — and what we need from you at each phase:
+
+| Phase | Weeks | What happens | Your involvement |
+| --- | --- | --- | --- |
+| Discovery | Week 0 | Align on the outcome, scope, and the one metric that proves the idea | One call; decisions |
+| Design & architecture | Weeks 1–2 | Data model, system architecture, and key flows before production code | Review and sign-off |
+| Build in short loops | Weeks 3–9 | Working software shipped weekly; shared board; async updates | Weekly demo; feedback |
+| Hardening & launch | Weeks 10–11 | QA, performance, security pass, deploy, and clean handover | Final review; go/no-go |
+
+## What slows an MVP down
+
+- **Scope creep:** adding 'just one more thing' each week is the number-one timeline killer.
+- **Slow decisions:** an MVP moves at the speed of the person who approves things.
+- **No clear success metric:** without it, every feature feels essential (see the [MVP feature checklist](/blog/saas-mvp-feature-checklist)).
+- **Heavy compliance** (SOC 2, HIPAA) or bespoke, unproven design.
+
+## What speeds it up
+
+- A single decision-maker who can approve quickly.
+- A tightly scoped core — the smallest thing that proves the idea.
+- Reusing proven architecture (e.g. [multi-tenant patterns](/blog/how-to-build-a-multi-tenant-saas)) instead of inventing from scratch.
+- Weekly demos that surface course-corrections early, while they're cheap.
+
+## A worked example: a tightly scoped build
+
+One multi-tenant SaaS MVP we shipped had a deliberately narrow scope: auth and accounts, the one core workflow, Stripe billing, and a basic admin view — built on shared-schema multi-tenancy with row-level security so it could scale after launch. Everything else was explicitly a v2 candidate.
+
+The speed didn't come from cutting corners; it came from scope discipline plus a weekly demo cadence that kept decisions fast and surprises small.
+
+> **The one-metric rule**
+>
+> Before building anything, agree on the single metric that proves the idea works. Every proposed feature then gets one question: does it move that metric, or is it needed to charge and operate safely? If not, it's v2. This one filter is the biggest timeline saver there is.
+
+## How we work
+
+We scope tightly to what proves the idea, then build that small scope on robust architecture so it becomes the foundation for v2 rather than throwaway code. See our [MVP development service](/services/mvp-development), [what a SaaS costs](/blog/how-much-does-it-cost-to-build-a-saas), or [book a free discovery call](/start-a-project).
+
+## Frequently asked questions
+
+### How long does it take to build a SaaS MVP?
+
+Most focused SaaS MVPs take 8–14 weeks. Timeline depends on scope discipline, integration complexity, and decision speed — not just feature count.
+
+### Can you build an MVP faster than 8 weeks?
+
+Sometimes, for a very narrow scope on proven architecture. The fastest path is a tightly scoped core built well — not cutting corners you'll pay for at v2.
+
+### What's the biggest cause of MVP delays?
+
+Scope creep and slow decisions. Adding features mid-build and waiting on approvals stretch timelines more than any technical factor. A single decision-maker and a fixed scope are the best accelerators.
+
+### What should the MVP actually include?
+
+Only what proves the core value plus the essentials to charge and operate safely: auth, the one core workflow, billing, and basic admin. See our SaaS MVP feature checklist for the full build-vs-skip list.
+
+### Do you keep us involved during the build?
+
+Yes — weekly demos of working software, a shared board you can check anytime, and async updates across your working hours. You see progress every week, not a big reveal at the end.

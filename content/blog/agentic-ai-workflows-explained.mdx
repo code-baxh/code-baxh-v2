@@ -1,0 +1,146 @@
+---
+title: "Agentic AI workflows: tools, planning and approval gates"
+description: "How agentic AI workflows work: tools, planning, memory and human approval gates, plus the common ways agents fail in production and how to guard against them."
+date: "2026-11-03"
+updated: "2026-11-03"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["ai agents", "agentic workflows", "llm", "automation"]
+cover: ""
+---
+
+An agentic workflow is a process in which a large language model decides the next step, calls tools to act, reads the result and repeats until the goal is met. This differs from a single prompt and response, and from a fixed script. Agents are useful for tasks whose path cannot be fully specified in advance. They also fail in ways that ordinary software does not, so they need limits, approval gates and evaluation.
+
+## Workflows versus agents
+
+The terms are often used loosely. A useful distinction is who controls the sequence of steps.
+
+| | Fixed LLM workflow | Agent |
+| --- | --- | --- |
+| Control flow | Written in code by developers | Chosen by the model at run time |
+| Predictability | High | Lower |
+| Cost and latency | Known in advance | Variable |
+| Best for | Tasks with a known sequence | Open-ended tasks with many possible paths |
+| Testing | Step by step | End-to-end across many scenarios |
+
+Many production systems sit between the two: a coded workflow with one or two steps where the model has freedom to choose tools. Start with the simplest design that works. Add autonomy only where a fixed sequence cannot handle the variety of inputs.
+
+## The agent loop
+
+At its core an agent is a loop:
+
+1. The model receives the goal, its instructions, the available tools and the history so far.
+2. It either answers or requests a tool call with specific arguments.
+3. The application executes the tool and returns the result.
+4. The model reads the result and decides what to do next.
+5. The loop ends when the model produces a final answer or a limit is reached.
+
+The model never executes anything itself. Your application code runs every tool call, which is where you apply permissions, validation and logging.
+
+## Tools
+
+Tools are functions the model may ask to call. Each has a name, a description and a schema for its arguments. Typical examples include searching a knowledge base, querying a database, calling an internal API, sending a message or creating a ticket.
+
+A tool definition is short:
+
+```json
+{
+  "name": "get_order_status",
+  "description": "Look up the current status of a customer order by its order ID.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "order_id": { "type": "string", "description": "The order ID, for example ORD-10432" }
+    },
+    "required": ["order_id"]
+  }
+}
+```
+
+Tool design has a large effect on reliability. A few principles:
+
+- Give each tool one clear purpose and a description written for the model, including when not to use it.
+- Validate every argument in code. Treat model output as untrusted input.
+- Return concise, structured results. Long raw payloads waste context and confuse the model.
+- Return helpful error messages so the model can correct itself.
+- Separate read tools from write tools, and grant the minimum permissions each needs.
+- Make write operations idempotent where possible, so a repeated call does no harm.
+
+## Planning
+
+For multi-step tasks, the model needs to break the goal into steps. There are two broad approaches.
+
+In the first, the model plans implicitly, deciding one step at a time as results arrive. This adapts well to surprises but can wander.
+
+In the second, the model writes an explicit plan first and then executes it, revising when a step fails. This is easier to review and to show to a human, and it suits longer tasks.
+
+Some systems split work between an orchestrating agent and specialised sub-agents, each with its own tools and instructions. This can help with large tasks, but it adds cost and more places for errors to hide. Use it when a single agent has clearly reached its limit.
+
+## Memory and state
+
+A model only knows what is in its context window. Agents therefore need deliberate state management.
+
+- **Short-term memory** is the conversation and tool history for the current task. Long histories should be summarised or trimmed.
+- **Long-term memory** is stored outside the model, in a database or vector index, and retrieved when relevant.
+- **Task state** such as progress, pending approvals and results should be saved in your own storage, so a task can resume after a failure or a pause for human review.
+
+## Human approval gates
+
+An approval gate pauses the agent before a consequential action and asks a person to confirm. It is the most important control in most business deployments.
+
+A simple way to decide where gates belong is to classify each tool by risk:
+
+| Action type | Examples | Suggested control |
+| --- | --- | --- |
+| Read-only | Search, lookup, summarise | No approval, log the call |
+| Reversible write | Create a draft, add an internal note | Optional approval, clear undo |
+| External or irreversible | Send an email, issue a refund, delete data, change permissions | Approval required |
+
+Good approval design shows the reviewer exactly what will happen: the action, the arguments and the reasoning. It allows edit, approve or reject. It records who approved. If approvals become so frequent that people click through without reading, the gate has stopped working, so reserve gates for actions that warrant them.
+
+## Where agents fail
+
+Knowing the failure modes is the first step to designing against them.
+
+- **Wrong tool or wrong arguments.** The model picks a similar-sounding tool or invents an identifier. Clear descriptions and strict validation help.
+- **Compounding errors.** Each step has some chance of error, and over many steps those chances multiply. Shorter tasks and checkpoints reduce this.
+- **Loops.** The agent repeats the same failing action. Set a maximum number of steps and detect repeated calls.
+- **Premature completion.** The agent reports success without finishing. Verify outcomes in code where you can.
+- **Prompt injection.** Text inside a retrieved document, web page or email instructs the agent to do something harmful. Treat all retrieved content as data, limit permissions and gate risky actions.
+- **Cost and latency growth.** Long loops consume many tokens and take a long time. Set budgets for steps, tokens and time.
+- **Context overload.** Too much history or too many tools degrades decisions. Keep the tool list focused and the context trimmed.
+
+## Guardrails and evaluation
+
+Reliable agents are built with the same discipline as any other production system.
+
+1. **Limit permissions.** Give the agent its own credentials with the narrowest scope that works.
+2. **Set hard limits.** Maximum steps, tokens, time and spend per task.
+3. **Log everything.** Record each prompt, tool call, result and decision so failures can be traced.
+4. **Build an evaluation set.** Collect realistic tasks with known good outcomes and run them on every change to prompts, tools or models.
+5. **Measure the trajectory, not only the answer.** Check that the right tools were called in a sensible order.
+6. **Roll out gradually.** Begin in a suggest-only mode where a person carries out the action, then widen autonomy as evidence builds.
+
+## When to use an agent
+
+Agents suit work that is varied, multi-step and tolerant of review, such as research, triage, drafting and operations support. They are a poor fit where the steps are fixed and known, where every action is irreversible, or where a deterministic rule would do. In those cases ordinary code or a fixed workflow is cheaper and more predictable.
+
+CodeBaxh is a software development and AI company. Our [AI agent development](/services/ai-agent-development) service covers tool design, approval flows and deployment, and our [LLM evaluation and guardrails](/services/llm-evaluation-guardrails) service covers the testing that keeps agents dependable. To discuss a use case, use the [project enquiry form](/start-a-project).
+
+## Frequently asked questions
+
+### Is an AI agent the same as a chatbot?
+
+No. A chatbot answers messages. An agent can take actions through tools and work through several steps towards a goal. An agent may have a chat interface, but many run in the background with no conversation at all.
+
+### Do agents need a human in the loop?
+
+For actions that are external, costly or hard to reverse, yes. For read-only or low-risk steps, logging and monitoring are usually enough. The level of oversight should match the risk of the action.
+
+### Which model is best for agents?
+
+It depends on the task. Tool-calling accuracy, reasoning over long contexts, speed and cost all vary between models and change with each release. Test candidates against your own evaluation set and design the system so the model can be swapped.
+
+### How do you test an agent?
+
+Build a set of realistic tasks with expected outcomes, run the agent against them, and score both the final result and the steps taken. Rerun the set whenever prompts, tools or models change, and add a case for every failure seen in production.

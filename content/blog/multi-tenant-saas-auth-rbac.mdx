@@ -1,0 +1,47 @@
+---
+title: "Authentication and RBAC in a multi-tenant SaaS"
+description: "How authentication and role-based access control work in a multi-tenant SaaS: tenant context, memberships, enforcing permissions, and Postgres RLS."
+date: "2026-01-26"
+updated: "2026-01-26"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["saas", "authentication", "rbac", "multi-tenancy"]
+cover: ""
+---
+
+In a multi-tenant SaaS, authentication and permissions must be scoped to a tenant. The flow is: authenticate the user, resolve which tenant (or tenants) they belong to and their role there, then enforce role-based permissions within that tenant — with tenant context flowing through every request and row-level security as a backstop against mistakes.
+
+## The model
+
+- Users: a person's identity and login.
+- Tenants: the customer organizations that own data.
+- Memberships: the join between a user and a tenant, with a role — a user can belong to several tenants.
+- Roles and permissions: defined per tenant (owner, admin, member), not globally.
+- Tenant context: the current tenant, resolved on every request.
+
+## Enforce at every layer
+
+- Resolve and set tenant context in middleware, from the authenticated session — never trust a tenant id sent by the client.
+- Scope every database query by `tenant_id` automatically via that context.
+- Add PostgreSQL row-level security as a backstop so a missed scope can't leak another tenant's data.
+- Check role permissions on each sensitive action, not just on the page.
+
+## Common pitfalls that leak data
+
+- Trusting a tenant id from the client instead of the session.
+- Forgetting to scope a single query by tenant — the classic cross-tenant leak.
+- Global roles that accidentally grant access across tenants.
+
+## Our approach
+
+We build tenant context, per-tenant RBAC, and row-level security in from day one — the same foundation behind a multi-tenant SaaS MVP we shipped. Isolation is cheapest to get right at the start and expensive to retrofit.
+
+## Frequently asked questions
+
+### How does authentication work in a multi-tenant SaaS?
+
+Authenticate the user, resolve their tenant membership and role from the session, set tenant context on every request, and enforce role-based permissions within that tenant. Scope all queries by tenant and back it with row-level security.
+
+### What is row-level security and do I need it?
+
+Row-level security (RLS) is a database feature (e.g. in PostgreSQL) that restricts which rows a query can access. In multi-tenant SaaS it's a valuable backstop: even if application code misses a tenant scope, RLS prevents leaking another tenant's data.

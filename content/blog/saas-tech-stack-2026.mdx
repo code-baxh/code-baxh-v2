@@ -1,0 +1,41 @@
+---
+title: "The SaaS tech stack we use in 2026 — and why"
+description: "The SaaS tech stack we use in 2026: Next.js, TypeScript, Node/NestJS or FastAPI, PostgreSQL/Supabase, Stripe, and AWS, with the reasoning behind each."
+date: "2026-03-28"
+updated: "2026-03-28"
+author: "bilal-khursheed"
+category: "SaaS"
+tags: ["saas", "tech stack", "nextjs", "postgresql"]
+cover: ""
+---
+
+Our default 2026 SaaS stack is Next.js and TypeScript on the front end, Node/NestJS or Python/FastAPI on the back end, PostgreSQL (often via Supabase) for data, Stripe for billing, and AWS or Vercel for hosting. We choose it for speed to ship, end-to-end type safety, and headroom to scale — then adapt per project.
+
+## The stack, layer by layer
+
+- Frontend: Next.js + TypeScript + Tailwind — fast, SEO-ready, and type-safe.
+- Backend: Node.js/NestJS or Python/FastAPI — typed, structured, and well-supported.
+- Data: PostgreSQL (Supabase) with row-level security; Redis for caching and queues.
+- Billing: Stripe, wired to the tenant lifecycle.
+- Hosting: Vercel for the Next.js front end, AWS for backend and data; Docker for portability.
+- AI (when needed): a model-agnostic layer over OpenAI/Anthropic with RAG and evaluation.
+
+## Why these choices
+
+The theme is boring, proven technology with types from database to UI — fewer runtime surprises, easier onboarding, and a large hiring pool. Each piece scales, and none of it locks you in without an exit.
+
+## What we avoid
+
+- Bleeding-edge tools for core infrastructure that must be reliable.
+- Vendor lock-in without a clear migration path.
+- Premature microservices — a well-structured monolith ships faster and scales further than most teams expect.
+
+## Frequently asked questions
+
+### What's the best tech stack for a SaaS in 2026?
+
+A pragmatic default is Next.js + TypeScript, Node/NestJS or Python/FastAPI, PostgreSQL/Supabase, Stripe for billing, and AWS/Vercel for hosting — proven, type-safe, and scalable. The right stack still depends on your specific product.
+
+### Should I use microservices for my SaaS?
+
+Usually not at first. A well-structured monolith ships faster and scales further than most teams expect. Split out services only when a clear scaling or team boundary demands it.

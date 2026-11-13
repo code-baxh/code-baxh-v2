@@ -1,0 +1,83 @@
+---
+title: "How long does it take to build an AI agent?"
+description: "Realistic AI agent timelines: 2 weeks for a prototype, 6–10 weeks for a production agent with approval gates, 12+ weeks for multi-system automation."
+date: "2026-08-27"
+updated: "2026-08-27"
+author: "bilal-khursheed"
+category: "AI"
+tags: ["ai agents", "timeline", "automation"]
+cover: ""
+---
+
+A production AI agent — one that reads from your systems, decides what to do next, and takes actions you can audit — typically takes **6–10 weeks** to ship. A prototype that proves the loop on real data takes about **2 weeks**. An agent spanning several systems with approval gates, role-based access, and audit requirements runs **12+ weeks**.
+
+The thing that surprises most teams: unlike a chatbot build, an agent's schedule is set less by engineering than by how long it takes to get credentials and sign-off for every system it touches. We have seen the code finish in week five and the launch wait until week nine on a single API approval.
+
+If you are still deciding whether you need an agent at all, read [AI agents vs chatbots vs RAG](/blog/ai-agents-vs-chatbots-vs-rag) first. Picking the wrong one is the most expensive scheduling mistake in this category — an agent takes roughly twice as long as the [chatbot timeline](/blog/how-long-to-build-ai-chatbot) for the same subject matter.
+
+## What are the realistic AI agent timeline tiers?
+
+| Tier | Timeline | What you get | Right for |
+| --- | --- | --- | --- |
+| Prototype | ~2 weeks | The agent loop running against real inputs with one or two read-only tools; enough to see whether it makes sensible decisions on your actual data | Proving the concept before committing integration effort |
+| Production agent | 6–10 weeks | Scoped tool access, human approval gates on consequential actions, step-level audit logging, an evaluation task set, and cost and step caps | One well-defined workflow you want run reliably |
+| Multi-system agent | 12+ weeks | Everything above across several systems, with role-based access, richer escalation paths, and the compliance evidence that unlocks write access | Automation that replaces a recurring multi-tool process |
+
+*Agent delivery timelines we quote, assuming API access is granted on day one — which it rarely is.*
+
+## Where do the weeks actually go?
+
+Here is the shape of a typical 8-week production agent build. Note how little of it is model work: the loop itself is often running by week three, and everything after that is making it safe to trust.
+
+- **Weeks 1–2 — scope and permissions.** Map the workflow, decide which actions the agent may take unsupervised, which need human approval, and which it must refuse. Start the credential requests now; they are the long pole and they do not parallelise.
+- **Week 3 — tools and the loop.** Define the exact functions the agent can call and get it planning and executing against read-only versions first. This is the fast part, and its speed is misleading.
+- **Weeks 4–5 — evaluation.** Build a fixed task set with known-correct outcomes, including the malformed and edge-case inputs, then iterate until the agent scores consistently. Teams that skip this ship an agent that worked in the demo and fails on week-one reality.
+- **Week 6 — guardrails and cost control.** Step caps, per-run token budgets, refusal cases, and step-level logging. Enforced in code, not requested in a prompt — a prompt is a suggestion, and an agent under pressure will route around it.
+- **Week 7 — write access behind approval.** Turn on the actions that change state, every one gated behind human approval, and watch what it proposes without letting it commit.
+- **Week 8 — supervised rollout.** Run on real work with a person approving each action, compare against how the task was done manually, then widen autonomy only where the evidence supports it.
+
+## What makes an AI agent build take longer?
+
+- **Integration approvals.** Every system the agent writes to needs credentials and a sign-off, and enterprise approval loops routinely cost more calendar time than the entire build. This is the single most common cause of a slipped agent launch.
+- **Scope that grows mid-build.** "While it is in there, could it also…" is how an 8-week agent becomes a 16-week one. Each new tool multiplies the states you must evaluate, not just adds to them.
+- **No definition of correct.** If nobody can say what the right outcome is for a given input, you cannot build an evaluation set, and without one you are shipping on vibes. Pinning this down is often a week of stakeholder work nobody budgeted.
+- **Compliance review for write access.** Letting software modify records in a regulated environment attracts scrutiny that a read-only assistant never does. Budget for it in fintech, health, and anything touching customer money.
+- **Reaching for multi-agent too early.** Splitting a coherent task across several agents adds coordination failure modes without adding capability. Start with one; split only where roles genuinely differ.
+
+## How do you compress the timeline?
+
+The agent builds that ship fastest share three decisions: **one workflow** rather than a platform, **read-only first** so value arrives before the write-access approval lands, and **credential requests filed in week one** rather than when the code is ready for them.
+
+The fourth lever is accepting a lower autonomy ceiling at launch. An agent that proposes every action for human approval delivers most of the time saving — the work is in the deciding, not the clicking — and it ships weeks earlier than one cleared to act alone. You can widen autonomy later, once the task-set scores and the audit log give you the evidence to justify it.
+
+> **From our own builds**
+>
+> We built a production multi-agent pipeline that analyses 500–1,000-page legal contracts, with separate agents for document processing, retrieval, query understanding, and response ([case study](/work/legal-contract-ai)). The pattern held there and on every agent since: the model was never the bottleneck. Data access and approval loops were.
+
+## When should you not build an AI agent?
+
+If the task is a single lookup, you want retrieval or a chatbot, and you will have it in a third of the time. If the process is genuinely rigid with no exceptions, a plain script is cheaper, faster, and easier to debug than any agent. And if the work happens a handful of times a month, the engineering will not pay back — agents earn their cost on repetition.
+
+An honest agency will tell you which of those you are looking at in the first call. It is one of the questions worth asking directly; see our [guide to vetting development agencies](/blog/questions-to-ask-software-development-agency).
+
+## Frequently asked questions
+
+### How fast can we see an AI agent working on our data?
+
+About two weeks for a prototype. It runs the agent loop against your real inputs with one or two read-only tools, which is enough to answer the question that matters — does it make sensible decisions on your actual data — before you spend effort on integration approvals and guardrails.
+
+### Why does an AI agent take longer to build than a chatbot?
+
+Because the failure mode is different. A chatbot's worst case is a wrong answer; an agent's worst case is a wrong action in a system of record. That difference is why most of an agent's schedule goes to permissions, approval gates, evaluation, and audit logging rather than conversation design. Expect roughly twice the timeline of an equivalent chatbot.
+
+### What is the longest pole in an AI agent project?
+
+Integration access, almost every time. Every system the agent reads from or writes to needs credentials and organisational sign-off, and those approval loops run on their own calendar regardless of how fast the engineering goes. File the requests in week one — it is the cheapest schedule insurance available.
+
+### Can we launch with the agent only suggesting actions?
+
+Yes, and it is usually the right call. An agent that proposes every action for human approval captures most of the time saving, because the work is in the deciding rather than the clicking. It also ships weeks earlier, since it sidesteps the write-access approvals, and it generates the audit trail you need to justify widening autonomy later.
+
+### How long does it take to add a new system to an existing agent?
+
+Days of engineering, and however long your approval process takes. Once the agent framework, evaluation harness, and logging are in place, adding a tool is a contained change. The variable is access: a system with a clean API and a willing owner is a week, and one requiring a security review can be a month or more.
