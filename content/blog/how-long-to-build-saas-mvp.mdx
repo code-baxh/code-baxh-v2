@@ -1,8 +1,8 @@
 ---
 title: "How long does it take to build a SaaS MVP?"
-description: "A realistic SaaS MVP timeline: a phase-by-phase table, what slows builds down, what speeds them up, and how a tightly scoped multi-tenant SaaS MVP comes together."
+description: "A realistic SaaS MVP timeline: 8–14 weeks phase by phase, what slows builds down, what to cut to hit a launch date, and how a scoped MVP comes together."
 date: "2026-06-18"
-updated: "2026-06-18"
+updated: "2026-11-13"
 author: "bilal-khursheed"
 category: "SaaS"
 tags: ["saas", "mvp", "timeline"]
@@ -10,38 +10,86 @@ cover: ""
 service: "mvp-development"
 ---
 
-A focused SaaS MVP typically takes **8 to 14 weeks** from kickoff to launch. The timeline is driven less by raw feature count and more by scope discipline, integration complexity, and how quickly decisions get made.
+A focused SaaS MVP typically takes **8 to 14 weeks** from kickoff to launch: about **one week** of discovery, **1–2 weeks** of design and architecture, **5–9 weeks** of building in weekly loops and **1–2 weeks** of hardening. Where you land in that range depends on scope discipline, integration complexity and how quickly decisions get made, far more than on raw feature count.
 
 ## A realistic phase-by-phase timeline
 
-Here is how a typical build breaks down — and what we need from you at each phase:
+Here is how a typical build breaks down, and what we need from you at each phase:
 
-| Phase | Weeks | What happens | Your involvement |
-| --- | --- | --- | --- |
-| Discovery | Week 0 | Align on the outcome, scope, and the one metric that proves the idea | One call; decisions |
-| Design & architecture | Weeks 1–2 | Data model, system architecture, and key flows before production code | Review and sign-off |
-| Build in short loops | Weeks 3–9 | Working software shipped weekly; shared board; async updates | Weekly demo; feedback |
-| Hardening & launch | Weeks 10–11 | QA, performance, security pass, deploy, and clean handover | Final review; go/no-go |
+| Phase | Weeks | Typical range | What happens | Your involvement |
+| --- | --- | --- | --- | --- |
+| Discovery | Week 0 | About 1 week | Align on the outcome, scope, and the one metric that proves the idea | One call; decisions |
+| Design and architecture | Weeks 1–2 | 1–2 weeks | Data model, system architecture, and key flows before production code | Review and sign-off |
+| Build in short loops | Weeks 3–9 | 5–9 weeks | Working software shipped weekly; shared board; async updates | Weekly demo; feedback |
+| Hardening and launch | Weeks 10–11 | 1–2 weeks | QA, performance, security pass, deploy, and clean handover | Final review; go/no-go |
+
+The ranges add up to the 8–14 week total. The build phase carries most of the variance, because that is where the scope lives.
+
+### Discovery: a written scope, not a slide deck
+
+Discovery ends with three things in writing: the core workflow, the single metric that proves the idea, and a list of everything that is explicitly v2. That last list matters as much as the scope. It is what you point at when a new idea arrives in week six. Our guide to the [discovery phase](/blog/discovery-phase-software-project) covers what a good one produces.
+
+### Design and architecture: the decisions that are expensive to change
+
+Two decisions get made here because they are costly to reverse after launch: the data model and the tenancy model. For most B2B products that means one shared database schema with a tenant ID on every row, rather than a database per customer. Key screens are wireframed so the build starts from agreed flows, not guesses.
+
+### Build: weekly loops of working software
+
+Every week ends with a demo of software running in a real environment, not a status report. Billing usually lands mid-build: subscriptions that handle trials, upgrades, failed cards and cancellations take around **2–3 weeks** on their own, which we break down in [how long it takes to integrate Stripe](/blog/how-long-to-integrate-stripe).
+
+### Hardening and launch: the weeks people try to skip
+
+The last phase covers QA across the main flows, a performance check and a security pass against common web risks such as those in the [OWASP Top 10](https://owasp.org/www-project-top-ten/). Then the production deploy, monitoring and handover. Skipping this phase does not save the time; it moves it into the first month after launch, when real customers find the bugs. Our [QA strategy for startups](/blog/qa-testing-strategy-for-startups) shows what is proportionate at MVP stage, and [hypercare](/blog/hypercare-post-launch-support) covers the weeks right after go-live.
 
 ## What slows an MVP down
 
-- **Scope creep:** adding 'just one more thing' each week is the number-one timeline killer.
-- **Slow decisions:** an MVP moves at the speed of the person who approves things.
+- **Scope creep:** adding "just one more thing" each week is the number-one timeline killer.
+- **Slow decisions:** an MVP moves at the speed of the person who approves things. Every day a question waits for an answer is usually a day added to the end.
 - **No clear success metric:** without it, every feature feels essential (see the [MVP feature checklist](/blog/saas-mvp-feature-checklist)).
+- **Integrations with poor APIs:** a well-documented API is a small job; a legacy system with no sandbox can take longer than the core workflow.
 - **Heavy compliance** (SOC 2, HIPAA) or bespoke, unproven design.
 
 ## What speeds it up
 
 - A single decision-maker who can approve quickly.
-- A tightly scoped core — the smallest thing that proves the idea.
-- Reusing proven architecture (e.g. [multi-tenant patterns](/blog/how-to-build-a-multi-tenant-saas)) instead of inventing from scratch.
-- Weekly demos that surface course-corrections early, while they're cheap.
+- A tightly scoped core: the smallest thing that proves the idea.
+- Reusing proven architecture (for example [multi-tenant patterns](/blog/how-to-build-a-multi-tenant-saas)) instead of inventing from scratch.
+- Buying the commodity parts (authentication, payments, email, file storage) instead of building them.
+- Content and access ready on time: copy, pricing, sample data and credentials for any system you integrate with.
+- Weekly demos that surface course-corrections early, while they are cheap.
+
+## What can be cut to hit a date
+
+When a launch date is fixed (a conference, a funding milestone, a pilot customer), the date stays and the scope moves. These are the cuts we suggest first, because each one saves real build time without creating throwaway code:
+
+| Cut from v1 | Ship instead | What you give up |
+| --- | --- | --- |
+| In-app billing settings | Stripe's hosted [Checkout](https://docs.stripe.com/payments/checkout) and [customer portal](https://docs.stripe.com/customer-management), where customers update payment methods, change or cancel plans and download invoices | A fully branded billing experience |
+| Usage-based or metered pricing | Two or three flat subscription tiers | Pricing precision; flat subscriptions take about 2–3 weeks, usage-based billing 4–6 |
+| SSO and SAML | Email and social login from an auth provider | Enterprise buyers who require SSO on day one |
+| Native mobile apps | A responsive [web app or PWA](/blog/web-app-vs-mobile-app-vs-pwa) | App store presence and deep device features |
+| Polished admin tooling | A minimal internal admin view or an off-the-shelf admin builder | Convenience for your own team, which customers never see |
+| Second and third integrations | The one integration the core workflow needs, plus CSV import and export | Automation for less common setups |
+| AI features, unless AI is the product | The core workflow, instrumented so you learn where [AI would help](/blog/add-ai-to-existing-app) | A feature that would add a 4–6 week production RAG build |
+| Custom illustration and motion | A clean interface on a proven component library | Brand distinctiveness, until traction justifies it |
+
+### What not to cut
+
+Some things look optional and are not, because retrofitting them after launch costs more than building them now:
+
+- **Tenant isolation and server-side permission checks.** A data leak between customers can end a young SaaS.
+- **Billing webhooks.** If a failed payment does not change what a customer can access, you are running a free product.
+- **Automated tests on billing and isolation.** These are the regressions that cost money or trust.
+- **Error monitoring, backups and logging.** You need to see, and recover from, the first production incident.
+- **Account deletion and data export** if you serve customers in the EU.
+
+The rule we apply: cut features, never foundations. A missing feature can ship in week two after launch. A missing foundation means rework across the whole codebase.
 
 ## A worked example: a tightly scoped build
 
-One multi-tenant SaaS MVP we shipped had a deliberately narrow scope: auth and accounts, the one core workflow, Stripe billing, and a basic admin view — built on shared-schema multi-tenancy with row-level security so it could scale after launch. Everything else was explicitly a v2 candidate.
+Our [multi-tenant SaaS MVP](/work/multi-tenant-saas-mvp) shows the shape we aim for. Its launch scope was four things: tenant isolation, subscription billing, role-based access and a customer dashboard. It launched on the agreed timeline, ready for real users.
 
-The speed didn't come from cutting corners; it came from scope discipline plus a weekly demo cadence that kept decisions fast and surprises small.
+None of those four is exotic. What makes a list like that hit a date is that everything outside it waits, and that the foundations (isolation, billing, roles) are built properly the first time, so v2 extends them instead of replacing them.
 
 > **The one-metric rule**
 >
@@ -49,17 +97,17 @@ The speed didn't come from cutting corners; it came from scope discipline plus a
 
 ## How we work
 
-We scope tightly to what proves the idea, then build that small scope on robust architecture so it becomes the foundation for v2 rather than throwaway code. See our [MVP development service](/services/mvp-development), [what a SaaS costs](/blog/how-much-does-it-cost-to-build-a-saas), or [book a free discovery call](/start-a-project).
+We scope tightly to what proves the idea, then build that small scope on robust architecture so it becomes the foundation for v2 rather than throwaway code. You see working software every week and pay by milestone; our [engagement models](/engagement) explain the options. For the budget side, see [what a SaaS costs to build](/blog/how-much-does-it-cost-to-build-a-saas), or [book a free discovery call](/start-a-project).
 
 ## Frequently asked questions
 
 ### How long does it take to build a SaaS MVP?
 
-Most focused SaaS MVPs take 8–14 weeks. Timeline depends on scope discipline, integration complexity, and decision speed — not just feature count.
+Most focused SaaS MVPs take 8–14 weeks from kickoff to launch: about a week of discovery, 1–2 weeks of design and architecture, 5–9 weeks of building and 1–2 weeks of hardening. The timeline depends on scope discipline, integration complexity and decision speed, not just feature count.
 
 ### Can you build an MVP faster than 8 weeks?
 
-Sometimes, for a very narrow scope on proven architecture. The fastest path is a tightly scoped core built well — not cutting corners you'll pay for at v2.
+Sometimes, for a very narrow scope on proven architecture. If you only need to test the idea with users, a clickable prototype takes 2–4 weeks and is often the better tool. The fastest path to a real product is a tightly scoped core built well, not cutting corners you will pay for at v2.
 
 ### What's the biggest cause of MVP delays?
 
@@ -67,8 +115,12 @@ Scope creep and slow decisions. Adding features mid-build and waiting on approva
 
 ### What should the MVP actually include?
 
-Only what proves the core value plus the essentials to charge and operate safely: auth, the one core workflow, billing, and basic admin. See our SaaS MVP feature checklist for the full build-vs-skip list.
+Only what proves the core value plus the essentials to charge and operate safely: auth, the one core workflow, billing, and basic admin. Everything else goes on a written v2 list. Our [SaaS MVP feature checklist](/blog/saas-mvp-feature-checklist) has the full build-vs-skip list.
 
 ### Do you keep us involved during the build?
 
-Yes — weekly demos of working software, a shared board you can check anytime, and async updates across your working hours. You see progress every week, not a big reveal at the end.
+Yes. You get weekly demos of working software, a shared board you can check anytime, and async updates across your working hours. You see progress every week, not a big reveal at the end, which is also what keeps decisions fast.
+
+### Does adding AI or a mobile app change the timeline?
+
+Yes. A production RAG assistant inside the product typically adds 4–6 weeks, and a native mobile app is a separate build with its own timeline; see [how long a mobile app takes](/blog/how-long-to-build-mobile-app). For most MVPs we recommend launching the web product first and adding either once you know which workflow customers use most.

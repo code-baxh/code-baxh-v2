@@ -1,8 +1,8 @@
 ---
 title: "Web app, mobile app, or PWA: which should you build first?"
-description: "Web app vs native mobile vs PWA compared: reach, cost, capabilities, and distribution — how to choose what to build first for your product and budget."
+description: "Web app vs native mobile vs PWA compared: reach, install, offline, device APIs, push and app store review, plus current iPhone PWA support and how to choose."
 date: "2026-07-16"
-updated: "2026-07-16"
+updated: "2026-11-13"
 author: "bilal-khursheed"
 category: "Mobile"
 tags: ["mobile apps", "web apps", "pwa"]
@@ -10,7 +10,7 @@ cover: ""
 service: "mobile-app-development"
 ---
 
-**Start with a web app** if you need reach, fast iteration, and low cost. **Go native (React Native)** when you need deep device features, reliable offline, push notifications, or an app-store presence. **Choose a PWA** when you want app-like install and offline behavior on a web budget. Most products should start with one of these — not all three.
+**Start with a web app** if you need reach, fast iteration and low cost. **Go native (React Native)** when you need deep device features, reliable background work, rich push notifications or an app-store presence. **Choose a PWA** when you want app-like install, offline use and push notifications on a web budget. Most products should start with one of these, not all three.
 
 The right first choice comes down to four things: who you need to reach, what device capabilities you need, your budget, and whether app-store distribution matters.
 
@@ -18,32 +18,54 @@ The right first choice comes down to four things: who you need to reach, what de
 
 - **Web app:** runs in the browser, instantly accessible via a URL, nothing to install. Widest reach, fastest to ship and update.
 - **Native / cross-platform:** installed from the app stores. We build these with [React Native](/blog/react-native-vs-flutter) so one codebase ships to iOS and Android.
-- **PWA (Progressive Web App):** a web app that can be installed to the home screen and work offline — app-like, without the app store.
+- **PWA (Progressive Web App):** a web app that can be installed to the home screen, work offline and send notifications. App-like, without the app store.
+
+A PWA is not a separate product. It is a web app with three additions: a web app manifest (name, icons, how it opens), a service worker that caches what the app needs offline, and HTTPS. That is why it costs only a little more than the web app it is built on.
 
 ## At a glance
 
 | Factor | Web app | PWA | Native (React Native) |
 | --- | --- | --- | --- |
-| Reach | Widest (any browser) | Wide | App-store users |
-| Install | None | Optional, from browser | From App Store / Play |
-| Offline | Limited | Yes | Full |
-| Device features | Limited | Growing, but partial | Full (camera, sensors, etc.) |
+| Reach | Widest: any browser, shareable by link | Same as web; install is optional | People who find and download it from a store |
+| Install | None | From the browser; on iPhone via the Share menu | From the App Store or Google Play |
+| Offline | Limited | Yes, for what the service worker caches | Full |
+| Device APIs | Standard browser APIs only | Same as web; Bluetooth and background sync unavailable on iPhone | Full: camera, Bluetooth, sensors, background location |
+| Push notifications | Desktop and Android browsers; not in iPhone browser tabs | Yes, including iPhone and iPad once added to the Home Screen | Full, including rich notifications |
+| Relative cost | Lowest | Low: web app plus offline and install work | Higher: a separate app and release process |
+| App store review | None; deploy in minutes | None | Every release is reviewed |
 | App store presence | No | No | Yes |
-| Relative cost | Lowest | Low | Higher |
-| Iteration speed | Instant deploys | Instant deploys | Store review cycles |
 
 *Reach and speed favor web; capabilities and store presence favor native.*
+
+## What PWAs can do on iPhone today
+
+The iPhone used to be the main argument against PWAs. That has changed a lot, though not completely. At the time of writing (November 2026), this is where support stands:
+
+| Platform | Install | Push notifications | Main gaps |
+| --- | --- | --- | --- |
+| iPhone and iPad | Share menu in Safari, Chrome, Edge, Firefox and Orion | Yes, for Home Screen web apps | No install prompt; no Web Bluetooth or background sync |
+| Android | Chrome (with Google services) and Samsung Internet install a WebAPK; other browsers add a shortcut | Yes | Varies by browser |
+| Desktop | Chromium browsers install from a manifest; Safari on macOS adds to the Dock | Yes | Firefox does not install PWAs |
+
+The milestones that matter:
+
+- **Push notifications arrived in iOS 16.4.** WebKit added [Web Push and the Badging API for Home Screen web apps](https://webkit.org/blog/13878/web-push-for-web-apps-on-ios-and-ipados/). The catch: the app must be added to the Home Screen first, and the permission request has to come from a direct user action such as tapping a button.
+- **Installing got easier in iOS 26.** Since [Safari 26](https://webkit.org/blog/17333/webkit-features-in-safari-26-0/), every site added to the Home Screen opens as a web app by default, with no manifest required. A manifest is still worth adding for your name, icons and display settings.
+- **Other browsers can install too.** According to [MDN's installability guide](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable), from iOS 16.4 PWAs can be installed from the Share menu in Safari, Chrome, Edge, Firefox and Orion.
+
+What is still missing on iPhone shapes the decision. There is no install prompt you can trigger: the `beforeinstallprompt` event that Chromium browsers use is not supported on iOS, so you have to teach users the Share, Add to Home Screen steps. And according to MDN's compatibility data, Safari supports neither Web Bluetooth nor background sync. If your product depends on either, a PWA will not cover your iPhone users.
 
 ## Start with a web app if...
 
 - You need the widest possible reach with zero install friction.
 - You're validating fast and want to ship and update in minutes, not review cycles.
 - Your features live comfortably in the browser (dashboards, SaaS, content, tools).
+- People will find you through search or shared links; public pages built well can rank, as covered in our [Next.js SEO checklist](/blog/nextjs-seo-checklist).
 - Budget is tight and you want the most product per dollar.
 
 ## Go native if...
 
-- You need deep device features — camera, Bluetooth, background location, sensors.
+- You need deep device features: camera pipelines, Bluetooth, background location, sensors.
 - Reliable offline use and rich push notifications are core to the experience.
 - Being in the App Store and Play Store matters for trust or discovery.
 - The experience must feel fully native and high-performance (gestures, animations).
@@ -53,36 +75,50 @@ The right first choice comes down to four things: who you need to reach, what de
 - You want an installable, offline-capable app-like experience on a web budget.
 - App-store distribution isn't essential to your audience.
 - Your device-feature needs are modest and covered by modern browser APIs.
+- You need push notifications on iPhone and your users will add the app to their Home Screen, for example staff or members you onboard yourself.
+
+## How to decide in four questions
+
+1. **Does the core use case need a device capability browsers lack on iPhone?** Bluetooth hardware, background location or work that must run while the app is closed point to native. Check this first; it overrides everything else.
+2. **Where will users come from?** Search, ads and shared links favor web. Users who search the App Store for a solution, or expect a brand to have an app, favor native.
+3. **How often will you ship?** Early products change weekly. Web and PWA releases go live in minutes; every native release waits for store review.
+4. **What can you spend before you have proof?** Web is the cheapest way to learn what users want. Our guides to [what a mobile app costs](/blog/cost-to-build-mobile-app) and [how long one takes](/blog/how-long-to-build-mobile-app) show the jump.
+
+If two answers point to native, build native. Otherwise, start on web, add PWA features where they help, and keep native as a later step.
+
+## Can you just wrap your website in an app?
+
+Packaging a website in a thin native shell to get into the App Store looks like a shortcut, but Apple's [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/) say an app "should include features, content, and UI that elevate it beyond a repackaged website". A wrapper with nothing app-like risks rejection under that rule. If you need store presence, build an app that earns it: native navigation, push notifications, offline support or device features the website does not have.
 
 > **You can share more than you think**
 >
-> With a web app plus a React Native app, you can share business logic, types, and APIs across both — and one team can build the backend once. That makes "web now, native later" far cheaper than two separate builds. See our breakdown of [mobile app cost](/blog/cost-to-build-mobile-app).
+> With a web app plus a React Native app, you can share business logic, types, and APIs across both, and one team can build the backend once. That makes "web now, native later" far cheaper than two separate builds.
 
 ## How we help you decide
 
-We help you pick the smallest thing that proves the product, then expand — often web first, native when the capabilities or distribution justify it. See our [mobile app development service](/services/mobile-app-development) or [book a free discovery call](/start-a-project) to map the right path for your product.
+We help you pick the smallest thing that proves the product, then expand: often web first, native when the capabilities or distribution justify it. For SaaS products that usually means a web MVP first, on the timeline in [how long a SaaS MVP takes](/blog/how-long-to-build-saas-mvp). Products that need both from day one, like our [wedding planning marketplace across web and mobile](/work/mydasma-wedding-platform), share one backend between them. [Book a free discovery call](/start-a-project) to map the right path for your product.
 
 ## Frequently asked questions
 
 ### Should I build a web app or a mobile app first?
 
-For most products, start with a web app: widest reach, lowest cost, and instant iteration. Build native when you need deep device features, reliable offline, push notifications, or an app-store presence.
+For most products, start with a web app: widest reach, lowest cost, and instant iteration. Build native when you need deep device features, reliable offline, rich push notifications, or an app-store presence. If you only need install and notifications, a PWA may cover it without a native build.
 
 ### What is a PWA?
 
-A Progressive Web App is a web app that can be installed to the home screen and work offline, giving an app-like experience without going through the app stores. It's a middle ground between web and native.
+A Progressive Web App is a web app that can be installed to the home screen, work offline and send notifications, giving an app-like experience without going through the app stores. Technically it is a web app plus a manifest, a service worker and HTTPS. It's a middle ground between web and native.
 
 ### Can a PWA replace a native app?
 
-For many use cases, yes — if your device-feature needs are modest and app-store distribution isn't essential. For camera-heavy, sensor-heavy, or fully offline experiences, native is still the stronger choice.
+For many use cases, yes, if your device-feature needs are modest and app-store distribution isn't essential. iPhones now support installation and push notifications for Home Screen web apps, which removed the biggest objection. For camera-heavy, Bluetooth, background-location or fully offline experiences, native is still the stronger choice.
 
 ### Is a web app or native app cheaper?
 
-A web app is typically cheaper to build and much cheaper to iterate on, since there are no app-store review cycles. Native costs more but unlocks device features and store distribution.
+A web app is typically cheaper to build and much cheaper to iterate on, since there are no app-store review cycles. Native costs more but gives you full device features and store distribution. Adding PWA features to a web app costs relatively little.
 
 ### Do I need to be in the app store?
 
-Only if your audience discovers or trusts products there, or you need capabilities that require a native app. Plenty of successful products are web-only — don't pay for store presence you don't need.
+Only if your audience discovers or trusts products there, or you need capabilities that require a native app. Plenty of successful products are web-only, so don't pay for store presence you don't need. If you do go into the stores, the app has to offer more than a repackaged website to pass review.
 
 ### Can I reuse code across web and mobile?
 

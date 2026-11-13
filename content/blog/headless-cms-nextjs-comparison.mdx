@@ -1,8 +1,8 @@
 ---
 title: "Headless CMS for Next.js: Strapi vs Sanity vs Contentful"
-description: "Strapi vs Sanity vs Contentful for Next.js: open-source vs managed, content modeling, and which headless CMS to choose for your site and team."
+description: "Sanity, Contentful, Strapi and Payload compared for Next.js: hosting model, editing experience, pricing model and which headless CMS fits your team."
 date: "2026-04-16"
-updated: "2026-04-16"
+updated: "2026-11-13"
 author: "bilal-khursheed"
 category: "Web"
 tags: ["headless cms", "nextjs", "strapi", "sanity", "contentful"]
@@ -10,30 +10,106 @@ cover: ""
 service: "nextjs-development"
 ---
 
-For a Next.js site, the best headless CMS depends on how much control and governance you need. Sanity offers flexible, real-time structured content with excellent developer experience; Contentful is a mature, enterprise-grade managed platform; Strapi is open-source and self-hostable, so you own your data and infrastructure. All three pair well with Next.js consumed via ISR.
+For most Next.js sites, choose **Sanity** for a hosted backend with a highly customizable editor, **Contentful** for enterprise governance on a fully managed platform, **Strapi** for an open-source CMS you host yourself, and **Payload** to run the CMS inside your Next.js codebase. All four work well with static generation and on-demand revalidation. The real differences are **hosting model**, **editing experience** and **how cost grows**.
 
-## Quick comparison
+## Headless CMS comparison at a glance
 
-- Sanity: flexible content modeling, real-time editing, great DX — hosted, usage-based pricing.
-- Contentful: mature, enterprise features, roles and governance — hosted, higher cost.
-- Strapi: open-source, self-hostable, full data ownership — you run and maintain it.
+Facts and prices below are from each vendor's site at the time of writing (November 2026).
 
-## Which to choose
+| | Sanity | Contentful | Strapi | Payload |
+| --- | --- | --- | --- | --- |
+| Hosting model | Hosted content backend; the open-source Studio runs on Sanity's hosting or yours | Fully hosted SaaS | Self-hosted open source (MIT), or managed Strapi Cloud | Self-hosted open source (MIT), installed inside your Next.js app |
+| Where content lives | Sanity's cloud | Contentful's cloud | Your database | Your database (MongoDB or Postgres) |
+| Content modeling | Schemas defined in code | Content types defined in the web app | Admin-panel builder | Collections and fields in a TypeScript config |
+| Editing experience | Real-time collaborative Studio, customizable with React | Polished web app; custom roles on Premium | Admin panel; live preview, releases and history on paid plans | Admin panel generated from your config, extensible with React |
+| Query APIs | GROQ or GraphQL | REST and GraphQL | REST and GraphQL | REST, GraphQL and direct server-side calls |
+| Pricing model | Free tier, then per seat plus pay-as-you-go usage | Free tier, monthly self-serve tier, Premium quoted by sales | Free Community edition; paid self-hosted plans; Cloud per project | Free software; you pay for hosting and database |
+| Best fit | Content-heavy sites with custom editorial workflows | Large organizations with many teams, locales and approval rules | Teams that must self-host or keep content in their own database | Next.js teams that want CMS and app in one codebase |
 
-- Want fast, flexible structured content with minimal ops: Sanity.
-- Enterprise governance, roles, and a managed SLA: Contentful.
-- Data residency, self-hosting, or full ownership: Strapi.
+## Hosted or self-hosted: the first decision
 
-## Our approach
+### Hosted: Sanity and Contentful
 
-We use Strapi when clients want to own and self-host their content, and Sanity when they want fast, flexible modeling without running infrastructure. Either way we consume content in Next.js with Incremental Static Regeneration, so pages stay static-fast and fully crawlable while editors publish freely.
+With a hosted CMS, the vendor runs the database, APIs, backups and uptime. You get an editor that works on day one and an API your Next.js app calls at build or revalidation time. The trade-off is that content lives in the vendor's cloud and cost follows their pricing model.
+
+Sanity splits the two halves: content is stored in its hosted backend, while the editor, Sanity Studio, is an open-source React app. According to [Sanity's pricing page](https://www.sanity.io/pricing), every plan includes hosted infrastructure and free Studio hosting; Sanity's docs also cover self-hosting the Studio or embedding it in an app. Contentful is hosted end to end, with spaces and environments for separating content and testing changes before they reach production.
+
+### Self-hosted: Strapi and Payload
+
+With a self-hosted CMS, content sits in a database you control, in a region you choose. That matters for data residency rules and for teams that want no per-seat license. The cost moves from a subscription to operations: someone has to patch, back up, monitor and upgrade the CMS, which belongs in your [post-launch support plan](/blog/hypercare-post-launch-support).
+
+Strapi runs as its own Node.js service next to your Next.js front end. Payload takes a different approach: its [repository README](https://github.com/payloadcms/payload) describes it as a Next.js-native CMS that installs directly into your existing `/app` folder, so the admin panel, APIs and your site deploy as one application. For hosting choices, including EU regions, see [where to host a SaaS](/blog/where-to-host-saas-aws-vercel-render).
+
+## Editing experience: what your editors will actually use
+
+Editors judge a CMS on the editing screen, not the API. Before choosing, have the people who will publish try the real task: create a page, add images, preview it, schedule it.
+
+- **Sanity Studio** supports real-time collaboration, and because schemas and the Studio are code, developers can build custom inputs, validation and previews for your exact content. Flexibility is the strength; the cost is that a good editing experience has to be designed.
+- **Contentful** gives editors a mature, consistent web app with little setup. Its governance features scale with plan: Contentful's help pages say custom roles and permissions are available on Premium and above.
+- **Strapi** generates an admin panel from your content types. Per [Strapi's pricing](https://strapi.io/pricing-self-hosted), live preview, releases and content history come with the paid Growth plan, while review workflows, audit logs and SSO are Enterprise features.
+- **Payload** auto-generates a React admin panel that matches your data, and you can extend it with your own components. It feels like part of your app because it is.
+
+Whichever you choose, test previews early. Next.js Draft Mode lets an editor see unpublished content on a statically generated page while other visitors still get the cached version, but each CMS wires preview up differently.
+
+## How much does a headless CMS cost as you grow?
+
+At the time of writing (November 2026), the vendors price in four different shapes:
+
+- **[Sanity](https://www.sanity.io/pricing)** has a free plan for up to 20 seats with monthly quotas (250,000 API requests, 1 million CDN requests, 100 GB bandwidth, 10,000 documents). The Growth plan is **$15 per seat per month**, with pay-as-you-go overages such as $1 per 25,000 API requests. Cost grows with editors and traffic. SSO and an uptime SLA are Enterprise features.
+- **Contentful** has a free plan, a self-serve monthly plan with quotas on users, locales and API calls, and a Premium plan quoted by sales; see [Contentful's pricing page](https://www.contentful.com/pricing/) for current figures. Cost grows in steps, and the governance features larger teams need sit in the upper tiers.
+- **[Strapi](https://strapi.io/pricing-self-hosted)** Community edition is free under the MIT license. The self-hosted Growth plan is **$45 per month including three users**, plus $15 per additional user, and Enterprise is quoted. Add your own hosting and database, or pay for Strapi Cloud.
+- **Payload** is free software, so the bill is your hosting, database and the engineering time to run it.
+
+One factor shrinks every bill: with static generation and on-demand revalidation, your Next.js site calls the CMS when content is built or changed, not on every page view. A site with heavy traffic but modest publishing volume can stay within small API quotas. Our guide to [SSR, SSG and ISR](/blog/ssr-vs-ssg-vs-isr-nextjs) shows the webhook pattern.
+
+## Which headless CMS should you choose?
+
+Work through these in order and stop at the first yes:
+
+1. **Is the content a blog or docs edited by developers?** You may not need a CMS. MDX files in the repository, which is how this website's blog works, cost nothing and version content with code.
+2. **Must content stay in your own database or a specific region?** Choose Strapi or Payload.
+3. **Is the site part of a Next.js product, with app data and content side by side?** Payload keeps both in one codebase and one database.
+4. **Many editors, many locales, approval rules and a procurement team asking for an SLA?** Contentful, or Sanity on its Enterprise plan.
+5. **A content-heavy marketing site, non-technical editors and no appetite for operations?** Sanity.
+
+If the CMS is one part of a larger decision about buying or building, our comparison of [custom software vs off-the-shelf](/blog/custom-software-vs-off-the-shelf) covers the general trade-off.
+
+## How to connect a headless CMS to Next.js
+
+The integration pattern is the same for all four:
+
+- **Fetch at build time, revalidate on publish.** Tag CMS data in the Next.js cache and have the CMS webhook call `revalidateTag`. Editors see changes in seconds, and pages stay static.
+- **Generate types from the content model**, so a renamed field breaks the build instead of the page.
+- **Put SEO fields in the model**: title, description, social image and canonical override per entry. Our [Next.js SEO checklist](/blog/nextjs-seo-checklist) lists what each page needs.
+- **Serve images through `next/image`** with the CMS's image host allowed in `remotePatterns`.
+- **Plan the content migration.** Moving pages from WordPress or a legacy CMS is often a project of its own; budget for it with the rest of the [website build](/blog/cost-to-build-custom-website).
+
+## How we choose
+
+We pick the CMS from those questions, not from habit. For marketing sites with non-technical editors we usually start with a hosted CMS so nobody has to run infrastructure; when data ownership or residency decides it, we self-host; and when developers are the only editors, we skip the CMS. In every case we consume content in Next.js with static generation and on-demand revalidation, so pages stay fast and crawlable while editors publish freely.
 
 ## Frequently asked questions
 
 ### What's the best headless CMS for Next.js?
 
-It depends on your needs: Sanity for flexible modeling and great DX, Contentful for enterprise governance, and Strapi for open-source self-hosting and full data ownership. All three integrate cleanly with Next.js via ISR.
+It depends on your team and constraints. Sanity suits flexible modeling and custom editorial workflows, Contentful suits enterprise governance on a managed platform, Strapi suits open-source self-hosting with full data ownership, and Payload suits teams that want the CMS inside their Next.js app. All four integrate cleanly with Next.js through static generation and on-demand revalidation.
 
 ### Should I self-host my CMS?
 
-Self-host (e.g. Strapi) when you need data ownership, residency, or full control and can maintain infrastructure. Choose a managed CMS (Sanity, Contentful) when you'd rather offload ops and scaling.
+Self-host, with Strapi or Payload, when you need data ownership, a specific hosting region or no per-seat license, and you have someone to patch, back up and monitor it. Choose a managed CMS such as Sanity or Contentful when you would rather pay a subscription than run infrastructure. The total cost is often closer than it looks once operations time is counted.
+
+### Is Payload a good CMS for Next.js?
+
+Yes, if you want one codebase. Payload installs into a Next.js app, stores content in your own MongoDB or Postgres database and generates its admin panel and APIs from a TypeScript config. It is a weaker fit if your editors need a vendor-hosted editor backed by an SLA, or if nobody on the team can run the infrastructure.
+
+### How much does a headless CMS cost?
+
+Anywhere from free to an enterprise contract. Self-hosted open-source options cost only hosting and maintenance time, while hosted platforms charge per seat, per plan tier or for usage above a quota. Static generation keeps API usage low, so for most sites the number of editors and the features you need, such as SSO or approval workflows, decide the bill.
+
+### Do I need a headless CMS for a Next.js blog?
+
+Not always. If developers write the posts, MDX files in the repository are simpler, free and versioned with the code. A CMS earns its place when non-technical editors publish regularly, need previews and scheduling, or content feeds several channels.
+
+### Can I switch headless CMS later?
+
+Yes, but it is a migration: content has to be exported, reshaped to the new model and imported, and every query in the front end rewritten. Keep CMS calls behind a small data layer in your Next.js app so only that layer changes if you move.

@@ -1,8 +1,8 @@
 ---
 title: "How to estimate and cut your LLM API costs"
-description: "A practical guide to LLM cost control: how token pricing works, how to estimate monthly spend, and the levers (routing, caching, trimming) that cut the bill."
+description: "How to estimate and cut LLM API costs: token pricing, a worked monthly estimate, and a table of savings from caching, routing, batching and trimming."
 date: "2026-07-11"
-updated: "2026-07-11"
+updated: "2026-11-13"
 author: "bilal-khursheed"
 category: "AI"
 tags: ["llm", "cost", "prompt caching"]
@@ -10,79 +10,120 @@ cover: ""
 service: "llm-cost-optimisation"
 ---
 
-LLM cost is driven by **tokens** — the input you send plus the output you get back — priced per million tokens. You estimate spend as roughly *requests × tokens per request × price*. At scale, the bill is dominated by a handful of levers: **model choice, context size, caching, and routing.** Getting those right often cuts costs by more than half with no drop in quality.
+LLM API cost is roughly **requests × tokens per request × price per token**, and on current flagship models output tokens cost **5x** as much as input. The largest documented savings come from **prompt caching** (cached input up to **95% off** on [OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching), **0.1x** the input price on most [Claude models](https://platform.claude.com/docs/en/about-claude/pricing)) and **batch processing** (**50% off**). After that: route easy requests to cheaper models, cap output and trim retrieved context.
 
-The good news: you rarely need to optimize until you're actually at volume — but you should measure from day one so you know where the money goes.
+You rarely need to optimize until you are at volume, but you should measure from day one so you know where the money goes.
 
 ## How token pricing works
 
-- A token is roughly ¾ of a word; "hello world" is about 2 tokens.
+- A token is a chunk of text, usually part of a word. How many tokens the same text produces depends on the tokenizer: [Anthropic notes](https://platform.claude.com/docs/en/about-claude/pricing) that its newer tokenizer (Claude 4.7 and later) produces about **30% more tokens** for the same text than earlier models. Count tokens with the provider's own tools rather than estimating from word counts.
 - You pay for **input tokens** (your prompt plus any context you attach) and **output tokens** (the model's response).
-- Providers price per million tokens, and **output is usually more expensive than input.**
-- Long context inflates cost fast — big system prompts and lots of [retrieved RAG chunks](/blog/building-a-rag-pipeline) are billed as input on every call.
+- Providers price per million tokens, and **output is more expensive than input**: 5x on every current Claude and OpenAI flagship model at standard short-prompt rates, at the time of writing (November 2026).
+- Long context inflates cost fast. Big system prompts and lots of [retrieved RAG chunks](/blog/building-a-rag-pipeline) are billed as input on every call, and some models charge higher rates past a threshold: OpenAI's [pricing page](https://developers.openai.com/api/docs/pricing) lists higher rates for prompts over 272K tokens, and [Anthropic](https://platform.claude.com/docs/en/about-claude/pricing) charges more on Claude Haiku 5.5 for prompts over 100,000 tokens.
 
 ## Estimating your monthly cost
 
-Before optimizing, get a rough number. The formula is simple:
+Before optimizing, get a rough number. Here is the formula with Claude Sonnet 5.5 list prices at the time of writing (November 2026), $2 per million input tokens and $10 per million output; GPT-6.1 Sol lists at the same rates.
 
 *A back-of-the-envelope monthly LLM cost estimate.*
 
 ```ts
-// Prices are per 1M tokens — plug in your provider's current rates.
-const inputPrice = /* $ per 1M input tokens */;
-const outputPrice = /* $ per 1M output tokens */;
+// List prices per 1M tokens (Claude Sonnet 5.5, November 2026).
+// Always check your provider's current pricing page.
+const inputPrice = 2.0;
+const outputPrice = 10.0;
 
 const requestsPerMonth = 100_000;
-const avgInputTokens = 1_200;   // prompt + retrieved context
+const avgInputTokens = 1_200; // prompt + retrieved context
 const avgOutputTokens = 400;
 
-const monthlyCost =
-  (requestsPerMonth * avgInputTokens / 1_000_000) * inputPrice +
-  (requestsPerMonth * avgOutputTokens / 1_000_000) * outputPrice;
+const inputCost = (requestsPerMonth * avgInputTokens / 1_000_000) * inputPrice;    // 240
+const outputCost = (requestsPerMonth * avgOutputTokens / 1_000_000) * outputPrice; // 400
+const monthlyCost = inputCost + outputCost;                                        // 640 USD
 ```
 
-## The levers that actually cut cost
+Output is a quarter of the tokens but over 60% of the bill, which is why output limits matter as much as context size.
 
-- **Right-size the model:** route easy requests to a cheaper, faster model and reserve the top-tier model for hard ones — see [choosing between LLM providers](/blog/openai-vs-anthropic-claude).
-- **Cache repeated work:** cache answers to common questions, and use provider prompt caching for the static part of your prompt.
-- **Trim the context:** retrieve fewer, tighter chunks and keep system prompts lean — every token of context is billed on every call.
-- **Cap output:** set a sensible max on output tokens so responses don't run long unnecessarily.
-- **Batch and pre-compute** where latency allows, instead of calling the model live for everything.
+## Which techniques cut LLM costs, and by how much?
 
-> **Prompt caching is the underrated win**
->
-> Many providers cache a repeated prompt prefix (your system prompt, instructions, few-shot examples) at a steep discount on subsequent calls. Structure your prompt so the large static part comes first and the small dynamic part comes last, and input costs can drop dramatically at scale.
+| Technique | What it does | Typical impact | Trade-off |
+| --- | --- | --- | --- |
+| Prompt caching | Reuses a repeated prompt prefix (instructions, examples, documents) | Cached input up to 95% off on OpenAI; 0.1x base input on most Claude models, 0.05x on Opus 5.5 and Sonnet 5.5 | Only the identical prefix is cheaper; Claude charges extra to write the cache |
+| Model routing | Sends easy requests to a cheaper model | Claude Haiku 5.5 input is 40x cheaper than Opus 5.5; GPT-6 Luna is 20x cheaper than GPT-6.1 Sol | Needs an evaluation set per route |
+| Batching | Runs non-urgent requests asynchronously | 50% off input and output on both providers | Results within hours, not seconds |
+| Output limits | Caps and shortens responses | Each output token cut saves 5x what an input token does | Truncated answers if the cap is too tight |
+| Retrieval trimming | Sends fewer, tighter chunks | Proportional to input tokens removed; no vendor benchmark, so measure | Lower recall if you cut too far |
+| Semantic caching | Reuses stored answers for near-identical questions | A hit skips the model call entirely; savings track your hit rate | Stale or wrong answers if matching is too loose |
+
+Figures are from [Anthropic's pricing page](https://platform.claude.com/docs/en/about-claude/pricing), [OpenAI's pricing page](https://developers.openai.com/api/docs/pricing) and OpenAI's [Batch API guide](https://developers.openai.com/api/docs/guides/batch), at the time of writing (November 2026).
+
+## Prompt caching: the underrated win
+
+Most production prompts repeat the same long prefix on every call: system instructions, tool definitions, few-shot examples, sometimes a whole policy document. Caching bills that prefix at a steep discount.
+
+**How to structure for it:** put the large static part first and the small dynamic part (the user's question, timestamps, user details) last. OpenAI's [caching guide](https://developers.openai.com/api/docs/guides/prompt-caching) is explicit that the entire rendered prefix must match, so a timestamp near the top of the prompt defeats the cache on every call.
+
+**How the two providers differ:**
+
+- **OpenAI** caches automatically on supported models, with no code change, for prompts of at least 1,024 tokens on GPT-5.6 and later.
+- **Anthropic** caches when you add a `cache_control` field. Writing to the cache costs 1.25x the base input price for a 5-minute cache or 2x for a 1-hour cache, so caching pays off after one read with the 5-minute cache and after two with the 1-hour cache.
+
+Run the numbers on the estimate above. If 1,000 of the 1,200 input tokens are a shared prefix served from cache on Claude Sonnet 5.5 (a cache hit costs $0.10 per million tokens), monthly input drops from about $240 to about $50, before the occasional cache write. Output is unchanged, which is why caching and output limits work best together.
+
+## Model routing: pay for capability only where it is needed
+
+Most products have a mix of easy and hard requests. Classifying a ticket, extracting a date or answering a common question does not need the top tier. Three routing patterns, in order of effort:
+
+1. **Rule-based:** route by feature. Tagging and extraction go to a small model; drafting and multi-step reasoning go to a larger one.
+2. **Cascade:** try the cheap model first and escalate when its answer fails a check (schema validation, a confidence score, an empty result).
+3. **Classifier:** a small model labels each request's difficulty and picks the tier.
+
+Whatever the pattern, keep an evaluation set per route so a cheaper model is proven, not assumed. Our comparison of [OpenAI and Anthropic Claude](/blog/openai-vs-anthropic-claude) lists the current tiers, and [evaluating RAG systems](/blog/evaluating-rag-systems) covers building the test set.
+
+## Batching, output limits and trimming
+
+- **Batch anything a user is not waiting for.** [OpenAI says](https://developers.openai.com/api/docs/guides/batch) each batch completes within 24 hours and names evaluations, dataset classification and embedding content as typical uses. Nightly summaries, back-filling tags and re-scoring old records fit too.
+- **Cap output.** Set a maximum output length per feature, ask for a structured format instead of prose where the result feeds code, and tell the model not to restate the question.
+- **Trim retrieved context.** Sending ten chunks "to be safe" multiplies input cost. Re-rank and send the best few, then confirm on your test set that answer quality holds. Our [RAG pipeline guide](/blog/building-a-rag-pipeline) covers re-ranking.
+
+## Semantic caching: skip the call entirely
+
+A semantic cache stores previous answers keyed by an embedding of the question and returns one when a new question is close enough. For support bots with many repeated questions, a hit costs a lookup instead of a model call. Three rules keep it safe:
+
+- **Scope the cache key** to the tenant and the user's permissions, so one customer never sees an answer built from another's data. The same isolation rules apply as in [multi-tenant SaaS architecture](/blog/how-to-build-a-multi-tenant-saas).
+- **Expire entries** when the source documents change.
+- **Set the similarity threshold conservatively**, and check hits against your evaluation set before widening it.
 
 ## Don't optimize prematurely
 
-The most expensive mistake is optimizing before you measure. Log tokens per request and cost per feature first, find the one or two lines that dominate the bill, and fix those. A dashboard of token spend by feature is worth more than a dozen micro-optimizations. This is exactly the observability we build into [production AI features](/services/ai-integration).
+The most expensive mistake is optimizing before you measure. Log input, output and cached tokens and the model for every request, tagged by feature, then fix the one or two features that dominate the bill. A dashboard of token spend by feature is worth more than a dozen micro-optimizations.
 
 ## How we keep AI features affordable
 
-We measure token spend per feature, route each request to the cheapest model that clears the quality bar, cache aggressively, and keep context tight — the same approach behind our [AI chatbot builds](/blog/cost-to-build-ai-chatbot). [Book a free discovery call](/start-a-project) to size and control your AI costs.
+We measure token spend per feature, route each request to the cheapest model that clears the quality bar, structure prompts for caching, and keep context tight. It is the same approach we cost into [AI chatbot builds](/blog/cost-to-build-ai-chatbot). If your bill is growing faster than usage, our [engagement models](/engagement) include short, fixed-scope reviews.
 
 ## Frequently asked questions
 
 ### How much do LLM APIs cost?
 
-They're priced per million tokens, separately for input and output, and rates vary widely by model tier. Your bill is roughly requests × tokens per request × price, so it scales with both traffic and how much context you send.
+They are priced per million tokens, separately for input and output, and rates vary widely by tier. At the time of writing (November 2026), list prices run from $0.10 per million input tokens on the smallest models to $10 on the largest, with output at 5x input. Your bill is roughly requests × tokens per request × price, so it scales with traffic and with how much context you send.
 
 ### What is a token?
 
-A token is a chunk of text — roughly three-quarters of a word on average. You pay for the tokens in your prompt and context (input) plus the tokens in the model's response (output).
+A token is a chunk of text, usually part of a word. You pay for the tokens in your prompt and context (input) plus the tokens in the model's response (output). The number of tokens in the same text varies by tokenizer, so measure with your provider's token counter.
 
 ### How do I estimate my monthly AI bill?
 
-Multiply expected monthly requests by average input and output tokens per request, divide by a million, and multiply by your provider's per-million input and output prices. Add the two together for a rough monthly figure.
+Multiply expected monthly requests by average input tokens, divide by a million and multiply by the input price; do the same for output, then add the two. For 100,000 requests a month at 1,200 input and 400 output tokens, at $2 and $10 per million, that is about $640.
 
 ### What's the single biggest cost lever?
 
-Model choice. Routing easy requests to a cheaper, faster model and reserving the top-tier model for genuinely hard ones typically cuts cost the most — often by more than half — with no meaningful quality loss.
+Model choice, closely followed by prompt caching. Price gaps between tiers are large: at the time of writing (November 2026), Claude Haiku 5.5 input costs a fortieth of Claude Opus 5.5, so routing easy requests to a small model cuts cost sharply. Measure quality on each route before you switch.
 
 ### Does using a cheaper model hurt quality?
 
-Not if you route by difficulty and measure against an evaluation set. Many requests are easy and a cheaper model handles them perfectly; you only pay for the top-tier model where it actually earns its keep.
+Not if you route by difficulty and measure against an evaluation set. Many requests are easy and a cheaper model handles them well; a cascade that escalates failed answers to a larger model protects the hard cases. You only pay for the top tier where it earns its keep.
 
 ### What is prompt caching?
 
-It's a provider feature that caches a repeated prompt prefix so you're charged a large discount for it on later calls. Putting your static instructions first and dynamic input last maximizes the savings.
+It's a provider feature that reuses a repeated prompt prefix, such as your instructions and examples, and bills it at a discount on later calls: up to 95% off on OpenAI, and 0.1x the input price on most Claude models. OpenAI applies it automatically; Anthropic needs a cache setting and charges a premium to write the cache. Put static content first and dynamic input last.

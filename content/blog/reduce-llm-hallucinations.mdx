@@ -1,8 +1,8 @@
 ---
 title: "How to reduce LLM hallucinations in production"
-description: "Practical ways to reduce LLM hallucinations: grounding with RAG, forcing citations, constraining output, evaluation, and designing for uncertainty."
+description: "How to reduce LLM hallucinations: retrieval grounding, checked citations, schemas, 'not found' answers, evaluation and guardrails, and what each one fixes."
 date: "2026-01-10"
-updated: "2026-01-10"
+updated: "2026-11-13"
 author: "bilal-khursheed"
 category: "AI"
 tags: ["llm", "hallucinations", "rag", "evaluation"]
@@ -10,31 +10,136 @@ cover: ""
 service: "llm-evaluation-guardrails"
 ---
 
-You reduce LLM hallucinations by grounding responses in retrieved data (RAG), forcing the model to cite its sources, constraining outputs, and running an evaluation set to catch regressions. You can't eliminate hallucinations entirely, so also design for graceful uncertainty and keep a human in the loop where the stakes are high.
+You reduce LLM hallucinations by **grounding answers in retrieved data**, requiring citations you check in code, constraining output to a schema, giving the model an explicit **"not found" answer**, and running an **evaluation set** on every change. No technique eliminates hallucinations, so add guardrails that catch what slips through and keep a person reviewing high-stakes outputs.
 
-## Techniques that work
+## Why do LLMs hallucinate?
 
-- Ground answers in your data with RAG, so the model reasons over retrieved facts instead of guessing.
-- Require citations to the provided sources, and reject answers that can't be grounded.
-- Use structured or constrained outputs (schemas) so the model stays on the rails.
-- Lower the temperature for factual tasks; save creativity for where it belongs.
-- Prompt the model to say 'I don't know' rather than fabricate.
-- Re-rank retrieved context so the best evidence is what the model sees.
+A language model generates the most plausible continuation of its input. Plausible and true usually overlap, but nothing in the model checks one against the other. A 2025 paper, [Why Language Models Hallucinate](https://arxiv.org/abs/2509.04664), argues that the problem is reinforced by how models are trained and scored: training and evaluation procedures reward guessing over acknowledging uncertainty, much as a multiple-choice exam rewards a guess over a blank.
 
-## Measure it, or it drifts
+The practical lesson for anyone shipping an AI feature: your own system has to make "I don't know" an acceptable outcome, and your own evaluations have to stop rewarding confident guesses.
 
-Build an evaluation set of real questions with known-good answers, and track grounding and accuracy on every change. Without measurement, quality degrades silently as prompts, data, and models change. We treat evaluation as a first-class part of every AI build.
+In production, "hallucination" covers several distinct failures, and each needs a different fix:
 
-## Design for uncertainty
+- **Fabrication**: the model does not know the answer and invents one.
+- **Unfaithfulness**: the right documents were provided, but the answer contradicts or goes beyond them.
+- **Invented fields**: an extraction task fills in a value that is not in the source.
+- **Fake citations**: a source is cited that does not support the claim, or does not exist.
+- **Stale knowledge**: the answer was true when the model was trained and is not now.
 
-Since no model is perfect, surface confidence, show sources so users can verify, and route high-stakes outputs through human review. Designing for uncertainty is what makes an AI feature safe to ship, not just impressive in a demo.
+## Which techniques reduce hallucinations, and what does each fix?
+
+| Technique | What it fixes | What it does not fix | Effort |
+| --- | --- | --- | --- |
+| Retrieval grounding (RAG) | Missing, private or outdated knowledge | Bad retrieval: wrong passages produce a grounded but wrong answer | Medium |
+| Citations, checked in code | Unsupported claims and fake sources | A real passage cited for a claim it only half supports | Small |
+| Constrained output (schemas) | Invented fields, malformed output, values outside an allowed set | A wrong value inside a valid structure | Small |
+| "Not found" answers | Guessing when the answer is not in the context | Over-refusal, if the threshold is too strict | Small |
+| Evaluation sets | Silent regressions after prompt, data or model changes | Nothing on its own; it measures the other fixes | Medium, ongoing |
+| Output guardrails | Known-bad outputs: unsupported numbers, prices, personal data, off-topic answers | Errors you did not think to check for | Small to medium |
+| Lower temperature | Random variation on factual tasks | Errors the model makes consistently | Trivial |
+| Human review | High-stakes errors reaching customers | Cost and latency; it cannot cover everything | Ongoing |
+
+No single row is enough. A grounded answer with no evaluation drifts; an evaluated system with no "not found" path keeps guessing. The sections below cover how to implement each one.
+
+## Retrieval grounding
+
+Grounding replaces "what the model remembers" with "what your documents say". The original [RAG paper](https://arxiv.org/abs/2005.11401) reported that retrieval-augmented models generate more specific, diverse and factual language than a parametric-only baseline. In practice the quality ceiling is set by retrieval: if the right passage never reaches the model, no prompt can save the answer.
+
+Three things matter most. Use hybrid search (vectors plus keywords) so exact names and codes are found. Re-rank the top results so the best passages reach the prompt. And tell the model to use only the provided documents, not its general knowledge, which Anthropic's guidance on [reducing hallucinations](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations) lists as external knowledge restriction. Our guide to [building a RAG pipeline](/blog/building-a-rag-pipeline) covers each stage.
+
+## Citations you can check
+
+Ask for a citation on every claim, and then verify it in code rather than trusting it. Anthropic's same guide suggests having the model find a supporting quote for each claim and retract any claim it cannot support. You can enforce that mechanically: require the model to return the exact quote and the passage ID, and confirm the quote appears in that passage.
+
+```ts
+const Answer = z.object({
+  found: z.boolean(),
+  answer: z.string(),
+  citations: z.array(z.object({ chunkId: z.string(), quote: z.string() })),
+});
+
+function verify(result: z.infer<typeof Answer>, retrieved: Chunk[]) {
+  if (!result.found) return result; // the "not found" path
+  const text = new Map(retrieved.map((c) => [c.id, c.text]));
+  const supported = result.citations.length > 0 &&
+    result.citations.every((c) => text.get(c.chunkId)?.includes(c.quote));
+  return supported ? result : { found: false, answer: "", citations: [] };
+}
+```
+
+An answer whose citations fail the check becomes a "not found" answer instead of reaching the user. Show the passing citations in the interface, with the source's last-updated date, so users can verify what matters to them.
+
+## Constrained output
+
+For extraction and classification, constrain the output to a schema. OpenAI's [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) constrains completed, non-refusal output to the JSON Schema you supply, and other major providers offer similar features. That removes malformed output and invented field names, and an enum keeps categories within your allowed list.
+
+One design rule prevents a common hallucination: **make every extracted field nullable**. If a schema requires an invoice number and the document has none, the model has to invent one to comply. A nullable field gives it an honest option. Then validate the business rules the schema cannot express, such as dates in a plausible range or totals that add up.
+
+## A real "not found" answer
+
+Give the model explicit permission to say it does not know, and give it the exact wording to use. Anthropic's guide says this technique can drastically reduce false information. Then make "not found" a proper product state rather than a dead end: offer search results, a link to a human, or a way to request the missing content.
+
+Track how often it happens. A rising "not found" rate on real questions is a content gap to fill. A falling one after a prompt change may mean the model has started guessing again, which only your evaluation set will tell you.
+
+## Evaluation sets
+
+An evaluation set is a fixed list of questions or documents with known correct outcomes, run on every change. For hallucinations, include:
+
+- **Answerable questions**, with the facts a correct answer must contain.
+- **Unanswerable questions**, where the only correct outcome is "not found".
+- **Conflicting sources**, to see which one the model trusts.
+- **Documents with missing fields**, for extraction, where the correct value is null.
+
+Score wrong answers worse than abstentions. If a wrong answer and a "not found" both score zero, your evaluation rewards guessing, which is the exact incentive that paper identifies. Measure faithfulness, correctness, citation accuracy and abstention separately; our guide to [evaluating RAG systems](/blog/evaluating-rag-systems) covers the metrics and how to grade them.
+
+## Guardrails
+
+Guardrails are checks on the output before a user sees it, aimed at the specific errors your evaluation set finds:
+
+- Every number, price or date in the answer must appear in a retrieved passage.
+- Policy statements are quoted, not paraphrased.
+- Personal data and off-topic content are blocked.
+- For high-stakes answers, run the prompt more than once and compare; Anthropic notes that inconsistencies across outputs can indicate hallucinations. This multiplies cost, so reserve it for answers where an error is expensive.
+
+When a check fails, regenerate once, then fall back to "not found" or a human.
+
+## Do fine-tuning or a bigger model fix hallucinations?
+
+Not on their own. Fine-tuning changes style and format, not knowledge; a model fine-tuned on your documents can still invent details about them. Use retrieval for facts and fine-tuning for tone; our comparison of [prompt engineering, fine-tuning and RAG](/blog/prompt-engineering-vs-fine-tuning-vs-rag) explains the split. Newer models do differ in how often they guess, so measure candidates on your own evaluation set rather than on leaderboards. Our [OpenAI vs Anthropic comparison](/blog/openai-vs-anthropic-claude) covers how we choose per task.
+
+## How do you design for the hallucinations that remain?
+
+Design the product as if some answers will be wrong, because some will:
+
+- **Show sources** next to every answer, so users can check claims that matter.
+- **Route by risk.** Legal, medical, financial and contractual outputs go through human review; low-stakes answers do not.
+- **Never let a model commit for you unchecked.** In customer support, the bot quotes policy rather than paraphrasing it; our guide to [support chatbots with RAG](/blog/ai-customer-support-chatbot-rag) covers where to escalate.
+- **Collect feedback.** A thumbs-down on an answer becomes a new evaluation case.
+
+Our [contract analysis build](/work/legal-contract-ai) follows this pattern: it turns 500 to 1,000 page legal contracts into a queryable knowledge base that answers with cited sources, so every answer can be traced to the clause it came from.
 
 ## Frequently asked questions
 
 ### How do I stop an LLM from hallucinating?
 
-Ground responses in your data with RAG, require citations to sources, use constrained/structured outputs, lower temperature for factual tasks, prompt it to admit uncertainty, and run an evaluation set to catch regressions.
+Ground responses in your data with retrieval, instruct the model to use only the provided sources, and require citations that you verify in code. Use constrained, structured outputs for extraction, give the model an explicit "not found" answer, and lower the temperature for factual tasks. Then run an evaluation set on every change to catch regressions.
 
 ### Can hallucinations be eliminated completely?
 
-No. Hallucinations can be made rare and catchable through grounding, citations, and evaluation, but not eliminated entirely. Design for uncertainty — show sources and keep humans in the loop for high-stakes outputs.
+No. Hallucinations can be made rare and catchable through grounding, checked citations, guardrails and evaluation, but not eliminated entirely. Design for the ones that remain: show sources so users can verify, and keep humans in the loop for high-stakes outputs.
+
+### Does RAG stop hallucinations?
+
+It reduces them sharply for questions your documents answer, but it introduces a new failure: if retrieval returns the wrong passages, the model produces a well-grounded wrong answer. RAG works best combined with re-ranking, checked citations and a "not found" path for questions the documents do not cover.
+
+### Does lowering the temperature reduce hallucinations?
+
+It reduces random variation, which helps on factual tasks, but it does not fix errors the model makes consistently. A model that confidently believes something false will state it at any temperature. Treat low temperature as a small, free improvement, not a solution.
+
+### How do you measure a hallucination rate?
+
+Run a fixed evaluation set and measure faithfulness: the share of answers whose every claim is supported by the retrieved sources. Track it alongside correctness, citation accuracy and how often the system correctly says "not found" on unanswerable questions. Grade with automated checks and a model-based grader calibrated against human review.
+
+### Will fine-tuning reduce hallucinations?
+
+Rarely, and not for facts. Fine-tuning teaches a model style, format and task behavior, but it is a poor way to add knowledge, and a fine-tuned model can still invent details. Use retrieval for facts and evaluate any fine-tuned model against the base model on the same test set.

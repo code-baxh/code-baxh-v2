@@ -1,8 +1,8 @@
 ---
 title: "Next.js SEO checklist: how to make your site rank"
-description: "A practical Next.js SEO checklist: server rendering, metadata, structured data, Core Web Vitals, sitemaps, and the mistakes that kill rankings."
+description: "A Next.js SEO checklist with real code from this site: metadata and canonicals, sitemap.ts, robots.ts, Open Graph images, JSON-LD, llms.txt and redirects."
 date: "2026-04-04"
-updated: "2026-04-04"
+updated: "2026-11-13"
 author: "bilal-khursheed"
 category: "Web"
 tags: ["nextjs", "seo", "core web vitals"]
@@ -10,40 +10,179 @@ cover: ""
 service: "nextjs-development"
 ---
 
-To make a Next.js site rank, ship server-rendered HTML, get metadata and canonicals right, add structured data, hit Core Web Vitals, and expose a clean sitemap. The single most common failure is leaving indexable content client-only rendered, so search engines and AI crawlers never reliably see it.
+To make a Next.js site rank, ship **server-rendered HTML**, give every page its own title, description and **canonical URL**, publish an honest **sitemap** and **robots.txt**, add **JSON-LD** that matches the visible content, and pass the **Core Web Vitals**. This checklist uses this website's own code as the worked example: one metadata helper, generated sitemaps, per-route Open Graph images and schema built from the content that renders each page.
 
-## The technical SEO checklist
+## The Next.js SEO checklist
 
-- Render content on the server: use static generation or ISR for pages that need to rank.
-- Set metadata per route (title, description, canonical) with the Metadata API.
-- Add JSON-LD structured data (Article, Breadcrumb, FAQ, Organization) so engines and AI understand the page.
-- Publish sitemap.xml and robots, and keep canonicals consistent to avoid duplicate content.
-- Use semantic headings (one h1, logical h2/h3) and descriptive link text.
-- Optimize images with next/image and reserve space to avoid layout shift.
+| Check | What good looks like | How this site does it |
+| --- | --- | --- |
+| Server-rendered HTML | Every indexable page is static or ISR; nothing important is fetched in the browser | Pages are prerendered; the blog lists every post in `generateStaticParams` |
+| Title per page | Unique, descriptive, topic first | A shared helper adds the brand name only when the title stays within 60 characters |
+| Meta description | Unique, roughly 120 to 160 characters | `fitDescription()` pads short descriptions and trims long ones at a word boundary |
+| Canonical URL | One absolute URL per page | `alternates.canonical` per page, resolved against `metadataBase` |
+| Social tags | Title, description and image on every route | A full `openGraph` object per page plus an `opengraph-image.tsx` per route |
+| sitemap.xml | Every indexable URL with a truthful last-modified date | `src/app/sitemap.ts`, built from the same content lists as the pages |
+| robots.txt | Points to the sitemap; blocks only what you mean to block | `src/app/robots.ts` |
+| Organization schema | One entity with a stable `@id` that other schema refers to | JSON-LD in the root layout, with the WebSite entity |
+| BlogPosting schema | Headline, dates and an author who is a real Person | Generated per post from frontmatter |
+| BreadcrumbList schema | Matches the visible breadcrumb trail | Rendered by the breadcrumb component itself |
+| FAQPage schema | Matches the visible FAQ word for word | Parsed from the post's FAQ section |
+| llms.txt | A plain-text map of the site for AI tools | A static route handler at `/llms.txt` |
+| Redirects | Every changed URL redirects permanently | `redirects()` in `next.config.ts` |
+| Core Web Vitals | LCP, INP and CLS in the "good" range | Static pages, `next/font`, sized images |
 
-## Core Web Vitals targets
+The first row matters most: if content only appears after JavaScript runs in the browser, nothing else here can rescue it. Our guide to [SSR, SSG and ISR in Next.js](/blog/ssr-vs-ssg-vs-isr-nextjs) covers which rendering mode suits which route.
 
-- LCP (largest contentful paint): 2.5s or faster.
-- INP (interaction to next paint): 200ms or faster.
-- CLS (cumulative layout shift): 0.1 or less.
+## How should you set metadata and canonicals in Next.js?
 
-## Common mistakes that kill rankings
+Next.js merges metadata from layouts and pages shallowly. If a page defines `openGraph`, it replaces the layout's entire `openGraph` object, not just the fields you set, so a page that only sets a title silently loses its description and site name. The simplest defense is one helper that builds the complete set for every page:
 
-- Client-only rendering of content that should be indexed.
-- Missing or duplicated titles, descriptions, and canonicals.
-- No structured data, so you miss rich results and AI answer citations.
-- Slow LCP from unoptimized images and heavy client JavaScript.
+```ts
+// src/lib/seo.ts (abridged)
+export function pageMetadata({ title, description, path, type = "website" }: Args): Metadata {
+  const desc = fitDescription(description);
+  const full = title.length + SUFFIX.length <= 60 ? `${title}${SUFFIX}` : title;
+  return {
+    title: { absolute: full },
+    description: desc,
+    alternates: { canonical: path },
+    openGraph: { title: full, description: desc, url: path, siteName: site.name, type },
+    twitter: { card: "summary_large_image", title: full, description: desc },
+  };
+}
+```
 
-## Our approach
+Every route calls it from `generateMetadata`; a blog post passes `"article"` as the type. Two details matter:
 
-We build Next.js sites static or ISR by default, add structured data to every page template, and hold pages to a Core Web Vitals budget. The result is content that's fast, crawlable, and eligible for both search rankings and AI answer citations.
+- **The canonical is root-relative.** `metadataBase` in the root layout turns `/blog/rest-vs-graphql` into a full URL, so the domain lives in one place.
+- **`title.absolute` skips the layout's title template**, so the brand is never appended twice.
+
+Pick one host and one trailing-slash convention, redirect the variants, and make the canonical name the version you want indexed. If titles and descriptions come from a CMS, add dedicated SEO fields to the content model; our [headless CMS comparison](/blog/headless-cms-nextjs-comparison) covers the options.
+
+## Per-route Open Graph images
+
+Add an `opengraph-image.tsx` file to a route segment and Next.js generates the image and the meta tags for it. Generated images are built at build time unless they read request-time data. This site has one in every route segment, all calling a shared renderer at 1200 by 630 pixels:
+
+```tsx
+// src/app/blog/[slug]/opengraph-image.tsx (abridged)
+export const size = ogSize;
+export const contentType = ogContentType;
+
+export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
+  const post = getPost((await params).slug);
+  return renderOg({ eyebrow: `Blog · ${post.category}`, title: post.title });
+}
+```
+
+The metadata helper deliberately leaves `openGraph.images` unset unless a route has no image file, so the file convention supplies the image and every shared link shows the page's own title.
+
+## sitemap.ts: honest dates and nothing else
+
+Google's documentation says it [ignores `priority` and `changefreq`, and uses `lastmod` only when it is consistently and verifiably accurate](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap). So this site's sitemap emits two fields per URL:
+
+```ts
+// src/app/sitemap.ts (abridged)
+export default function sitemap(): MetadataRoute.Sitemap {
+  const posts = getAllPosts();
+  return [
+    ...fixed.map((p) => ({ url: abs(p), lastModified: site.contentUpdated })),
+    ...services.map((s) => ({ url: abs(`/services/${s.slug}`), lastModified: site.contentUpdated })),
+    ...posts.map((p) => ({ url: abs(`/blog/${p.slug}`), lastModified: p.updated })),
+  ];
+}
+```
+
+Two rules make it trustworthy. First, never use `new Date()` for `lastModified`, even though the Next.js docs example does: it marks every page as changed on every build, which teaches crawlers to ignore your dates. Use the post's real `updated` date and a fixed date for evergreen pages. Second, build the sitemap from the same arrays that generate the pages, so a new service or post can never be missing. One sitemap file holds up to 50,000 URLs or 50 MB; past that, split it with `generateSitemaps`.
+
+## robots.ts
+
+```ts
+// src/app/robots.ts (abridged)
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [{ userAgent: "*", allow: "/" }, ...aiCrawlers.map((userAgent) => ({ userAgent, allow: "/" }))],
+    sitemap: abs("/sitemap.xml"),
+  };
+}
+```
+
+This site allows every crawler and names the main AI crawlers (GPTBot, ClaudeBot, PerplexityBot and others) explicitly, because we want answer engines to read and cite the content. Whether to allow AI crawlers is a business decision; our guide to [answer engine optimization](/blog/answer-engine-optimization-aeo) covers the trade-off.
+
+## JSON-LD: Organization, BlogPosting, BreadcrumbList and FAQPage
+
+The Next.js docs recommend rendering JSON-LD as a `script` tag in a layout or page, and escaping the less-than character so content can never close the tag. One small component does it everywhere:
+
+```tsx
+export function JsonLd({ data }: { data: unknown }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }}
+    />
+  );
+}
+```
+
+Each schema type is generated from the same data that renders the page, which keeps markup and content in step:
+
+- **Organization and WebSite** sit in the root layout with stable IDs such as `/#organization`. Other schema points to them by `@id` instead of repeating the details. The founders are Person entities with their own IDs, so a post's author resolves to the same person as their team page.
+- **BlogPosting** is built per post from frontmatter: headline, description, `datePublished`, `dateModified` from the `updated` field, the route's Open Graph image, the author as a Person and the publisher by reference.
+- **BreadcrumbList** is emitted by the breadcrumb component that draws the visible trail, so the two cannot drift apart.
+- **FAQPage** is parsed from each post's "Frequently asked questions" section. Note that Google [stopped showing FAQ rich results on May 7, 2026](https://developers.google.com/search/updates), so this markup no longer earns a visual feature in Google. We keep it because it is generated from the visible FAQ at no extra cost.
+
+The rule for all four: structured data describes what is on the page and nothing more. Check templates with Google's Rich Results Test and the Schema Markup Validator after any change.
+
+## llms.txt
+
+[llms.txt](https://llmstxt.org/) is a proposed convention for a Markdown file at `/llms.txt`: a site name as the heading, a one-line summary, then sections of links that help AI tools find the important pages. This site serves it from a route handler with `dynamic = "force-static"`, generated from the same service, case study and post lists as everything else, plus an `/llms-full.txt` with the full text. It is a proposal rather than an adopted standard, so treat it as cheap to add, not as a ranking signal you can count on.
+
+## Redirects in next.config.ts
+
+Every URL that changes needs a permanent redirect, or it loses the links and ranking it earned. This site keeps them in `next.config.ts`:
+
+```ts
+async redirects() {
+  return [
+    // Legacy URL from the domain's previous site, still crawled.
+    { source: "/home", destination: "/", permanent: true },
+    // Routes renamed in the rebuild.
+    { source: "/services/stripe-integration", destination: "/services/payment-gateway-integration", permanent: true },
+  ];
+},
+```
+
+With `permanent: true`, Next.js sends a 308, which tells browsers and search engines the move is permanent. Add the redirect in the same commit that renames the route, and watch Search Console for not-found errors for a few weeks after any relaunch.
+
+## Core Web Vitals
+
+Google's "good" thresholds are [LCP of 2.5 seconds or under, INP of 200 milliseconds or under and CLS of 0.1 or under](https://web.dev/articles/vitals), measured at the 75th percentile. Static rendering does most of the work. Beyond that, load fonts with `next/font` so they are self-hosted, skip preloading fonts used in only a few places (this site does that for its code font), give every image explicit dimensions, and keep client-side JavaScript off pages that do not need it. If you are weighing frameworks partly for SEO, [Next.js vs React](/blog/nextjs-vs-react) explains why server rendering is the deciding difference.
+
+## Mistakes that cost rankings
+
+- **A partial `openGraph` object on one page**, wiping the layout's social tags through shallow merging.
+- **`new Date()` in the sitemap**, so every page claims to have changed today.
+- **Schema that says more than the page**, such as FAQ markup for hidden questions.
+- **Renamed slugs without redirects**, often during a redesign. Plan redirects as part of the [website build](/blog/how-long-to-build-a-website), not after launch.
+- **Client-only rendering** of content that should rank.
 
 ## Frequently asked questions
 
 ### How do I make a Next.js site rank on Google?
 
-Server-render (static or ISR) so pages ship crawlable HTML, set correct metadata and canonicals, add structured data, publish a sitemap, and hit Core Web Vitals (LCP ≤ 2.5s, INP ≤ 200ms, CLS ≤ 0.1). Avoid client-only rendering of indexable content.
+Prerender pages as static or ISR so they ship crawlable HTML, set a unique title, description and canonical on every route, publish a sitemap with accurate dates, add structured data that matches the page, and pass the Core Web Vitals: LCP of 2.5 seconds or under, INP of 200 milliseconds or under, CLS of 0.1 or under. Avoid client-only rendering of indexable content. After that, rankings come from content that answers searchers' questions better than the alternatives.
 
 ### Does Next.js help SEO?
 
-Yes — Next.js can server-render complete HTML and makes metadata, structured data, and performance optimization straightforward, all of which help search and AI crawlers index and rank your content.
+Yes. Next.js renders complete HTML on the server and has built-in conventions for metadata, canonicals, sitemaps, robots.txt and generated Open Graph images, all of which help search and AI crawlers index your content. It does not make a site rank by itself; it removes the technical obstacles so the content can.
+
+### Do I still need FAQPage schema in Next.js?
+
+Not for Google rich results: Google stopped showing FAQ rich results in May 2026. If your FAQ markup is generated automatically from the visible FAQ, as it is on this site, keeping it costs nothing. If it would mean maintaining a separate copy by hand, drop it and spend the time on content.
+
+### Should a Next.js sitemap include changefreq and priority?
+
+No. Google's documentation says it ignores both. Set `lastModified` to the date the content last changed in a meaningful way, and leave the other fields out.
+
+### Is llms.txt worth adding to a Next.js site?
+
+It is a small job if you generate it from the content lists you already have, which is how this site does it. It is a proposed convention rather than a standard, so add it as low-cost insurance for AI tools, not as a substitute for crawlable HTML and good structured data.
