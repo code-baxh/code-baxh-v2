@@ -1,4 +1,18 @@
+import type { Metadata } from "next";
 import { ButtonLink } from "@/components/ui/button";
+
+/**
+ * Own head for 404s. Without this the page inherits the root layout's homepage title,
+ * `index, follow` (next to the noindex Next.js injects) and a canonical pointing at the
+ * homepage: conflicting signals on every broken URL.
+ */
+export const metadata: Metadata = {
+  title: { absolute: "Page not found | CodeBaxh" },
+  description: "This page does not exist. Browse CodeBaxh services, case studies or the blog.",
+  robots: { index: false, follow: true },
+  alternates: { canonical: null },
+  openGraph: null,
+};
 
 export default function NotFound() {
   return (

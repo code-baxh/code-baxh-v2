@@ -49,6 +49,12 @@ export const metadata: Metadata = {
 };
 
 const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
+/**
+ * GA4, defaulting to the property the live site already reports to, so the move to v2
+ * doesn't break measurement. Set NEXT_PUBLIC_GA_MEASUREMENT_ID="" to turn it off, for
+ * example when switching to Plausible only. GA4 sets cookies: EU visitors need consent.
+ */
+const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-0ZK9N00Q90";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -85,6 +91,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Cookieless analytics, only when a domain is configured. */}
         {plausibleDomain ? (
           <Script defer data-domain={plausibleDomain} src="https://plausible.io/js/script.js" strategy="afterInteractive" />
+        ) : null}
+        {gaId ? (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="lazyOnload" />
+            <Script id="ga4" strategy="lazyOnload">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`}
+            </Script>
+          </>
         ) : null}
       </body>
     </html>
