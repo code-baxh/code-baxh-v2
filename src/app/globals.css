@@ -541,6 +541,16 @@ details > summary::-webkit-details-marker {
   }
 }
 
+/* ---------- Magnetic hover (components/ui/magnetic.tsx) ---------- */
+.magnetic {
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .magnetic {
+    transform: none !important;
+  }
+}
+
 /* ---------- Help prompt ---------- */
 @keyframes help-in {
   from {

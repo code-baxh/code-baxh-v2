@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { HelpPrompt } from "@/components/help-prompt";
+import { HelpPromptLoader } from "@/components/help-prompt-loader";
 import Script from "next/script";
 import { site } from "@/config/site";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -72,7 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {children}
           </main>
           <Footer />
-          <HelpPrompt />
+          <HelpPromptLoader />
         </Providers>
         {/* Site-wide structured data: who we are, on every page. */}
         <JsonLd data={organizationSchema()} />
