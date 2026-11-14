@@ -92,7 +92,7 @@ export function organizationSchema() {
       "Cloud and DevOps",
       "QA and software testing",
     ],
-    contactPoint: [site.contact.phoneSweden, site.contact.phonePakistan].map((telephone) => ({
+    contactPoint: site.contact.phones.map(({ number: telephone }) => ({
       "@type": "ContactPoint",
       contactType: "sales",
       telephone,

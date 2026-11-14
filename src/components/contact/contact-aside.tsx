@@ -28,10 +28,7 @@ export function ContactDetails() {
             Registered office of {site.legal.entityName}: {site.legal.registeredOffice.street}
           </span>
         </li>
-        {[
-          ["Sweden", site.contact.phoneSweden],
-          ["Pakistan", site.contact.phonePakistan],
-        ].map(([country, phone]) => (
+        {site.contact.phones.map(({ country, number: phone }) => (
           <li key={country} className="flex gap-3">
             <Phone aria-hidden className="mt-1 size-5 shrink-0 text-accent-text" />
             <span>

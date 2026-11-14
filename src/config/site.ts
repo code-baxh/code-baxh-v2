@@ -30,8 +30,12 @@ export const site = {
   contact: {
     /** Inbox that receives contact-form enquiries. Not shown on the site. CONTACT_TO_EMAIL overrides it. */
     enquiriesEmail: "baxhcode@gmail.com",
-    phoneSweden: "+46 76 954 46 49",
-    phonePakistan: "+92 343 552 7709",
+    /** Shown in the footer and contact card, and as Organization contactPoints. */
+    phones: [
+      { country: "United States", number: "+1 364 999 7842" },
+      { country: "Sweden", number: "+46 76 954 46 49" },
+      { country: "Pakistan", number: "+92 343 552 7709" },
+    ],
   },
   /** Company profiles. They feed Organization `sameAs`, the signal search and AI engines use to confirm the entity. */
   social: {

@@ -115,10 +115,7 @@ export function Footer() {
           </ul>
           <h2 className="eyebrow mt-8">Contact</h2>
           <ul className="mt-4 space-y-2 text-sm text-muted">
-            {[
-              ["Sweden", site.contact.phoneSweden],
-              ["Pakistan", site.contact.phonePakistan],
-            ].map(([country, phone]) => (
+            {site.contact.phones.map(({ country, number: phone }) => (
               <li key={country}>
                 {country}:{" "}
                 <a href={`tel:${phone.replace(/\s/g, "")}`} className="text-fg hover:text-accent-text">
