@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PageHero } from "@/components/layout/page-hero";
-import { legalIdentity } from "@/config/site";
+import { legalIdentity, registeredAddress, site } from "@/config/site";
 import { legalLastUpdated, processors } from "@/content/legal";
 import { pageMetadata } from "@/lib/seo";
 
@@ -24,9 +24,9 @@ export default function PrivacyPage() {
         <div className="prose mx-auto">
           <h2>1. Who is responsible for your data</h2>
           <p>
-            The data controller is {legalIdentity}. This policy
+            The data controller is {legalIdentity}, with its registered office at {registeredAddress}. This policy
             explains how we handle personal data when you visit this website or contact us. To reach us about privacy,
-            use the <Link href="/contact">contact form</Link>.
+            use the <Link href="/contact">contact form</Link> or write to the registered office.
           </p>
 
           <h2>2. What we collect</h2>
@@ -45,13 +45,20 @@ export default function PrivacyPage() {
           </p>
           <h3>Website statistics</h3>
           <p>
-            We use privacy-friendly analytics that do not set cookies and do not collect personal data. Visits are
-            counted in aggregate, so we cannot identify you or follow you across websites.
+            We use Google Analytics 4 to understand, in aggregate, how the website is used: which pages are viewed, how
+            visitors arrived, the type of device and an approximate location such as the country or city. Google
+            Analytics 4 does not log or store IP addresses. We use these reports only to improve the website.
           </p>
           <h3>Cookies</h3>
           <p>
-            This website does not use advertising or tracking cookies. Your light or dark theme choice is saved in
-            your browser&apos;s local storage and never leaves your device.
+            This website does not use advertising cookies. Google Analytics sets two first-party cookies,{" "}
+            <code>_ga</code> and <code>_ga_&lt;ID&gt;</code>, which tell visits apart and expire after two years. You
+            can block or delete them in your browser settings, or install{" "}
+            <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener">
+              Google&apos;s opt-out browser add-on
+            </a>
+            . Your light or dark theme choice is saved in your browser&apos;s local storage and never leaves your
+            device.
           </p>
 
           <h2>3. Why we use it and our legal basis</h2>
@@ -91,9 +98,11 @@ export default function PrivacyPage() {
             </tbody>
           </table>
           <p>
-            Our engineering team is based in Pakistan and may access enquiry details to prepare a response. Where
-            personal data is transferred outside the EU/EEA, we rely on an adequacy decision or the European
-            Commission&apos;s Standard Contractual Clauses. We do not sell personal data.
+            {site.legal.entityName} is registered in the United States, our product delivery team is in Sweden and our
+            engineering team is in Pakistan, and team members in these countries may access enquiry details to prepare
+            a response. Where personal data is transferred outside the EU/EEA, we rely on an adequacy decision, such as
+            the EU-US Data Privacy Framework for certified providers, or the European Commission&apos;s Standard
+            Contractual Clauses. We do not sell personal data.
           </p>
 
           <h2>5. How long we keep it</h2>
@@ -115,7 +124,8 @@ export default function PrivacyPage() {
           </ul>
           <p>
             To use any of these rights, contact us using the details above. We respond within one month. You also have
-            the right to complain to a supervisory authority. In Sweden this is the Swedish Authority for Privacy
+            the right to complain to the data protection authority in the EU/EEA country where you live or work, or
+            where you believe your rights were infringed. In Sweden this is the Swedish Authority for Privacy
             Protection (IMY).
           </p>
 

@@ -1,4 +1,4 @@
-import { site } from "@/config/site";
+import { companyFacts, site } from "@/config/site";
 import { caseStudies } from "@/content/case-studies";
 import { services } from "@/content/services";
 import { team } from "@/content/team";
@@ -16,6 +16,8 @@ export function GET() {
     `# ${site.name}: full content`,
     "",
     `> ${site.description}`,
+    "",
+    companyFacts,
     "",
     `Index of pages: ${abs("/llms.txt")}`,
     "",

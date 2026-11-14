@@ -56,11 +56,27 @@ export function organizationSchema() {
     sameAs: Object.values(site.social),
     founder: team.map((m) => ({ "@id": personId(m.slug) })),
     employee: team.map(personSchema),
-    address: site.locations.map((l) => ({
-      "@type": "PostalAddress",
-      addressLocality: l.city,
-      addressCountry: l.countryCode,
-    })),
+    // Public registration record only. The EIN is deliberately not published (no taxID).
+    identifier: {
+      "@type": "PropertyValue",
+      propertyID: "Missouri Secretary of State charter number",
+      value: site.legal.charterNumber,
+    },
+    address: [
+      {
+        "@type": "PostalAddress",
+        streetAddress: site.legal.registeredOffice.street,
+        addressLocality: site.legal.registeredOffice.city,
+        addressRegion: site.legal.registeredOffice.region,
+        postalCode: site.legal.registeredOffice.postalCode,
+        addressCountry: site.legal.registeredOffice.countryCode,
+      },
+      ...site.locations.map((l) => ({
+        "@type": "PostalAddress",
+        addressLocality: l.city,
+        addressCountry: l.countryCode,
+      })),
+    ],
     areaServed: [...site.markets, "Worldwide"],
     knowsAbout: [
       "Software development",

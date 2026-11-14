@@ -1,7 +1,7 @@
 import "server-only";
 import nodemailer from "nodemailer";
 import { Resend } from "resend";
-import { site } from "@/config/site";
+import { registeredAddress, site } from "@/config/site";
 import type { ContactData, MessageData } from "./contact-schema";
 import { abs } from "./seo";
 
@@ -43,7 +43,7 @@ function shell(title: string, body: string) {
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#0c1018;border:1px solid #232a38;border-radius:16px">
 <tr><td style="padding:28px 32px;border-bottom:1px solid #232a38"><a href="${esc(site.url)}" style="text-decoration:none"><img src="${esc(abs("/logo/codebaxh-logo-dark.png"))}" width="161" height="42" alt="CodeBaxh" style="display:block;border:0;outline:none;width:161px;height:42px;color:#ffffff;font-size:20px;font-weight:700"></a></td></tr>
 <tr><td style="padding:32px"><h1 style="margin:0 0 16px;font-size:22px;color:#ffffff">${title}</h1>${body}</td></tr>
-<tr><td style="padding:20px 32px;border-top:1px solid #232a38;font-size:12px;color:#a0a9ba">${esc(site.legal.entityName)} · ${esc(site.url)}</td></tr>
+<tr><td style="padding:20px 32px;border-top:1px solid #232a38;font-size:12px;color:#a0a9ba">${esc(site.legal.entityName)} · ${esc(registeredAddress)} · ${esc(site.url)}</td></tr>
 </table></td></tr></table></body></html>`;
 }
 

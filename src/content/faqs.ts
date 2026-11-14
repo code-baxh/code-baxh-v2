@@ -7,7 +7,7 @@ export const homeFaqs: Faq[] = [
   },
   {
     q: "Where are you based?",
-    a: "Client partnership is run from Stockholm, Sweden, and our engineering team is in Islamabad, Pakistan. We work with clients across Europe, the US, Canada and the UAE and deliver worldwide, planning our hours so there is real overlap with yours.",
+    a: "CodeBaxh LLC is registered in Missouri, United States. Client partnership is run from Stockholm, Sweden, and our engineering team is in Islamabad, Pakistan. We work with clients across Europe, the US, Canada and the UAE and deliver worldwide, planning our hours so there is real overlap with yours.",
   },
   {
     q: "Who will I actually work with?",

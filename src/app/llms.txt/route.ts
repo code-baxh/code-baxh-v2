@@ -1,4 +1,4 @@
-import { site } from "@/config/site";
+import { companyFacts, site } from "@/config/site";
 import { caseStudies } from "@/content/case-studies";
 import { services } from "@/content/services";
 import { getAllPosts } from "@/lib/blog";
@@ -12,6 +12,8 @@ export function GET() {
     `# ${site.name}`,
     "",
     `> ${site.description}`,
+    "",
+    companyFacts,
     "",
     `Full text of every service, case study and article: ${abs("/llms-full.txt")}`,
     "",
