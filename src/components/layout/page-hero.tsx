@@ -25,7 +25,7 @@ export function PageHero({ crumbs, eyebrow, title, lead, image, children }: Prop
     >
       {image ? (
         <div aria-hidden className="absolute inset-0 -z-10">
-          <Image src={images[image].src} alt="" fill priority sizes="100vw" className="object-cover" />
+          <Image src={images[image].src} alt="" fill loading="eager" fetchPriority="high" sizes="100vw" className="object-cover" />
           <div className="absolute inset-0 bg-[#06080d]/75" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#06080d] via-transparent to-[#06080d]/60" />
           <div className="hud-corners absolute inset-5 hidden opacity-60 sm:block" />

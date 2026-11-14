@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, useTransition } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, MessageCircle, Send, X } from "lucide-react";
 import { submitMessage } from "@/app/contact/actions";
+import { BANNER_EVENT, isBannerOpen } from "@/lib/consent";
 import { errorsFrom, messageSchema, type MessageField } from "@/lib/contact-schema";
 import { cn } from "@/lib/utils";
 
@@ -61,17 +63,30 @@ export function HelpPrompt() {
   };
   const showRef = useRef(show);
 
-  // Open on its own once per session, after a short delay.
+  // Open on its own once per session, after a short delay. If the cookie banner is still
+  // waiting for an answer, hold off until it closes so the two never stack in the corner.
   useEffect(() => {
     let seen = false;
     try {
       seen = sessionStorage.getItem(SEEN_KEY) === "1";
     } catch {}
+    let later = 0;
+    const onBanner = () => {
+      if (isBannerOpen()) return;
+      window.removeEventListener(BANNER_EVENT, onBanner);
+      later = window.setTimeout(() => showRef.current(), 3000);
+    };
     const t = window.setTimeout(() => {
       setReady(true);
-      if (!seen) showRef.current();
+      if (seen) return;
+      if (isBannerOpen()) window.addEventListener(BANNER_EVENT, onBanner);
+      else showRef.current();
     }, seen ? 1500 : OPEN_AFTER_MS);
-    return () => window.clearTimeout(t);
+    return () => {
+      window.clearTimeout(t);
+      window.clearTimeout(later);
+      window.removeEventListener(BANNER_EVENT, onBanner);
+    };
   }, []);
 
   const close = (returnFocus = true) => {
@@ -142,8 +157,9 @@ export function HelpPrompt() {
           <div className="max-h-[min(78dvh,40rem)] overflow-y-auto rounded-[calc(1.4rem-1px)] bg-surface text-left">
             {/* Header */}
             <div className="flex items-center gap-3 border-b border-line px-5 py-4">
-              <span className="relative inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-accent font-display text-sm font-bold text-accent-fg">
-                CB
+              <span className="relative inline-flex size-10 shrink-0">
+                {/* The real CB mark (the app icon), not a drawn placeholder. */}
+                <Image src="/apple-icon.png" alt="" width={40} height={40} unoptimized className="size-10 rounded-full" />
                 <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full border-2 border-surface bg-ok" />
               </span>
               <div className="min-w-0 flex-1">

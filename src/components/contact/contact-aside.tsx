@@ -18,10 +18,17 @@ export function ContactDetails() {
             </span>
           </li>
         ))}
-        {[
-          ["Sweden", site.contact.phoneSweden],
-          ["Pakistan", site.contact.phonePakistan],
-        ].map(([country, phone]) => (
+        <li className="flex gap-3">
+          <MapPin aria-hidden className="mt-1 size-5 shrink-0 text-accent-text" />
+          <span>
+            <span className="block text-fg">
+              {site.legal.registeredOffice.city}, {site.legal.registeredOffice.regionName},{" "}
+              {site.legal.registeredOffice.country}
+            </span>
+            Registered office of {site.legal.entityName}: {site.legal.registeredOffice.street}
+          </span>
+        </li>
+        {site.contact.phones.map(({ country, number: phone }) => (
           <li key={country} className="flex gap-3">
             <Phone aria-hidden className="mt-1 size-5 shrink-0 text-accent-text" />
             <span>

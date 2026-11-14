@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { mainNav, site } from "@/config/site";
+import { CookieSettingsButton } from "@/components/cookie-settings-button";
+import { gaId } from "@/config/analytics";
+import { mainNav, registeredAddress, site } from "@/config/site";
 import { services } from "@/content/services";
 import { Logo } from "./logo";
 
@@ -92,6 +94,11 @@ export function Footer() {
                 </Link>
               </li>
             ))}
+            {gaId ? (
+              <li>
+                <CookieSettingsButton className="inline-flex min-h-9 items-center text-sm text-muted hover:text-fg" />
+              </li>
+            ) : null}
           </ul>
         </nav>
         <div>
@@ -105,13 +112,17 @@ export function Footer() {
                 {l.role}
               </li>
             ))}
+            <li>
+              <span className="block text-fg">
+                {site.legal.registeredOffice.city}, {site.legal.registeredOffice.regionName},{" "}
+                {site.legal.registeredOffice.country}
+              </span>
+              Registered office
+            </li>
           </ul>
           <h2 className="eyebrow mt-8">Contact</h2>
           <ul className="mt-4 space-y-2 text-sm text-muted">
-            {[
-              ["Sweden", site.contact.phoneSweden],
-              ["Pakistan", site.contact.phonePakistan],
-            ].map(([country, phone]) => (
+            {site.contact.phones.map(({ country, number: phone }) => (
               <li key={country}>
                 {country}:{" "}
                 <a href={`tel:${phone.replace(/\s/g, "")}`} className="text-fg hover:text-accent-text">
@@ -124,8 +135,8 @@ export function Footer() {
       </div>
       <div className="border-t border-line">
         <p className="mx-auto w-full max-w-[92rem] px-5 py-6 text-xs text-muted sm:px-8">
-          © {new Date().getFullYear()} {site.legal.entityName}. All rights reserved.
-          {site.legal.orgNumber ? ` Org. no. ${site.legal.orgNumber}.` : ""}
+          © {new Date().getFullYear()} {site.legal.entityName}. All rights reserved. Registered in{" "}
+          {site.legal.jurisdiction}, charter no. {site.legal.charterNumber}. {registeredAddress}.
         </p>
       </div>
     </footer>

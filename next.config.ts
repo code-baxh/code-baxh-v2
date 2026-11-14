@@ -26,6 +26,11 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["*.ngrok-free.app", "*.ngrok.app", "*.ngrok.io"],
   // Don't advertise the stack in response headers.
   poweredByHeader: false,
+  // AVIF first (smaller than WebP at the same quality), WebP as the fallback.
+  images: { formats: ["image/avif", "image/webp"] },
+  // No experimental.inlineCss: measured on this site, Next inlines the CSS into the RSC
+  // payload as well, adding ~36 KB gzipped to every page's HTML to save one round trip.
+  // A separate 11 KB stylesheet that is cached across pages is the better trade.
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

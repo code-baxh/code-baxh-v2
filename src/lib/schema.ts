@@ -47,18 +47,36 @@ export function organizationSchema() {
     name: site.name,
     legalName: site.legal.entityName,
     url: site.url,
-    logo: { "@type": "ImageObject", url: abs("/logo/codebaxh-logo-light.png") },
+    // Square app icon (the CB mark): Google needs a logo of at least 112×112, so the wide
+    // 322×84 wordmark doesn't qualify for the logo in search results.
+    logo: { "@type": "ImageObject", url: abs("/icon.png"), width: 512, height: 512 },
     image: abs("/opengraph-image"),
     description: site.description,
     slogan: site.tagline,
     sameAs: Object.values(site.social),
     founder: team.map((m) => ({ "@id": personId(m.slug) })),
     employee: team.map(personSchema),
-    address: site.locations.map((l) => ({
-      "@type": "PostalAddress",
-      addressLocality: l.city,
-      addressCountry: l.countryCode,
-    })),
+    // Public registration record only. The EIN is deliberately not published (no taxID).
+    identifier: {
+      "@type": "PropertyValue",
+      propertyID: "Missouri Secretary of State charter number",
+      value: site.legal.charterNumber,
+    },
+    address: [
+      {
+        "@type": "PostalAddress",
+        streetAddress: site.legal.registeredOffice.street,
+        addressLocality: site.legal.registeredOffice.city,
+        addressRegion: site.legal.registeredOffice.region,
+        postalCode: site.legal.registeredOffice.postalCode,
+        addressCountry: site.legal.registeredOffice.countryCode,
+      },
+      ...site.locations.map((l) => ({
+        "@type": "PostalAddress",
+        addressLocality: l.city,
+        addressCountry: l.countryCode,
+      })),
+    ],
     areaServed: [...site.markets, "Worldwide"],
     knowsAbout: [
       "Software development",
@@ -74,7 +92,7 @@ export function organizationSchema() {
       "Cloud and DevOps",
       "QA and software testing",
     ],
-    contactPoint: [site.contact.phoneSweden, site.contact.phonePakistan].map((telephone) => ({
+    contactPoint: site.contact.phones.map(({ number: telephone }) => ({
       "@type": "ContactPoint",
       contactType: "sales",
       telephone,

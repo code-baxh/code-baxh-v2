@@ -22,7 +22,8 @@ const INTERVAL = 8000;
 /**
  * Full-bleed video hero with a HUD-style slide selector.
  *
- * - Posters render first; a clip is only downloaded when its slide is shown.
+ * - Only the first poster loads with the page. Clips (and the next poster) wait until the
+ *   page has loaded and gone idle, and clips are skipped for Save-Data and 2G/3G.
  * - All slide copy is stacked in one grid cell, so switching never shifts layout.
  * - Only the active headline is the <h1>; the others are inert and hidden from assistive tech.
  * - Rotation stops while focus is inside, via the pause button, and for reduced motion
@@ -30,31 +31,59 @@ const INTERVAL = 8000;
  */
 export function HeroRotator({ slides, actions }: { slides: HeroSlide[]; actions: React.ReactNode }) {
   const [active, setActive] = useState(0);
+  // Highest slide index shown so far: its poster and every earlier one stay mounted.
+  const [reach, setReach] = useState(0);
   const [paused, setPaused] = useState(false);
   const [focusWithin, setFocusWithin] = useState(false);
+  // True once the page has loaded and gone idle. Video and the next poster wait for it,
+  // so nothing competes with the first poster (the LCP image) for bandwidth.
+  const [idle, setIdle] = useState(false);
   const videos = useRef<(HTMLVideoElement | null)[]>([]);
   const reduced = useRef(false);
+  // Skip video entirely when the visitor asked to save data or is on a slow connection.
+  const lowData = useRef(false);
+
+  const go = (i: number) => {
+    setActive(i);
+    setReach((r) => Math.max(r, i));
+  };
 
   useEffect(() => {
     reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+    lowData.current = Boolean(conn?.saveData) || /2g|3g/.test(conn?.effectiveType ?? "");
+
+    const markIdle = () => setIdle(true);
+    const whenIdle = () => {
+      if ("requestIdleCallback" in window) window.requestIdleCallback(markIdle, { timeout: 3000 });
+      else setTimeout(markIdle, 1500);
+    };
+    if (document.readyState === "complete") whenIdle();
+    else window.addEventListener("load", whenIdle, { once: true });
+    return () => window.removeEventListener("load", whenIdle);
   }, []);
 
   // Play the active clip, pause the rest.
   useEffect(() => {
+    const canPlay = idle && !paused && !reduced.current && !lowData.current;
     videos.current.forEach((v, i) => {
       if (!v) return;
-      if (i === active && !paused && !reduced.current) {
+      if (i === active && canPlay) {
         v.muted = true; // browsers only autoplay muted video
         v.play().catch(() => {});
       } else {
         v.pause();
       }
     });
-  }, [active, paused]);
+  }, [active, paused, idle]);
 
   useEffect(() => {
     if (paused || focusWithin || reduced.current) return;
-    const t = window.setTimeout(() => setActive((i) => (i + 1) % slides.length), INTERVAL);
+    const t = window.setTimeout(() => {
+      const next = (active + 1) % slides.length;
+      setActive(next);
+      setReach((r) => Math.max(r, next));
+    }, INTERVAL);
     return () => window.clearTimeout(t);
   }, [active, paused, focusWithin, slides.length]);
 
@@ -72,14 +101,19 @@ export function HeroRotator({ slides, actions }: { slides: HeroSlide[]; actions:
               i === active ? "scale-100 opacity-100" : "scale-105 opacity-0",
             )}
           >
-            <Image
-              src={`/videos/hero-${s.video}.jpg`}
-              alt=""
-              fill
-              priority={i === 0}
-              sizes="100vw"
-              className="object-cover"
-            />
+            {/* Posters sit in the viewport behind opacity-0, so "lazy" would still fetch all
+                five at once. Mount each only once its slide has been reached or is next. */}
+            {i <= reach || (idle && i === (active + 1) % slides.length) ? (
+              <Image
+                src={`/videos/hero-${s.video}.jpg`}
+                alt=""
+                fill
+                sizes="100vw"
+                className="object-cover"
+                // The first poster is the LCP element: fetch it first, never lazily.
+                {...(i === 0 ? { loading: "eager" as const, fetchPriority: "high" as const } : {})}
+              />
+            ) : null}
             <video
               ref={(el) => {
                 videos.current[i] = el;
@@ -157,7 +191,7 @@ export function HeroRotator({ slides, actions }: { slides: HeroSlide[]; actions:
                   <button
                     key={s.id}
                     type="button"
-                    onClick={() => setActive(i)}
+                    onClick={() => go(i)}
                     aria-current={on}
                     aria-label={`Slide ${i + 1} of ${slides.length}: ${s.label}`}
                     className="group flex h-11 items-center px-1"

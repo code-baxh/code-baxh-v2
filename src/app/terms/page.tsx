@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PageHero } from "@/components/layout/page-hero";
-import { legalIdentity, site } from "@/config/site";
+import { legalIdentity, registeredAddress, site } from "@/config/site";
 import { legalLastUpdated } from "@/content/legal";
 import { pageMetadata } from "@/lib/seo";
 
@@ -25,7 +25,7 @@ export default function TermsPage() {
         <div className="prose mx-auto">
           <h2>1. About these terms</h2>
           <p>
-            This website is operated by {legalIdentity}. By
+            This website is operated by {legalIdentity}, with its registered office at {registeredAddress}. By
             using the website you agree to these terms. If you do not agree, please do not use it.
           </p>
 
@@ -78,8 +78,10 @@ export default function TermsPage() {
 
           <h2>9. Governing law</h2>
           <p>
-            These terms are governed by the laws of {governingLaw}. Disputes are subject to the jurisdiction of the
-            courts of {governingLaw}.
+            These terms are governed by the laws of {governingLaw}, without regard to its conflict-of-law rules.
+            Disputes are subject to the exclusive jurisdiction of the state and federal courts located in{" "}
+            {site.legal.registeredOffice.regionName}. This does not remove any mandatory consumer protection you have
+            under the law of the country where you live.
           </p>
 
           <h2>10. Changes and contact</h2>

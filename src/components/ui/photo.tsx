@@ -8,6 +8,7 @@ type Props = {
   decorative?: boolean;
   className?: string;
   sizes?: string;
+  /** The page's LCP image: fetched eagerly at high priority instead of lazily. */
   priority?: boolean;
   /** Darkening gradient from the bottom, for captions. */
   scrim?: boolean;
@@ -24,7 +25,8 @@ export function Photo({ name, decorative, className, sizes = "(min-width: 1024px
         alt={decorative ? "" : img.alt}
         fill
         sizes={sizes}
-        priority={priority}
+        // `priority` is deprecated in Next 16; eager + fetchPriority="high" is the recommended LCP setup.
+        {...(priority ? { loading: "eager" as const, fetchPriority: "high" as const } : {})}
         className="object-cover"
       />
       {scrim ? <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" /> : null}

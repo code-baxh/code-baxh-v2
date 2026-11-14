@@ -47,8 +47,9 @@ export default function AboutPage() {
               each department means every part of a product gets specialist attention.
             </p>
             <p>
-              Our product delivery team is based in Stockholm and our engineering team in Islamabad. We work with
-              clients across Europe, the United States, Canada and the UAE, and deliver worldwide.
+              CodeBaxh LLC is registered in Missouri, United States. Our product delivery team is based in Stockholm
+              and our engineering team in Islamabad. We work with clients across Europe, the United States, Canada and
+              the UAE, and deliver worldwide.
             </p>
           </Reveal>
         </div>
