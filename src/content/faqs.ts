@@ -11,7 +11,7 @@ export const homeFaqs: Faq[] = [
   },
   {
     q: "Who will I actually work with?",
-    a: "The two co-founders lead every engagement: Usman on product and delivery, Bilal on engineering. Behind them is a dedicated team in each department, covering design, web and mobile engineering, AI, QA and DevOps.",
+    a: "Bilal Khursheed, our founder and principal engineer, leads every engagement. Behind him is a dedicated team in each department, covering design, web and mobile engineering, AI, QA and DevOps.",
   },
   {
     q: "How fast can you ship?",
