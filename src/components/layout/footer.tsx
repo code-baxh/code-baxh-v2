@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { CookieSettingsButton } from "@/components/cookie-settings-button";
+import { gaId } from "@/config/analytics";
 import { mainNav, registeredAddress, site } from "@/config/site";
 import { services } from "@/content/services";
 import { Logo } from "./logo";
@@ -92,6 +94,11 @@ export function Footer() {
                 </Link>
               </li>
             ))}
+            {gaId ? (
+              <li>
+                <CookieSettingsButton className="inline-flex min-h-9 items-center text-sm text-muted hover:text-fg" />
+              </li>
+            ) : null}
           </ul>
         </nav>
         <div>

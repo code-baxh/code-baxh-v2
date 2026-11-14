@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, MessageCircle, Send, X } from "lucide-react";
 import { submitMessage } from "@/app/contact/actions";
+import { BANNER_EVENT, isBannerOpen } from "@/lib/consent";
 import { errorsFrom, messageSchema, type MessageField } from "@/lib/contact-schema";
 import { cn } from "@/lib/utils";
 
@@ -62,17 +63,30 @@ export function HelpPrompt() {
   };
   const showRef = useRef(show);
 
-  // Open on its own once per session, after a short delay.
+  // Open on its own once per session, after a short delay. If the cookie banner is still
+  // waiting for an answer, hold off until it closes so the two never stack in the corner.
   useEffect(() => {
     let seen = false;
     try {
       seen = sessionStorage.getItem(SEEN_KEY) === "1";
     } catch {}
+    let later = 0;
+    const onBanner = () => {
+      if (isBannerOpen()) return;
+      window.removeEventListener(BANNER_EVENT, onBanner);
+      later = window.setTimeout(() => showRef.current(), 3000);
+    };
     const t = window.setTimeout(() => {
       setReady(true);
-      if (!seen) showRef.current();
+      if (seen) return;
+      if (isBannerOpen()) window.addEventListener(BANNER_EVENT, onBanner);
+      else showRef.current();
     }, seen ? 1500 : OPEN_AFTER_MS);
-    return () => window.clearTimeout(t);
+    return () => {
+      window.clearTimeout(t);
+      window.clearTimeout(later);
+      window.removeEventListener(BANNER_EVENT, onBanner);
+    };
   }, []);
 
   const close = (returnFocus = true) => {

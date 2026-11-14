@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { PageHero } from "@/components/layout/page-hero";
+import { CookieSettingsButton } from "@/components/cookie-settings-button";
+import { gaId } from "@/config/analytics";
 import { legalIdentity, registeredAddress, site } from "@/config/site";
 import { legalLastUpdated, processors } from "@/content/legal";
 import { pageMetadata } from "@/lib/seo";
@@ -45,21 +47,28 @@ export default function PrivacyPage() {
           </p>
           <h3>Website statistics</h3>
           <p>
-            We use Google Analytics 4 to understand, in aggregate, how the website is used: which pages are viewed, how
-            visitors arrived, the type of device and an approximate location such as the country or city. Google
-            Analytics 4 does not log or store IP addresses. We use these reports only to improve the website.
+            If you accept analytics cookies, we use Google Analytics 4 to understand, in aggregate, how the website is
+            used: which pages are viewed, how visitors arrived, the type of device and an approximate location such as
+            the country or city. Google Analytics 4 does not log or store IP addresses, and advertising features stay
+            switched off. We use these reports only to improve the website. If you decline, Google Analytics is not
+            loaded at all.
           </p>
-          <h3>Cookies</h3>
+          <h3 id="cookies">Cookies</h3>
           <p>
-            This website does not use advertising cookies. Google Analytics sets two first-party cookies,{" "}
-            <code>_ga</code> and <code>_ga_&lt;ID&gt;</code>, which tell visits apart and expire after two years. You
-            can block or delete them in your browser settings, or install{" "}
-            <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener">
-              Google&apos;s opt-out browser add-on
-            </a>
-            . Your light or dark theme choice is saved in your browser&apos;s local storage and never leaves your
-            device.
+            This website does not use advertising cookies. Only if you accept, Google Analytics sets two first-party
+            cookies, <code>_ga</code> and <code>_ga_&lt;ID&gt;</code>, which tell visits apart and expire after 13
+            months. Your choice itself is saved in your browser&apos;s local storage for 12 months, after which we ask
+            again, and so is your light or dark theme. Neither leaves your device.
           </p>
+          {gaId ? (
+            <p>
+              You can change or withdraw your choice at any time:{" "}
+              <CookieSettingsButton className="font-medium text-fg underline underline-offset-2 hover:text-accent-text">
+                open cookie settings
+              </CookieSettingsButton>
+              . Withdrawing deletes the Google Analytics cookies.
+            </p>
+          ) : null}
 
           <h2>3. Why we use it and our legal basis</h2>
           <ul>
@@ -72,8 +81,8 @@ export default function PrivacyPage() {
               keeping the service secure (Article 6(1)(f)).
             </li>
             <li>
-              <strong>To understand how the website is used, in aggregate.</strong> Legal basis: our legitimate
-              interest in improving the website (Article 6(1)(f)).
+              <strong>To understand how the website is used, in aggregate.</strong> Legal basis: your consent to
+              analytics cookies (Article 6(1)(a)), which you can withdraw at any time under Cookie settings.
             </li>
           </ul>
 
