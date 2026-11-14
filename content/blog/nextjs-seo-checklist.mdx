@@ -125,7 +125,7 @@ export function JsonLd({ data }: { data: unknown }) {
 
 Each schema type is generated from the same data that renders the page, which keeps markup and content in step:
 
-- **Organization and WebSite** sit in the root layout with stable IDs such as `/#organization`. Other schema points to them by `@id` instead of repeating the details. The founders are Person entities with their own IDs, so a post's author resolves to the same person as their team page.
+- **Organization and WebSite** sit in the root layout with stable IDs such as `/#organization`. Other schema points to them by `@id` instead of repeating the details. Each author is a Person entity with its own ID, so a post's author resolves to the same person as their team page.
 - **BlogPosting** is built per post from frontmatter: headline, description, `datePublished`, `dateModified` from the `updated` field, the route's Open Graph image, the author as a Person and the publisher by reference.
 - **BreadcrumbList** is emitted by the breadcrumb component that draws the visible trail, so the two cannot drift apart.
 - **FAQPage** is parsed from each post's "Frequently asked questions" section. Note that Google [stopped showing FAQ rich results on May 7, 2026](https://developers.google.com/search/updates), so this markup no longer earns a visual feature in Google. We keep it because it is generated from the visible FAQ at no extra cost.

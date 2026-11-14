@@ -1377,7 +1377,7 @@ export const services: Service[] = [
       },
       {
         "q": "Who runs the requirements phase?",
-        "a": "Our product and delivery lead, supported by a business analyst and a solution architect, with design and QA input where needed."
+        "a": "A senior product lead, supported by a business analyst and a solution architect, with design and QA input where needed."
       }
     ]
   },

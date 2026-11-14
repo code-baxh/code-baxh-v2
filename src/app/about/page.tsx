@@ -10,9 +10,10 @@ import { site } from "@/config/site";
 import { howWeWork, values } from "@/content/about";
 import { team } from "@/content/team";
 import { pageMetadata } from "@/lib/seo";
+import { cn } from "@/lib/utils";
 
 export const metadata = pageMetadata({
-  title: "About Us: Founders, Team & How We Work",
+  title: "About Us: Founder, Team & How We Work",
   description:
     "Meet CodeBaxh: a founder-led software development and AI company with dedicated teams in every department, serving clients across Europe and worldwide.",
   path: "/about",
@@ -36,7 +37,7 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={0.06} className="mx-auto max-w-3xl space-y-5 text-center text-lg text-muted">
             <p>
-              CodeBaxh was founded to close a gap its founders saw repeatedly in software projects: strong
+              CodeBaxh was founded to close a gap its founder saw repeatedly in software projects: strong
               engineering without clear product direction, or clear direction without the engineering depth to
               deliver it.
             </p>
@@ -57,9 +58,9 @@ export default function AboutPage() {
 
       <Section className="border-t border-line">
         <Reveal>
-          <SectionHeading eyebrow="Leadership" title="The co-founders." />
+          <SectionHeading eyebrow="Leadership" title="The founder." />
         </Reveal>
-        <ul className="mt-12 grid gap-4 md:grid-cols-2">
+        <ul className={cn("mt-12 grid gap-4", team.length > 1 ? "md:grid-cols-2" : "mx-auto max-w-2xl")}>
           {team.map((m, i) => (
             <li key={m.slug}>
               <Reveal delay={i * 0.06} className="h-full">

@@ -48,7 +48,7 @@ export type CaseStudy = {
   /** Used by the filter on /work. */
   category: CaseStudyCategory;
   summary: string;
-  /** "founder-engineer" = a founder worked as an engineer on someone else's product. */
+  /** "founder-engineer" = our founder worked as an engineer on someone else's product. */
   role: "codebaxh-led" | "founder-engineer";
   /** One honest sentence on who did what. Shown on the page. */
   roleNote: string;

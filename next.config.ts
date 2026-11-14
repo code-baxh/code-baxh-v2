@@ -47,6 +47,8 @@ const nextConfig: NextConfig = {
       // De-branded 2026-08-27: the old slug carried a third party's brand and pulled
       // their branded searches at 0% CTR. Keep this redirect for the old URL's links.
       { source: "/work/zoneomics-proptech-saas", destination: "/work/gis-zoning-saas", permanent: true },
+      // Profile removed 2026-11-15. Sends the old profile (and its OG image) to the team section.
+      { source: "/team/muhammad-usman-mustafa/:path*", destination: "/about", permanent: true },
     ];
   },
   turbopack: {
