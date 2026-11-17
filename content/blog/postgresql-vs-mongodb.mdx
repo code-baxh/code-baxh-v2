@@ -1,114 +1,307 @@
 ---
-title: "PostgreSQL vs MongoDB: which database should your SaaS use?"
+title: "PostgreSQL vs MongoDB: which database should you choose?"
 metaTitle: "PostgreSQL vs MongoDB (2026): Which Database to Choose?"
-description: "PostgreSQL vs MongoDB compared: data model, transactions, JSON, speed and scaling, with a clear verdict on when each wins, from a team that ships on both."
+description: "PostgreSQL vs MongoDB in 2026: data model, transactions, JSON, vector search, scaling and licensing compared, with a clear verdict on when each one wins."
 date: "2026-07-02"
-updated: "2026-07-02"
+updated: "2026-11-17"
 author: "bilal-khursheed"
 category: "SaaS"
-tags: ["postgresql", "mongodb", "databases", "backend"]
+tags: ["postgresql", "mongodb", "databases", "backend", "saas"]
 cover: ""
 service: "api-backend-development"
 ---
 
-For most SaaS, **PostgreSQL is the right default**: relational integrity, real transactions, and — crucially — it now handles JSON well enough to cover most "flexible schema" needs. **MongoDB wins** when your data is genuinely document-shaped, your schema varies a lot between records, or you need horizontal write scaling early. The choice is about the shape of your data, not which one is newer.
-
-Both are excellent, production-grade databases. The mistake is picking on hype instead of your actual access patterns.
-
-## The core difference
-
-- **PostgreSQL** is relational: data lives in tables of rows and columns, with a defined schema, foreign keys, joins, and ACID transactions. It's strict by design, which protects data integrity.
-- **MongoDB** is document-oriented: data lives in flexible JSON-like documents that can vary between records and embed related data inline. It trades some integrity guarantees for schema flexibility and easy horizontal sharding.
+**For most new products, start with PostgreSQL.** It gives you enforced relationships, SQL joins and mature transactions, and its `jsonb` type covers most of the "flexible schema" cases that used to push teams towards MongoDB. **Choose MongoDB when your data really is a set of self-contained documents** that you read and write whole, when records vary a lot in shape, or when you want sharding built into the database. Both are mature and actively developed: in November 2026 PostgreSQL 18 is the stable major release, with [PostgreSQL 19 at the release-candidate stage](https://www.postgresql.org/about/news/postgresql-187-1712-1616-1520-1425-and-19-rc-2-released-3442/), and [MongoDB 9.0 shipped on 28 September 2026](https://www.mongodb.com/docs/manual/release-notes/9.0/).
 
 ## PostgreSQL vs MongoDB at a glance
 
 | Factor | PostgreSQL | MongoDB |
 | --- | --- | --- |
-| Data model | Relational tables | JSON-like documents |
-| Schema | Defined, enforced | Flexible, per-document |
-| Transactions | Full ACID, mature | Supported (multi-document since 4.x) |
-| Joins / relations | First-class | Limited; favors embedding |
-| Scaling | Vertical, read replicas, partitioning | Native horizontal sharding |
-| JSON support | Strong (`jsonb`, indexes on JSON) | Native — it is the model |
-| Best for | Relational, transactional SaaS | Document-heavy, variable-schema data |
+| Current version (November 2026) | 18 (19 in release candidate) | 9.0, released 28 September 2026 |
+| Data model | Tables of rows, linked by keys | BSON documents in collections |
+| Licence | PostgreSQL Licence (permissive, BSD/MIT-style) | Community Server under the SSPL; commercial licence available |
+| Query language | SQL, plus SQL/JSON functions such as `JSON_TABLE` | MongoDB Query API: filters and aggregation pipelines |
+| Schema validation | Column types, `NOT NULL`, `CHECK`, foreign keys | Optional `$jsonSchema` validators; `constraint` level new in 9.0 |
+| Transactions | Full ACID across any tables | Single-document writes atomic; multi-document ACID since 4.0 (replica sets) and 4.2 (sharded) |
+| Joins | Native joins, enforced foreign keys | `$lookup` in aggregation; embedding preferred; no foreign keys |
+| JSON | `json` and `jsonb` with GIN indexes | Native: documents are the model |
+| Full-text search | Built in (`tsvector`, `tsquery`) | Text indexes; MongoDB Search on Atlas and self-managed |
+| Vector search | pgvector extension (HNSW, IVFFlat) | MongoDB Vector Search (`$vectorSearch`) |
+| Scaling | Bigger server, read replicas, partitioning; Citus for sharding | Replica sets and native sharding |
+| Managed options | Amazon RDS and Aurora, Google Cloud SQL and AlloyDB, Azure, Neon, Supabase | MongoDB Atlas on AWS, Google Cloud or Azure |
+| ORM support (Node.js) | Prisma ORM 7, Drizzle, TypeORM and most SQL ORMs | Mongoose; Prisma ORM 6.19 (v7 support not yet released) |
 
-*Both scale far past where most SaaS ever reaches — pick for data shape first.*
+## What is the real difference between PostgreSQL and MongoDB?
 
-## When PostgreSQL wins
+PostgreSQL splits data into tables and joins it back together when you read it. MongoDB stores related data inside one document, so a single read returns everything.
 
-- Your data is relational — users, teams, subscriptions, invoices that reference each other.
-- You need transactions you can trust (billing, ledgers, anything money-adjacent).
-- You want one dependable default and a huge ecosystem (including [Supabase](/blog/saas-tech-stack-2026) and Prisma).
-- You'll run analytics and reporting with joins and aggregates.
+MongoDB's own [guidance on embedding vs referencing](https://www.mongodb.com/docs/manual/data-modeling/concepts/embedding-vs-references/) sums up the decision: embed data that is queried or updated together, and reference it (store an ID and look it up) when the child side has high cardinality, grows without bound, or exists on its own. Each BSON document must also stay within [16 MB](https://www.mongodb.com/docs/manual/core/transactions-production-consideration/).
 
-## When MongoDB wins
+If most of your core data embeds naturally, such as a listing with its images or a message with its reactions, MongoDB fits and saves you joins. If most of it is referenced, such as users in teams that own projects billed through subscriptions, you'd be rebuilding relational modelling without foreign keys.
 
-- Your records are genuinely document-shaped and vary a lot (CMS content, event payloads, product catalogs with wildly different attributes).
-- You want to embed related data and read it in one shot, avoiding joins.
-- You expect very high write throughput and want horizontal sharding built in from the start.
-- Your schema is still moving fast and you value flexibility over enforcement early on.
+## When should you choose PostgreSQL?
 
-> **"Postgres does JSON" is the point most teams miss**
->
-> PostgreSQL's `jsonb` columns give you document-style flexibility **inside** a relational database — so you can keep strict schemas where they matter and flexible JSON where they don't. That combination means you rarely need MongoDB just because "some fields vary."
+- **B2B SaaS**, where accounts, users, roles, subscriptions and invoices all reference each other.
+- **Money or stock**: billing, ledgers, bookings and inventory, where several rows must change together or not at all.
+- **Reporting and admin dashboards** that need ad hoc joins, `GROUP BY` and window functions.
+- **Multi-tenant products** that want isolation enforced inside the database.
+- **AI features over business data**, with embeddings stored next to the rows they describe.
+- **Hosting choice**: one open engine sold by every major cloud and several specialists.
 
-## The same data, two ways
+## When should you choose MongoDB?
 
-*A subscription modeled relationally in Postgres vs embedded in a Mongo document.*
+- **Catalogues with varied attributes**, where a sofa and a pair of trainers need different fields.
+- **Content, messages and events** written once and read whole: chat, activity feeds, logs, device payloads.
+- **Mobile and real-time apps** where one document maps neatly to one screen.
+- **Early prototypes** whose shape changes weekly, provided you add validation once it settles.
+- **Data you expect to outgrow one server**, where built-in sharding avoids a re-platform later.
+- **Teams with deep MongoDB experience**, which is a fair tie-breaker.
+
+## The same data, both ways
+
+One SaaS account with its users, subscription and per-plan settings, plus a query listing active Pro accounts and their user counts.
+
+**PostgreSQL:** three tables with constraints, and a GIN-indexed `jsonb` column for settings that vary by plan.
 
 ```sql
--- PostgreSQL: a subscription row that references the user
-CREATE TABLE subscription (
-  id         uuid PRIMARY KEY,
-  user_id    uuid REFERENCES users(id),
-  plan       text NOT NULL,
-  status     text NOT NULL
+CREATE TABLE accounts (
+  id    uuid PRIMARY KEY DEFAULT uuidv7(),  -- uuidv7() needs PostgreSQL 18+
+  name  text NOT NULL
 );
+
+CREATE TABLE users (
+  id          uuid PRIMARY KEY DEFAULT uuidv7(),
+  account_id  uuid NOT NULL REFERENCES accounts(id),
+  email       text NOT NULL UNIQUE,
+  role        text NOT NULL
+);
+
+CREATE TABLE subscriptions (
+  id          uuid PRIMARY KEY DEFAULT uuidv7(),
+  account_id  uuid NOT NULL REFERENCES accounts(id),
+  plan        text NOT NULL,
+  status      text NOT NULL CHECK (status IN ('trialing', 'active', 'past_due', 'cancelled')),
+  settings    jsonb NOT NULL DEFAULT '{}'
+);
+
+CREATE INDEX subscriptions_settings_idx
+  ON subscriptions USING GIN (settings jsonb_path_ops);
+```
+
+```sql
+-- Active Pro accounts and their user counts: a join
+SELECT a.name, count(u.id) AS user_count
+FROM accounts a
+JOIN subscriptions s ON s.account_id = a.id
+LEFT JOIN users u ON u.account_id = a.id
+WHERE s.status = 'active' AND s.plan = 'pro'
+GROUP BY a.id, a.name;
+
+-- Query inside the jsonb column; the GIN index serves @>
+SELECT account_id, plan
+FROM subscriptions
+WHERE settings @> '{"features": {"sso": true}}';
+```
+
+A `jsonb_path_ops` index supports the containment operator `@>` and jsonpath matches, and is usually smaller than the default `jsonb_ops` class, which adds key-exists operators such as `?` ([PostgreSQL docs](https://www.postgresql.org/docs/current/datatype-json.html)).
+
+**MongoDB:** one document per account with the subscription and users embedded, and a validator once the shape settles.
+
+```js
+db.createCollection("accounts", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["name", "subscription"],
+      properties: {
+        name: { bsonType: "string" },
+        subscription: {
+          bsonType: "object",
+          required: ["plan", "status"],
+          properties: {
+            status: { enum: ["trialing", "active", "past_due", "cancelled"] }
+          }
+        }
+      }
+    }
+  }
+});
+
+db.accounts.insertOne({
+  name: "Acme Ltd",
+  subscription: { plan: "pro", status: "active", settings: { features: { sso: true } } },
+  users: [
+    { email: "a@acme.com", role: "owner" },
+    { email: "b@acme.com", role: "member" }
+  ]
+});
+
+db.accounts.createIndex({ "subscription.status": 1, "subscription.plan": 1 });
+
+// Embedded read: one document per account, nothing to join
+db.accounts.aggregate([
+  { $match: { "subscription.status": "active", "subscription.plan": "pro" } },
+  { $project: { name: 1, userCount: { $size: "$users" } } }
+]);
 ```
 
 ```js
-// MongoDB: the subscription embedded in the user document
-{
-  _id: ObjectId(),
-  email: "a@acme.com",
-  subscription: { plan: "pro", status: "active" }
-}
+// If users move to their own collection, join them back with $lookup
+db.users.createIndex({ accountId: 1 });
+
+db.accounts.aggregate([
+  { $match: { "subscription.status": "active", "subscription.plan": "pro" } },
+  { $lookup: { from: "users", localField: "_id", foreignField: "accountId", as: "users" } },
+  { $project: { name: 1, userCount: { $size: "$users" } } }
+]);
 ```
 
-## What about scaling?
+PostgreSQL needs a join, but it guarantees every user belongs to a real account and every status is valid. MongoDB returns the whole account in one read, but the embedded `users` array only makes sense while it stays small. Once you query users across accounts, they move to their own collection and you use [`$lookup`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/lookup/), a left outer join that MongoDB's docs warn performs poorly without an index on the foreign field.
 
-Both scale well past the point most SaaS ever reaches. Postgres scales with read replicas, connection pooling, and table partitioning; Mongo scales writes horizontally with native sharding. The common mistake is picking Mongo "to scale" before you have any scale to speak of — premature sharding adds complexity you don't need yet. Get [your tenancy model](/blog/how-to-build-a-multi-tenant-saas) and [hosting](/blog/where-to-host-saas-aws-vercel-render) right first; the database is rarely the first bottleneck.
+## How do transactions and consistency compare?
 
-## How we choose for clients
+In PostgreSQL every statement runs in a transaction, one `BEGIN … COMMIT` can span any number of tables, and constraints are checked as part of it.
 
-We default to PostgreSQL for transactional SaaS and reach for MongoDB when the data is truly document-shaped — and we're comfortable running either in production. We pick based on your access patterns, not fashion. See our [API & backend development service](/services/api-backend-development) or [book a free discovery call](/start-a-project) to talk it through.
+In MongoDB a write to a single document is always atomic, which is why embedding matters: if everything that must change together lives in one document, you don't need a transaction. Multi-document ACID transactions arrived in [MongoDB 4.0 for replica sets and 4.2 for sharded clusters](https://www.mongodb.com/company/newsroom/press-releases/mongodb-42-adds-distributed-transactions-field-level-encryption-updated-kubernetes-operator-and-more-to-the-leading-modern-general-purpose-database). By default a transaction must finish in [under one minute](https://www.mongodb.com/docs/manual/core/transactions-production-consideration/) or it is aborted, and 9.0 caps concurrently open transactions from clients at 10,000 by default.
+
+MongoDB has also narrowed the schema gap. Collections can reject documents that fail a `$jsonSchema` validator, and the [9.0 release notes](https://www.mongodb.com/docs/manual/release-notes/9.0/) add a `constraint` validation level that guarantees every document in the collection satisfies the rules, not just new writes.
+
+Both can be trusted with money. PostgreSQL's safety is automatic; MongoDB's depends on document design and on using sessions for multi-document writes.
+
+## Which is faster, PostgreSQL or MongoDB?
+
+Neither, in general. Published benchmarks often pit a vendor-tuned database against one on defaults, or a single-document read in MongoDB against a multi-table join in PostgreSQL, which measures data modelling, not engines. Durability settings (MongoDB's write concern, PostgreSQL's `synchronous_commit`), memory, indexes and the ORM layer usually matter more.
+
+What holds up in practice: MongoDB does well fetching one embedded document by an indexed key, because there's nothing to join. PostgreSQL does well on relational queries, aggregates and reporting. Both slow down with missing indexes and N+1 query patterns.
+
+The reliable test is your own: load realistic volumes and run your five most frequent queries and your heaviest report on both before you commit.
+
+## How do PostgreSQL and MongoDB scale?
+
+**PostgreSQL** scales up first: a well-sized server with connection pooling carries most products a long way. Streaming replicas take read-only traffic, and declarative partitioning by range, list or hash keeps very large tables manageable and makes dropping old data cheap. When writes outgrow one server, the open-source Citus extension shards tables across nodes.
+
+**MongoDB** runs as a replica set for high availability and adds [native sharding](https://www.mongodb.com/docs/manual/sharding/) when one replica set isn't enough. Data is split across shards by a shard key, and `mongos` routers send each query to the right shard. Since 5.0 you can reshard a collection by changing its key, but the key still decides whether queries hit one shard or all of them.
+
+Most products never need sharding, and sharding early adds work for no benefit. If you will need it, MongoDB's is built in; PostgreSQL's relies on an extension or a specialist service.
+
+## Which is better for AI and vector search?
+
+Both handle vector search well enough for most semantic search and retrieval-augmented generation (RAG) features, so the choice usually follows your main database.
+
+- **PostgreSQL** uses [pgvector](https://github.com/pgvector/pgvector), an open-source extension with HNSW and IVFFlat indexes. Embeddings sit in an ordinary column, so you can join them with relational data and keep ACID guarantees, replication and point-in-time recovery. Indexes cover up to 2,000 dimensions for `vector` and 4,000 for `halfvec`, so check your embedding model's output size. Filters apply after an approximate index scan; version 0.8.0 added iterative scans so filtered queries still return enough results.
+- **MongoDB** uses [MongoDB Vector Search](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/) through a `$vectorSearch` stage, with HNSW-based approximate search, exact search, pre-filtering on indexed fields and embeddings of up to 8,192 dimensions. It began on Atlas; Search and Vector Search for self-managed deployments reached [general availability on 30 June 2026](https://www.mongodb.com/docs/search/self-managed/current/release-notes/).
+
+Chunking, retrieval quality and evaluation matter more than the database; see [building a RAG pipeline](/blog/building-a-rag-pipeline).
+
+## Which is better for multi-tenant SaaS?
+
+PostgreSQL can enforce tenant isolation inside the database with row-level security (RLS):
+
+```sql
+ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY tenant_isolation ON projects
+  USING (tenant_id = current_setting('app.tenant_id')::uuid);
+
+-- At the start of each request's transaction
+SELECT set_config('app.tenant_id', '0190f3c2-7b1a-7c3e-9a51-2f6d8e4b1a20', true);
+```
+
+With RLS on and no matching policy, access is denied by default. Table owners and superusers bypass RLS unless you use `FORCE ROW LEVEL SECURITY`, so connect your app as a separate role ([PostgreSQL docs](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)).
+
+MongoDB's access control works at the database and collection level, so isolation inside a shared collection lives in your application: a `tenantId` on every document, indexes that start with it, and one data-access layer that adds the filter to every query. Database-per-tenant isolates more strictly, at the cost of more databases and connections to manage. Our guide to [building a multi-tenant SaaS](/blog/how-to-build-a-multi-tenant-saas) compares these models.
+
+## Licensing and hosting costs
+
+The [PostgreSQL Licence](https://www.postgresql.org/about/licence) is "a liberal Open Source license, similar to the BSD or MIT licenses", so you can run, modify, embed and resell it.
+
+MongoDB releases since 16 October 2018 use MongoDB's [Server Side Public License](https://www.mongodb.com/legal/licensing/community-edition). [Section 13 of the SSPL](https://www.mongodb.com/legal/licensing/server-side-public-license) says that if you make the program's functionality available to third parties as a service, you must publish the source code of your whole service stack, including management, monitoring, backup and hosting software. If you plan to host MongoDB for customers, expose database-like features, or ship it inside software you sell, get legal advice, or use Atlas or a commercial licence through Enterprise Advanced.
+
+[MongoDB Atlas](https://www.mongodb.com/pricing) lists these tiers at the time of writing (November 2026): Free with 512 MB of storage, Flex at up to $30 a month for development, and Dedicated from $56.94 a month for production. Managed PostgreSQL comes from Amazon, Google Cloud, Azure, Neon, Supabase and others, so you can change provider without changing engine. For either database, the bill is driven by compute, storage, replicas, backups and cross-region traffic; our guide on [where to host a SaaS](/blog/where-to-host-saas-aws-vercel-render) covers those trade-offs.
+
+## Can you migrate between PostgreSQL and MongoDB?
+
+Yes, but treat it as a project, not an export. From MongoDB to PostgreSQL, the hard parts are:
+
+- **Embedded documents to tables.** Each embedded array becomes a child table, and varied documents need nullable columns or a `jsonb` column.
+- **Inconsistent history.** Fields with mixed types and spellings must be cleaned before constraints accept them.
+- **ObjectIds.** These 12-byte IDs embed a creation timestamp. Keep the old value in a lookup column so references can be rewritten, and consider `uuidv7()` for new keys, since [PostgreSQL 18's UUIDv7](https://www.postgresql.org/about/news/postgresql-18-released-3142/) values are also time-ordered.
+- **Transactions and app logic.** Code that relied on single-document atomicity needs explicit transactions, and aggregation pipelines become SQL.
+
+A practical route is to land exported documents in a `jsonb` staging table, then shred them with [`JSON_TABLE`, added in PostgreSQL 17](https://www.postgresql.org/about/news/postgresql-17-released-2936/):
+
+```sql
+CREATE TABLE staging_accounts (doc jsonb NOT NULL);
+
+-- Turn each embedded users array into rows
+SELECT r.doc->>'name' AS account_name, u.email, u.role
+FROM staging_accounts r,
+     JSON_TABLE(r.doc, '$.users[*]'
+       COLUMNS (email text PATH '$.email',
+                role  text PATH '$.role')) AS u;
+```
+
+Exported `_id` values arrive as Extended JSON, such as `{"$oid": "..."}`, so read them with `doc->'_id'->>'$oid'`. Then move traffic over gradually, comparing results before you switch off the old system. Going the other way, the main work is deciding what to embed and rebuilding your constraints in application code.
+
+## A decision checklist
+
+1. Can you sketch your core entities as tables with relationships? Lean PostgreSQL.
+2. Do you mostly read and write one self-contained record at a time, such as a listing, message or event? MongoDB fits.
+3. Will money, stock or permissions change across several records at once? Lean PostgreSQL.
+4. Does record structure vary by customer or category in ways you can't predict? MongoDB, or PostgreSQL with `jsonb`.
+5. Will people need ad hoc reports with joins and aggregates? Lean PostgreSQL.
+6. Do you honestly expect to outgrow one large server within two years? Compare MongoDB sharding with PostgreSQL plus Citus.
+7. Will you host the database for customers or ship it inside your product? Check the licence first.
+8. What does your team already run well in production? Give that real weight.
+
+## From our builds
+
+We've shipped production systems on both. On PostgreSQL, we built a [multi-tenant SaaS MVP](/work/multi-tenant-saas-mvp) on Next.js, NestJS, PostgreSQL, Stripe and AWS, and an [analytics-rich admin dashboard for e-commerce](/work/redeemx-admin-dashboard) on Next.js, PostgreSQL and Prisma. On MongoDB, we built a [wedding planning marketplace across web and mobile](/work/mydasma-wedding-platform), a mobile app that rewards greener commuting, a custom wall art e-commerce store, a [real-time chat app with public and private channels](/work/chattin-realtime-chat), and a GoHighLevel-integrated LMS backend for a landlord academy.
+
+Some products use both. Our co-founder worked as an engineer on a [GIS zoning SaaS](/work/gis-zoning-saas), built by another company, whose stack includes PostgreSQL and MongoDB side by side.
+
+## How we choose
+
+We start from access patterns, not brands: core entities, the most frequent reads and writes, reporting needs and the tenancy model. Relational, transactional products get PostgreSQL; products made of self-contained, varied documents get MongoDB. For a second opinion on your data model, see our [API and backend development service](/services/api-backend-development) or [tell us about your project](/start-a-project).
 
 ## Frequently asked questions
 
-### Is PostgreSQL or MongoDB better for a SaaS?
+### Is PostgreSQL or MongoDB better for a new product?
 
-For most SaaS, PostgreSQL — relational integrity, transactions, and strong JSON support cover the majority of cases. MongoDB is the better fit when your data is genuinely document-shaped or you need horizontal write scaling early.
+For most new products, PostgreSQL is the safer default. Most business data is relational, PostgreSQL enforces relationships and transactions without extra design work, and its jsonb type covers fields that vary between records. MongoDB fits better when your data is made of self-contained documents that are read and written whole, or when you need built-in horizontal sharding.
 
 ### Can PostgreSQL handle flexible JSON data like MongoDB?
 
-Yes. PostgreSQL's jsonb columns store and index JSON, giving you document-style flexibility inside a relational database — so you rarely need MongoDB just because some fields vary between records.
+Yes, for most needs. PostgreSQL's jsonb type stores JSON in a binary format that GIN indexes can search, and PostgreSQL 17 added SQL/JSON functions such as JSON_TABLE. Keep core fields as typed columns and put the variable parts in a jsonb column, and you get document-style flexibility without losing joins, constraints or transactions.
 
 ### Which is faster, PostgreSQL or MongoDB?
 
-It depends on the workload. Mongo can be faster for single-document reads of embedded data; Postgres is faster and safer for relational queries and transactions. Neither is universally faster — match it to your access patterns.
+Neither is faster in general. MongoDB does well fetching one embedded document by an indexed key, because there is nothing to join. PostgreSQL does well on relational queries, aggregates and reporting. Generic benchmarks mostly measure configuration and data modelling choices, so test your own most frequent queries on realistic data in both.
 
 ### Is MongoDB bad for transactions?
 
-Not anymore. MongoDB has supported multi-document ACID transactions since version 4.x. That said, Postgres's transaction model is more mature, so for money-critical data most teams still prefer it.
+No. Single-document writes are atomic, and MongoDB has supported multi-document ACID transactions since version 4.0 for replica sets and 4.2 for sharded clusters. By default a transaction must finish in under a minute, and MongoDB recommends designing documents so most writes don't need one. PostgreSQL makes transactions the default for everything.
 
 ### Can I use both in one product?
 
-Yes. It's common to run Postgres for core relational/transactional data and Mongo (or another store) for a document-heavy subsystem. Just weigh the operational cost of running two databases against the benefit.
+Yes. A common split is PostgreSQL for accounts, billing and other relational data, with MongoDB for a document-heavy area such as content or activity feeds. The cost is operational: two databases to host, back up and secure, with no joins or transactions across them. First check whether a jsonb column would do the job.
 
 ### Does Supabase or Prisma change the decision?
 
-Both lean toward PostgreSQL — Supabase is Postgres-based, and Prisma has its most mature support there. If you want that ecosystem (auth, realtime, type-safe queries) out of the box, Postgres is the natural choice.
+Both lean towards PostgreSQL. Supabase is built on a full Postgres database with auth, storage and row-level security on top. Prisma ORM 7, the current stable version, supports PostgreSQL but not yet MongoDB, and Prisma's documentation tells MongoDB users to stay on Prisma ORM 6.19 for now.
 
 ### Is MongoDB a SaaS product?
 
-No. MongoDB is a database you can run yourself. MongoDB Atlas is the company's fully managed cloud version, which you rent as a service on AWS, Google Cloud or Azure. A SaaS product can be built on either MongoDB or PostgreSQL; the choice depends on your data model, not on whether you sell software as a service. Managed PostgreSQL is just as easy to rent, from providers such as Supabase, Neon or your cloud's own database service.
+No. MongoDB is a database you can download and run yourself. MongoDB Atlas is the company's fully managed cloud service, running on AWS, Google Cloud or Azure. A SaaS product can be built on MongoDB or PostgreSQL; the choice depends on your data, not your business model. If you meant Sass, the CSS preprocessor, it is unrelated: Sass styles web pages, while MongoDB stores data.
+
+### Is MongoDB free to use?
+
+MongoDB Community Server is free to download and use under the Server Side Public License. That licence requires you to publish your whole service's source code if you offer MongoDB's functionality to others as a service, which matters if you host or resell it. MongoDB Atlas has a free tier with 512 MB of storage at the time of writing (November 2026).
+
+### Can you migrate from MongoDB to PostgreSQL?
+
+Yes, but plan it as a project rather than an export. Embedded arrays become child tables, inconsistent fields need cleaning, ObjectIds need mapping to new keys, and code that relied on single-document atomicity needs explicit transactions. A practical route is loading documents into a jsonb staging table, normalising them with JSON_TABLE, then moving traffic over gradually.
+
+### Which is better for AI and vector search?
+
+Both are capable, so the best choice is usually the database you already use. PostgreSQL adds vector search through the pgvector extension, keeping embeddings next to relational data. MongoDB offers Vector Search on Atlas and, since June 2026, on self-managed deployments. Check limits against your embedding model: pgvector indexes up to 2,000 dimensions for its standard vector type.
