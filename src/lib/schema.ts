@@ -62,21 +62,21 @@ export function organizationSchema() {
       propertyID: "Missouri Secretary of State charter number",
       value: site.legal.charterNumber,
     },
-    address: [
-      {
-        "@type": "PostalAddress",
-        streetAddress: site.legal.registeredOffice.street,
-        addressLocality: site.legal.registeredOffice.city,
-        addressRegion: site.legal.registeredOffice.region,
-        postalCode: site.legal.registeredOffice.postalCode,
-        addressCountry: site.legal.registeredOffice.countryCode,
-      },
-      ...site.locations.map((l) => ({
-        "@type": "PostalAddress",
-        addressLocality: l.city,
-        addressCountry: l.countryCode,
-      })),
-    ],
+    // The one complete postal address: the registered office. Google's Organization check
+    // expects street and postcode on every `address`, so the team cities go in `location`.
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: site.legal.registeredOffice.street,
+      addressLocality: site.legal.registeredOffice.city,
+      addressRegion: site.legal.registeredOffice.region,
+      postalCode: site.legal.registeredOffice.postalCode,
+      addressCountry: site.legal.registeredOffice.countryCode,
+    },
+    location: site.locations.map((l) => ({
+      "@type": "Place",
+      name: `${site.name} ${l.role.toLowerCase()}, ${l.city}`,
+      address: { "@type": "PostalAddress", addressLocality: l.city, addressCountry: l.countryCode },
+    })),
     areaServed: [...site.markets, "Worldwide"],
     knowsAbout: [
       "Software development",
