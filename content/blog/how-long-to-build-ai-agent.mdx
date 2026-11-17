@@ -31,7 +31,7 @@ If you are still deciding whether you need an agent at all, read [AI agents vs c
 
 Here is the shape of a typical 8-week production agent build. Note how little of it is model work: the loop itself is often running by week three, and everything after that is making it safe to trust.
 
-- **Weeks 1–2 — scope and permissions.** Map the workflow, decide which actions the agent may take unsupervised, which need human approval, and which it must refuse. Start the credential requests now; they are the long pole and they do not parallelise.
+- **Weeks 1–2 — scope and permissions.** Map the workflow, decide which actions the agent may take unsupervised, which need human approval, and which it must refuse. Start the credential requests now; they are the long pole and they do not parallelise. An [AI readiness assessment](/blog/ai-readiness-assessment) done beforehand shortens this step.
 - **Week 3 — tools and the loop.** Define the exact functions the agent can call and get it planning and executing against read-only versions first. This is the fast part, and its speed is misleading.
 - **Weeks 4–5 — evaluation.** Build a fixed task set with known-correct outcomes, including the malformed and edge-case inputs, then iterate until the agent scores consistently. Teams that skip this ship an agent that worked in the demo and fails on week-one reality.
 - **Week 6 — guardrails and cost control.** Step caps, per-run token budgets, refusal cases, and step-level logging. Enforced in code, not requested in a prompt — a prompt is a suggestion, and an agent under pressure will route around it.

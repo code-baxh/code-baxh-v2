@@ -22,7 +22,7 @@ Most AI features in existing products fall into five patterns. They differ in ef
 | Semantic search | Finds content by meaning using embeddings | Search across docs, products or past tickets | Small to medium | Misses exact codes and names unless combined with keyword search |
 | RAG assistant | Answers questions from your content, with citations | Help center or internal knowledge Q&A | Medium; 4–6 weeks for production | Confident wrong answers without evaluation |
 | Classification and extraction | Turns free text into labels or structured fields | Ticket triage, lead routing, pulling fields from invoices | Small to medium | Silent misclassification at scale |
-| Agents | Plans and takes actions through tools | Multi-step workflows across systems | Large; 6–10 weeks for one workflow, 12+ across several systems | Wrong actions, cost per step, security |
+| Agents | Plans and takes actions through tools | Multi-step workflows across systems | Large; [6–10 weeks for one workflow](/blog/how-long-to-build-ai-agent), 12+ across several systems | Wrong actions, cost per step, security |
 
 The decision rule: start as high in the table as the problem allows. Summarization, search and classification make good first features because a person still reviews the output and a mistake is cheap. Anthropic's guide to [building effective agents](https://www.anthropic.com/engineering/building-effective-agents) gives the same advice: find the simplest solution possible and only increase complexity when needed. Our comparison of [agents, chatbots and RAG](/blog/ai-agents-vs-chatbots-vs-rag) covers where the bigger patterns are worth it.
 
@@ -44,7 +44,7 @@ Pick the feature that scores well on all five of these, not the one that demos b
 
 ## Is your data ready? A checklist
 
-Most AI integration delays come from data, not models. Before committing to a timeline, check:
+Most AI integration delays come from data, not models. Before committing to a timeline, check the points below. A full [AI readiness assessment](/blog/ai-readiness-assessment) adds permissions, a success metric and how to score a first use case.
 
 - **Location.** You know where the source data lives and can read it through an API or a read replica, without manual exports.
 - **Quality.** It is current, deduplicated and does not contradict itself. If two help pages disagree, the AI will repeat both.
