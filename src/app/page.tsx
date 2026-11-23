@@ -23,7 +23,7 @@ import { coversFor, getAllPosts, toMeta } from "@/lib/blog";
 import { cn } from "@/lib/utils";
 
 const trust = [
-  { value: "Top Rated Plus", label: "Our co-founder's standing on Upwork" },
+  { value: "Top Rated Plus", label: "Our founder's standing on Upwork" },
   { value: "6+ years", label: "Delivering production software" },
   { value: "End to end", label: "Product, design, engineering, AI, QA and DevOps in one team" },
   { value: "Worldwide", label: "Clients across Europe, the US, Canada and the UAE" },
@@ -207,7 +207,7 @@ export default function HomePage() {
           <SectionHeading
             eyebrow="Team"
             title="Founder-led, with a dedicated team in every department."
-            lead="Two co-founders lead every engagement. Specialists in each department do the work from our engineering base in Islamabad, delivering to clients across the world."
+            lead="Led by our founder, Bilal Khursheed, with a co-founder running product and delivery. Specialists in each department do the work from our engineering base in Islamabad, delivering to clients across the world."
           />
           <ul className="mt-8 flex flex-wrap justify-center gap-2">
             {site.departments.map((d) => (

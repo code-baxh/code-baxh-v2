@@ -2,7 +2,7 @@ import type { CaseStudy } from "./types";
 
 const CODEBAXH_LED = "Designed and built by the CodeBaxh team.";
 const FOUNDER_ENGINEER =
-  "Our co-founder worked on this product as a full-stack engineer. It is not a CodeBaxh-led build.";
+  "Our founder worked on this product as a full-stack engineer. It is not a CodeBaxh-led build.";
 
 export const caseStudies: CaseStudy[] = [
   {
@@ -262,7 +262,7 @@ export const caseStudies: CaseStudy[] = [
       "Real-time calculators, comparison dashboards and secure reports that explain home equity and second-mortgage options.",
     role: "founder-engineer",
     roleNote:
-      "Our co-founder worked on this product as a senior full-stack developer. It is not a CodeBaxh-led build.",
+      "Our founder worked on this product as a senior full-stack developer. It is not a CodeBaxh-led build.",
     problem: [
       "Working out what a home is worth and how to borrow against it is confusing, risky and heavy on paperwork.",
       "People depend on loan officers and brokers just to compare their options.",

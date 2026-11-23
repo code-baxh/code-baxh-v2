@@ -46,3 +46,6 @@ next-env.d.ts
 
 # seo audit artifacts (generated reports/screenshots, not source)
 codebaxh.com-audit/
+
+# Browser connector snapshots and screenshots (local only)
+.playwright-mcp/
