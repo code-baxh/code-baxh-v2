@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/config/site";
 import { caseStudies } from "@/content/case-studies";
+import { markets } from "@/content/markets";
 import { services } from "@/content/services";
 import { team } from "@/content/team";
 import { getAllPosts, getCategories, totalBlogPages } from "@/lib/blog";
@@ -15,11 +16,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const posts = getAllPosts();
   const latestPost = posts[0]?.updated ?? site.contentUpdated;
   const evergreen = site.contentUpdated;
-  const fixed = ["/", "/ai", "/services", "/work", "/about", "/process", "/engagement", "/contact", "/start-a-project", "/privacy", "/terms"];
+  const fixed = ["/", "/ai", "/services", "/work", "/about", "/process", "/engagement", "/markets", "/contact", "/start-a-project", "/privacy", "/terms"];
   return [
     ...fixed.map((p) => ({ url: abs(p), lastModified: evergreen })),
     { url: abs("/blog"), lastModified: latestPost },
     ...services.map((s) => ({ url: abs(`/services/${s.slug}`), lastModified: evergreen })),
+    ...markets.map((m) => ({ url: abs(`/markets/${m.slug}`), lastModified: evergreen })),
     ...caseStudies.map((c) => ({ url: abs(`/work/${c.slug}`), lastModified: evergreen })),
     ...team.map((m) => ({ url: abs(`/team/${m.slug}`), lastModified: evergreen })),
     ...getCategories().map((c) => ({ url: abs(`/blog/category/${c.slug}`), lastModified: latestPost })),

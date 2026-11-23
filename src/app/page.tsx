@@ -13,6 +13,7 @@ import { Hero } from "@/components/hero/hero";
 import { ToolLogos } from "@/components/sections/tool-logos";
 import { Photo } from "@/components/ui/photo";
 import { MarketsMap } from "@/components/art/markets-map";
+import { MarketLinks } from "@/components/sections/market-links";
 import { aiServices, homeServices } from "@/content/services";
 import type { ImageKey } from "@/content/images";
 import { featuredCaseStudies } from "@/content/case-studies";
@@ -226,6 +227,7 @@ export default function HomePage() {
             <p className="relative mt-6 text-center text-sm text-muted">
               Clients across Europe, the United States, Canada and the UAE, and delivery worldwide. Product delivery team in Stockholm, engineering team in Islamabad.
             </p>
+            <MarketLinks />
           </div>
         </Reveal>
         <ul className="mt-4 grid gap-4 md:grid-cols-2">

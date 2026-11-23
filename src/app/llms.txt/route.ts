@@ -1,5 +1,6 @@
 import { companyFacts, site } from "@/config/site";
 import { caseStudies } from "@/content/case-studies";
+import { markets } from "@/content/markets";
 import { services } from "@/content/services";
 import { getAllPosts } from "@/lib/blog";
 import { abs } from "@/lib/seo";
@@ -24,11 +25,15 @@ export function GET() {
     `- [About](${abs("/about")})`,
     `- [Process](${abs("/process")})`,
     `- [Engagement and pricing](${abs("/engagement")})`,
+    `- [Markets](${abs("/markets")})`,
     `- [Start a project](${abs("/start-a-project")})`,
     `- [Contact](${abs("/contact")})`,
     "",
     "## Services",
     ...services.map((s) => `- [${s.name}](${abs(`/services/${s.slug}`)}): ${s.summary}`),
+    "",
+    "## Markets",
+    ...markets.map((m) => `- [${m.name}](${abs(`/markets/${m.slug}`)}): ${m.summary}`),
     "",
     "## Case studies",
     ...caseStudies.map((c) => `- [${c.title}](${abs(`/work/${c.slug}`)}): ${c.summary}`),

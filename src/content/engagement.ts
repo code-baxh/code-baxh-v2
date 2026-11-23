@@ -1,4 +1,7 @@
-/** Engagement models. `pricing` describes how each is priced; add figures here if you decide to publish them. */
+/** Where most projects start. Shown on the engagement, start-a-project and market pages. */
+export const minimumProject = "$10k";
+
+/** Engagement models. `pricing` describes how each is priced. */
 export const engagementModels = [
   {
     name: "Fixed-scope project",
@@ -29,7 +32,7 @@ export const engagementModels = [
 export const engagementFaqs = [
   {
     q: "How is a project priced?",
-    a: "Every project is scoped after a discovery conversation. For fixed-scope work you receive a written estimate with milestones before any commitment. Retainers and staff augmentation are priced per month.",
+    a: "Most projects start from $10k. Every project is scoped after a discovery conversation. For fixed-scope work you receive a written estimate with milestones before any commitment. Retainers and staff augmentation are priced per month.",
   },
   {
     q: "Do you work to milestone payments?",
