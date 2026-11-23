@@ -67,11 +67,11 @@ For most startups the practical setup is a Next.js site and web app plus a React
 
 This is React Native's quiet superpower for startups. If you have (or plan) a Next.js web app, you can share TypeScript types and business logic across web and mobile: one source of truth, fewer bugs.
 
-*shared/invoice.ts — imported by both web and mobile*
+*shared/invoice.ts, imported by both web and mobile*
 
 ```ts
 // One shared type, imported by both the Next.js web app
-// and the React Native mobile app — a single source of truth.
+// and the React Native mobile app: a single source of truth.
 export type Invoice = {
   id: string;
   amountCents: number;

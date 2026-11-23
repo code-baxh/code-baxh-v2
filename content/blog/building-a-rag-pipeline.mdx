@@ -77,7 +77,7 @@ Run the suite on every change and block releases that regress. Our guide to [eva
 
 ## Where RAG projects fail
 
-Most RAG systems don't fail at the demo — they fail in production. The common causes are poor chunking, no re-ranking, prompts that don't force grounding, and no evaluation harness, so quality silently drifts. We treat evaluation as a first-class part of the build, not an afterthought.
+Most RAG systems don't fail at the demo. They fail in production. The common causes are poor chunking, no re-ranking, prompts that don't force grounding, and no evaluation harness, so quality silently drifts. We treat evaluation as a first-class part of the build, not an afterthought.
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
@@ -91,7 +91,7 @@ For the answer-quality side specifically, see [how to reduce LLM hallucinations]
 
 ## Choosing the model
 
-We select the model per task to balance quality, latency, and cost — and design the system so the model is swappable. For grounded, document-heavy reasoning we often reach for Claude; for some extraction and tool-use tasks GPT fits well. The right answer is measured against your data, not assumed.
+We select the model per task to balance quality, latency, and cost, and design the system so the model is swappable. For grounded, document-heavy reasoning we often reach for Claude; for some extraction and tool-use tasks GPT fits well. The right answer is measured against your data, not assumed.
 
 ## Frequently asked questions
 

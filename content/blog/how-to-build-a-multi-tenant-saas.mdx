@@ -1,6 +1,6 @@
 ---
 title: "How to build a multi-tenant SaaS architecture"
-description: "A practical guide to multi-tenant SaaS architecture: tenant isolation models, data design, auth, and billing — from a team that ships production SaaS."
+description: "A practical guide to multi-tenant SaaS architecture: tenant isolation models, data design, auth, and billing, from a team that ships production SaaS."
 date: "2026-05-12"
 updated: "2026-11-13"
 author: "bilal-khursheed"
@@ -10,7 +10,7 @@ cover: ""
 service: "saas-development"
 ---
 
-Multi-tenancy means one application serves many customers (tenants) while keeping each tenant's data isolated. The model you choose — shared schema, schema-per-tenant, or database-per-tenant — is the single most consequential early decision in a SaaS build, because changing it later is expensive. For most products the right default is a **shared schema with a `tenant_id` on every row, enforced by PostgreSQL row-level security**, with dedicated databases reserved for the enterprise customers who contractually need them.
+Multi-tenancy means one application serves many customers (tenants) while keeping each tenant's data isolated. The model you choose (shared schema, schema-per-tenant, or database-per-tenant) is the single most consequential early decision in a SaaS build, because changing it later is expensive. For most products the right default is a **shared schema with a `tenant_id` on every row, enforced by PostgreSQL row-level security**, with dedicated databases reserved for the enterprise customers who contractually need them.
 
 ## What multi-tenancy actually requires
 
@@ -130,17 +130,17 @@ Write automated tests that create two tenants, sign in as a member of one, and a
 
 ## Our default
 
-For most SaaS MVPs we start with a shared schema and a `tenant_id` plus Postgres row-level security — cheap to run, fast to build, and isolated when implemented carefully — and reserve database-per-tenant for enterprise customers who require it. We used exactly this approach to ship a [multi-tenant SaaS MVP](/work/multi-tenant-saas-mvp), with tenant isolation, Stripe subscriptions and role-based access live from the first release.
+For most SaaS MVPs we start with a shared schema and a `tenant_id` plus Postgres row-level security (cheap to run, fast to build, and isolated when implemented carefully) and reserve database-per-tenant for enterprise customers who require it. We used exactly this approach to ship a [multi-tenant SaaS MVP](/work/multi-tenant-saas-mvp), with tenant isolation, Stripe subscriptions and role-based access live from the first release.
 
 ## Frequently asked questions
 
 ### Which multi-tenant model is best?
 
-For most SaaS, a shared schema with a `tenant_id` and row-level security is the best default — cheapest to operate and well-isolated when built carefully. Move to database-per-tenant only for enterprise or compliance needs.
+For most SaaS, a shared schema with a `tenant_id` and row-level security is the best default: cheapest to operate and well-isolated when built carefully. Move to database-per-tenant only for enterprise or compliance needs.
 
 ### Can you change tenancy models later?
 
-Yes, but it's expensive and risky — it usually means a data migration and significant rework. That's why the model is worth getting right at the start.
+Yes, but it's expensive and risky: it usually means a data migration and significant rework. That's why the model is worth getting right at the start.
 
 ### What is the difference between single-tenant and multi-tenant SaaS?
 
