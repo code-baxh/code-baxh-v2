@@ -16,7 +16,7 @@ export const team: TeamMember[] = [
     name: "Bilal Khursheed",
     role: "Founder & CEO",
     location: "Islamabad, Pakistan",
-    bio: "Founder and CEO of CodeBaxh, and an Upwork Top Rated Plus full-stack engineer with more than six years building web, SaaS and AI products. He leads the company, its architecture and the engineering team.",
+    bio: "Founder and CEO of CodeBaxh, and its principal engineer: an Upwork Top Rated Plus full-stack engineer with more than six years building web, SaaS and AI products. He leads the company, its architecture and the engineering team.",
     expertise: [
       "Full-stack web development",
       "Multi-tenant SaaS architecture",
