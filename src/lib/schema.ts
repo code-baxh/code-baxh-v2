@@ -53,6 +53,7 @@ export function organizationSchema() {
     image: abs("/opengraph-image"),
     description: site.description,
     slogan: site.tagline,
+    foundingDate: String(site.foundingYear),
     sameAs: Object.values(site.social),
     founder: team.map((m) => ({ "@id": personId(m.slug) })),
     employee: team.map(personSchema),
