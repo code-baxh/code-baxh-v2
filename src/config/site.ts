@@ -47,7 +47,7 @@ export const site = {
    * Last meaningful content change to the evergreen pages (YYYY-MM-DD). Used as sitemap
    * lastModified so the value stays stable across builds. Bump it on a real content change.
    */
-  contentUpdated: "2026-11-15",
+  contentUpdated: "2026-11-23",
   locations: [
     { city: "Stockholm", country: "Sweden", countryCode: "SE", role: "Product delivery team" },
     { city: "Islamabad", country: "Pakistan", countryCode: "PK", role: "Engineering team" },

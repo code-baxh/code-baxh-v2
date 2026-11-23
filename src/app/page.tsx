@@ -8,6 +8,7 @@ import { CaseStudyCard } from "@/components/cards/case-study-card";
 import { PostCard } from "@/components/blog/post-card";
 import { CtaBand } from "@/components/sections/cta-band";
 import { FaqList } from "@/components/sections/faq-list";
+import { Testimonials } from "@/components/sections/testimonials";
 import { Hero } from "@/components/hero/hero";
 import { ToolLogos } from "@/components/sections/tool-logos";
 import { Photo } from "@/components/ui/photo";
@@ -18,12 +19,13 @@ import { featuredCaseStudies } from "@/content/case-studies";
 import { processSteps } from "@/content/process";
 import { team } from "@/content/team";
 import { homeFaqs } from "@/content/faqs";
+import { featuredTestimonials, upworkProfile } from "@/content/testimonials";
 import { site } from "@/config/site";
 import { coversFor, getAllPosts, toMeta } from "@/lib/blog";
 import { cn } from "@/lib/utils";
 
 const trust = [
-  { value: "Top Rated Plus", label: "Our founder's standing on Upwork" },
+  { value: upworkProfile.badge, label: `Our founder on Upwork, with ${upworkProfile.jobSuccess} Job Success` },
   { value: "6+ years", label: "Delivering production software" },
   { value: "End to end", label: "Product, design, engineering, AI, QA and DevOps in one team" },
   { value: "Worldwide", label: "Clients across Europe, the US, Canada and the UAE" },
@@ -156,6 +158,7 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
+        <Testimonials items={featuredTestimonials} className="mt-24" />
       </Section>
 
       {/* Process */}

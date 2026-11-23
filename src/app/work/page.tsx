@@ -1,8 +1,10 @@
 import { PageHero } from "@/components/layout/page-hero";
 import { CtaBand } from "@/components/sections/cta-band";
+import { Testimonials } from "@/components/sections/testimonials";
 import { Section } from "@/components/ui/section";
 import { WorkGrid } from "@/components/work/work-grid";
 import { caseStudies } from "@/content/case-studies";
+import { testimonials } from "@/content/testimonials";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -24,6 +26,9 @@ export default function WorkPage() {
       <Section>
         <h2 className="sr-only">All case studies</h2>
         <WorkGrid studies={caseStudies} />
+      </Section>
+      <Section className="border-t border-line">
+        <Testimonials items={testimonials} />
       </Section>
       <CtaBand title="Have something similar in mind?" />
     </>
