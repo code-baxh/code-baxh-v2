@@ -21,6 +21,6 @@ export const howWeWork = [
   "A named lead for product and a named lead for engineering on every engagement.",
   "Specialists from each department join as the work needs them: design, web and mobile, AI, QA and DevOps.",
   "Weekly demos of working software and a written summary after each one.",
-  "Working hours planned for real overlap with Europe, North America and the Gulf.",
+  "Hours that cover the European and UK working day, every US time zone and the Gulf.",
   "Clear contracts, NDAs on request and milestone-based payments.",
 ] as const;

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/layout/page-hero";
 import { MarketsMap } from "@/components/art/markets-map";
+import { MarketLinks } from "@/components/sections/market-links";
 import { CtaBand } from "@/components/sections/cta-band";
 import { ToolLogos } from "@/components/sections/tool-logos";
 import { Reveal } from "@/components/ui/reveal";
@@ -102,6 +103,7 @@ export default function AboutPage() {
             <p className="relative mt-6 text-center text-sm text-muted">
               Clients across Europe, the United States, Canada and the UAE, and delivery worldwide. Product delivery team in Stockholm, engineering team in Islamabad.
             </p>
+            <MarketLinks />
           </div>
         </Reveal>
       </Section>

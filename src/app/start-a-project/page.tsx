@@ -3,6 +3,7 @@ import { PageHero } from "@/components/layout/page-hero";
 import { ContactDetails } from "@/components/contact/contact-aside";
 import { ProjectForm } from "@/components/contact/project-form";
 import { Section } from "@/components/ui/section";
+import { minimumProject } from "@/content/engagement";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -27,7 +28,7 @@ export default function StartProjectPage() {
         crumbs={[{ name: "Start a project", path: "/start-a-project" }]}
         eyebrow="Start a project"
         title="Tell us what you are building."
-        lead="Three short steps. The more you share, the more useful our first reply will be."
+        lead={`Three short steps. The more you share, the more useful our first reply will be. Most projects start from ${minimumProject}.`}
       />
       <Section>
         <div className="mx-auto grid max-w-7xl items-start gap-6 lg:grid-cols-[1fr_22rem]">

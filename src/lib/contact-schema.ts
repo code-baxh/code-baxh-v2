@@ -2,7 +2,7 @@ import { z } from "zod";
 import { homeServices } from "@/content/services";
 
 export const budgetOptions = [
-  "Under $10k",
+  "$5k to $10k (small fixed-scope work)",
   "$10k to $25k",
   "$25k to $50k",
   "$50k to $100k",
