@@ -4,6 +4,8 @@ export const site = {
   descriptor: "software development and AI company",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://codebaxh.com",
   tagline: "Web, SaaS and AI products that ship.",
+  /** Year CodeBaxh started trading, as on LinkedIn and Upwork. The LLC itself was registered in 2026. */
+  foundingYear: 2022,
   description:
     "CodeBaxh is a software development and AI company building web, mobile, SaaS and AI products for clients in Europe, the US, Canada and the UAE.",
   /**
@@ -47,7 +49,7 @@ export const site = {
    * Last meaningful content change to the evergreen pages (YYYY-MM-DD). Used as sitemap
    * lastModified so the value stays stable across builds. Bump it on a real content change.
    */
-  contentUpdated: "2026-11-15",
+  contentUpdated: "2026-11-23",
   locations: [
     { city: "Stockholm", country: "Sweden", countryCode: "SE", role: "Product delivery team" },
     { city: "Islamabad", country: "Pakistan", countryCode: "PK", role: "Engineering team" },
@@ -66,7 +68,7 @@ export const registeredAddress = `${office.street}, ${office.city}, ${office.reg
 export const legalIdentity = `${site.legal.entityName}, a limited liability company registered in ${site.legal.jurisdiction} (charter number ${site.legal.charterNumber})`;
 
 /** One-paragraph entity summary for llms.txt and llms-full.txt. */
-export const companyFacts = `${legalIdentity}. Registered office: ${registeredAddress}. ${site.locations
+export const companyFacts = `${site.name} was founded in ${site.foundingYear}. ${legalIdentity}. Registered office: ${registeredAddress}. ${site.locations
   .map((l) => `${l.role}: ${l.city}, ${l.country}.`)
   .join(" ")}`;
 

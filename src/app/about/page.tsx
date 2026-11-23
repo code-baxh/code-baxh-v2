@@ -36,7 +36,7 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={0.06} className="mx-auto max-w-3xl space-y-5 text-center text-lg text-muted">
             <p>
-              CodeBaxh was founded to close a gap its founders saw repeatedly in software projects: strong
+              CodeBaxh was founded in {site.foundingYear} to close a gap its founders saw repeatedly in software projects: strong
               engineering without clear product direction, or clear direction without the engineering depth to
               deliver it.
             </p>
