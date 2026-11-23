@@ -63,3 +63,21 @@ export type CaseStudy = {
   services: string[];
   featured?: boolean;
 };
+
+export type Testimonial = {
+  id: string;
+  /** Word for word from the review. Cut only at sentence boundaries, mark a gap with "[…]", never reword. */
+  quote: string;
+  /** As Upwork shows it (first name, last initial). Leave out when Upwork hides the name. */
+  author?: string;
+  /** What the work was, in our words. Name a client's product only if the review itself does. */
+  project: string;
+  /** Review date (YYYY-MM-DD), or the contract end date when Upwork does not show one. */
+  date: string;
+  /** Star rating on Upwork. Only 5-star reviews are used. */
+  rating: number;
+  /** Slug from team.ts of the person the review is about. */
+  about: string;
+  /** Shown on the homepage. */
+  featured?: boolean;
+};

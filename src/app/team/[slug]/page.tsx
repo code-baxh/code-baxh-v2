@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 import { PageHero } from "@/components/layout/page-hero";
 import { CtaBand } from "@/components/sections/cta-band";
+import { Testimonials } from "@/components/sections/testimonials";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { team } from "@/content/team";
+import { testimonials, upworkProfile } from "@/content/testimonials";
 import { formatDate, postsByAuthor } from "@/lib/blog";
 import { profilePageSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
@@ -31,6 +33,7 @@ export default async function TeamMemberPage({ params }: PageProps<"/team/[slug]
   if (!m) notFound();
   const first = m.name.split(" ")[0];
   const articles = postsByAuthor(m.slug);
+  const reviews = testimonials.filter((t) => t.about === m.slug);
 
   return (
     <>
@@ -105,6 +108,16 @@ export default async function TeamMemberPage({ params }: PageProps<"/team/[slug]
               ))}
             </ul>
           </div>
+        </Section>
+      ) : null}
+
+      {reviews.length ? (
+        <Section className="border-t border-line">
+          <Testimonials
+            items={reviews}
+            title={`What clients say about ${first}.`}
+            lead={`Unedited excerpts from reviews clients left for ${first} on Upwork: ${upworkProfile.badge}, with ${upworkProfile.jobSuccess} Job Success.`}
+          />
         </Section>
       ) : null}
 
