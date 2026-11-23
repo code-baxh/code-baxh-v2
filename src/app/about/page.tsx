@@ -57,7 +57,7 @@ export default function AboutPage() {
 
       <Section className="border-t border-line">
         <Reveal>
-          <SectionHeading eyebrow="Leadership" title="The co-founders." />
+          <SectionHeading eyebrow="Leadership" title="Who leads CodeBaxh." />
         </Reveal>
         <ul className="mt-12 grid gap-4 md:grid-cols-2">
           {team.map((m, i) => (

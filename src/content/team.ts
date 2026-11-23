@@ -12,6 +12,38 @@ export type TeamMember = {
 
 export const team: TeamMember[] = [
   {
+    slug: "bilal-khursheed",
+    name: "Bilal Khursheed",
+    role: "Founder & CEO",
+    location: "Islamabad, Pakistan",
+    bio: "Founder and CEO of CodeBaxh, and an Upwork Top Rated Plus full-stack engineer with more than six years building web, SaaS and AI products. He leads the company, its architecture and the engineering team.",
+    expertise: [
+      "Full-stack web development",
+      "Multi-tenant SaaS architecture",
+      "Next.js and React",
+      "Node.js and Python backends",
+      "React Native mobile apps",
+      "RAG and LLM integration",
+      "AI agents",
+      "Stripe and payment integration",
+    ],
+    responsibilities: [
+      "Leads CodeBaxh: strategy, client relationships and the standard every engagement is delivered to.",
+      "Leads the engineering team in Islamabad.",
+      "Owns architecture, technical decisions and code quality across web, mobile, backend and AI.",
+      "Sets engineering standards for review, testing, security and release.",
+      "Stays hands-on in the critical parts of every build.",
+    ],
+    // Person sameAs: these profiles tell search and AI engines which Bilal Khursheed this is.
+    // Google's entity graph was mixing in a namesake's LinkedIn before they were added.
+    links: [
+      { label: "Portfolio", href: "https://bilalkhursheed.com" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/bilal-khursheed/" },
+      { label: "GitHub", href: "https://github.com/Bilal-Khursheed" },
+      { label: "Upwork", href: "https://www.upwork.com/freelancers/bilalkhursheedwebdeveloper" },
+    ],
+  },
+  {
     slug: "muhammad-usman-mustafa",
     name: "Muhammad Usman Mustafa",
     role: "Co-founder, Product & Delivery Lead",
@@ -34,37 +66,6 @@ export const team: TeamMember[] = [
     links: [
       { label: "Portfolio", href: "https://muhammadusmanmustafa.info" },
       { label: "LinkedIn", href: "https://www.linkedin.com/in/usmanmustafa-projectmanager/" },
-    ],
-  },
-  {
-    slug: "bilal-khursheed",
-    name: "Bilal Khursheed",
-    role: "Co-founder, Principal Engineer",
-    location: "Islamabad, Pakistan",
-    bio: "Upwork Top Rated Plus full-stack engineer with more than six years building web, SaaS and AI products. He leads architecture and the engineering team at CodeBaxh.",
-    expertise: [
-      "Full-stack web development",
-      "Multi-tenant SaaS architecture",
-      "Next.js and React",
-      "Node.js and Python backends",
-      "React Native mobile apps",
-      "RAG and LLM integration",
-      "AI agents",
-      "Stripe and payment integration",
-    ],
-    responsibilities: [
-      "Leads the engineering team in Islamabad.",
-      "Owns architecture, technical decisions and code quality across web, mobile, backend and AI.",
-      "Sets engineering standards for review, testing, security and release.",
-      "Stays hands-on in the critical parts of every build.",
-    ],
-    // Person sameAs: these profiles tell search and AI engines which Bilal Khursheed this is.
-    // Google's entity graph was mixing in a namesake's LinkedIn before they were added.
-    links: [
-      { label: "Portfolio", href: "https://bilalkhursheed.com" },
-      { label: "LinkedIn", href: "https://www.linkedin.com/in/bilal-khursheed/" },
-      { label: "GitHub", href: "https://github.com/Bilal-Khursheed" },
-      { label: "Upwork", href: "https://www.upwork.com/freelancers/bilalkhursheedwebdeveloper" },
     ],
   },
 ];

@@ -19,7 +19,7 @@ export default function WorkPage() {
         crumbs={[{ name: "Work", path: "/work" }]}
         eyebrow="Work"
         title="Products we have designed, built and shipped."
-        lead="SaaS platforms, AI systems, web and mobile apps. Each case study states our role plainly, including where a co-founder contributed as an engineer on another company's product."
+        lead="SaaS platforms, AI systems, web and mobile apps. Each case study states our role plainly, including where our founder contributed as an engineer on another company's product."
       />
       <Section>
         <h2 className="sr-only">All case studies</h2>
