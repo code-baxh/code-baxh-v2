@@ -3,6 +3,7 @@ import { CookieSettingsButton } from "@/components/cookie-settings-button";
 import { gaId } from "@/config/analytics";
 import { mainNav, registeredAddress, site } from "@/config/site";
 import { services } from "@/content/services";
+import { markets } from "@/content/markets";
 import { Logo } from "./logo";
 
 function LinkedInIcon() {
@@ -67,6 +68,20 @@ export function Footer() {
               <li key={l.href}>
                 <Link href={l.href} className="inline-flex min-h-9 items-center text-sm text-muted hover:text-fg">
                   {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <h2 className="eyebrow mt-8">
+            <Link href="/markets" className="hover:text-fg">
+              Markets
+            </Link>
+          </h2>
+          <ul className="mt-4 space-y-1">
+            {markets.map((m) => (
+              <li key={m.slug}>
+                <Link href={`/markets/${m.slug}`} className="inline-flex min-h-9 items-center text-sm text-muted hover:text-fg">
+                  {m.name}
                 </Link>
               </li>
             ))}

@@ -5,7 +5,7 @@ import { FaqList } from "@/components/sections/faq-list";
 import { GlowCard } from "@/components/ui/glow-card";
 import { Reveal } from "@/components/ui/reveal";
 import { Section, SectionHeading } from "@/components/ui/section";
-import { engagementFaqs, engagementModels } from "@/content/engagement";
+import { engagementFaqs, engagementModels, minimumProject } from "@/content/engagement";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -22,7 +22,7 @@ export default function EngagementPage() {
         crumbs={[{ name: "Engagement & Pricing", path: "/engagement" }]}
         eyebrow="Engagement & pricing"
         title="Three ways to work with us, each with clear terms."
-        lead="Choose the model that fits your stage. Every engagement starts with a discovery conversation and a written estimate."
+        lead={`Choose the model that fits your stage. Every engagement starts with a discovery conversation and a written estimate, and most projects start from ${minimumProject}.`}
         image="keyboardCode"
       />
 

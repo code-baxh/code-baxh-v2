@@ -81,3 +81,30 @@ export type Testimonial = {
   /** Shown on the homepage. */
   featured?: boolean;
 };
+
+export type Market = {
+  slug: string;
+  /** Short name for links and breadcrumbs, e.g. "United States". */
+  name: string;
+  /** The name as used mid-sentence, e.g. "the US". */
+  inName: string;
+  /** One sentence for the /markets index card. */
+  summary: string;
+  /** <title> without the brand, led by the search term. */
+  metaTitle: string;
+  /** 140 to 160 characters. Plain text. */
+  metaDescription: string;
+  eyebrow: string;
+  /** H1. */
+  headline: string;
+  lead: string;
+  /** How working together works from this market: contract, hours, people, data. */
+  working: { title: string; body: string }[];
+  /** Rules and buying requirements specific to this market, and how we build for them. Facts only. */
+  compliance: { title: string; body: string }[];
+  /** Integrations common in this market. Informational: not a claim that we have shipped each one. */
+  integrations: string[];
+  /** Slugs from case-studies.ts that match what this market asks for. No claim about client location. */
+  caseStudies: string[];
+  faqs: Faq[];
+};
