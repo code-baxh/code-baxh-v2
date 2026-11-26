@@ -3,7 +3,7 @@ title: "PostgreSQL vs MongoDB: which database should you choose?"
 metaTitle: "PostgreSQL vs MongoDB (2026): Which Database to Choose?"
 description: "PostgreSQL vs MongoDB in 2026: data model, transactions, JSON, vector search, scaling and licensing compared, with a clear verdict on when each one wins."
 date: "2026-07-02"
-updated: "2026-11-17"
+updated: "2026-11-26"
 author: "bilal-khursheed"
 category: "SaaS"
 tags: ["postgresql", "mongodb", "databases", "backend", "saas"]
@@ -11,13 +11,13 @@ cover: ""
 service: "api-backend-development"
 ---
 
-**For most new products, start with PostgreSQL.** It gives you enforced relationships, SQL joins and mature transactions, and its `jsonb` type covers most of the "flexible schema" cases that used to push teams towards MongoDB. **Choose MongoDB when your data really is a set of self-contained documents** that you read and write whole, when records vary a lot in shape, or when you want sharding built into the database. Both are mature and actively developed: in November 2026 PostgreSQL 18 is the stable major release, with [PostgreSQL 19 at the release-candidate stage](https://www.postgresql.org/about/news/postgresql-187-1712-1616-1520-1425-and-19-rc-2-released-3442/), and [MongoDB 9.0 shipped on 28 September 2026](https://www.mongodb.com/docs/manual/release-notes/9.0/).
+**For most new products, start with PostgreSQL.** It gives you enforced relationships, SQL joins and mature transactions, and its `jsonb` type covers most of the "flexible schema" cases that used to push teams towards MongoDB. **Choose MongoDB when your data really is a set of self-contained documents** that you read and write whole, when records vary a lot in shape, or when you want sharding built into the database. Both are mature and actively developed: [PostgreSQL 19 was released on 19 November 2026](https://www.postgresql.org/about/news/postgresql-19-released-3449/), and [MongoDB 9.0 shipped on 28 September 2026](https://www.mongodb.com/docs/manual/release-notes/9.0/).
 
 ## PostgreSQL vs MongoDB at a glance
 
 | Factor | PostgreSQL | MongoDB |
 | --- | --- | --- |
-| Current version (November 2026) | 18 (19 in release candidate) | 9.0, released 28 September 2026 |
+| Current version (November 2026) | 19, released 19 November 2026 | 9.0, released 28 September 2026 |
 | Data model | Tables of rows, linked by keys | BSON documents in collections |
 | Licence | PostgreSQL Licence (permissive, BSD/MIT-style) | Community Server under the SSPL; commercial licence available |
 | Query language | SQL, plus SQL/JSON functions such as `JSON_TABLE` | MongoDB Query API: filters and aggregation pipelines |
@@ -27,6 +27,7 @@ service: "api-backend-development"
 | JSON | `json` and `jsonb` with GIN indexes | Native: documents are the model |
 | Full-text search | Built in (`tsvector`, `tsquery`) | Text indexes; MongoDB Search on Atlas and self-managed |
 | Vector search | pgvector extension (HNSW, IVFFlat) | MongoDB Vector Search (`$vectorSearch`) |
+| Multi-tenant isolation | Row-level security, enforced by the database | Tenant filter in your application, or a database per tenant |
 | Scaling | Bigger server, read replicas, partitioning; Citus for sharding | Replica sets and native sharding |
 | Managed options | Amazon RDS and Aurora, Google Cloud SQL and AlloyDB, Azure, Neon, Supabase | MongoDB Atlas on AWS, Google Cloud or Azure |
 | ORM support (Node.js) | Prisma ORM 7, Drizzle, TypeORM and most SQL ORMs | Mongoose; Prisma ORM 6.19 (v7 support not yet released) |
@@ -193,9 +194,21 @@ Both handle vector search well enough for most semantic search and retrieval-aug
 
 Chunking, retrieval quality and evaluation matter more than the database; see [building a RAG pipeline](/blog/building-a-rag-pipeline).
 
-## Which is better for multi-tenant SaaS?
+## Which is better for a multi-tenant SaaS product?
 
-PostgreSQL can enforce tenant isolation inside the database with row-level security (RLS):
+**For a SaaS product with many tenants, PostgreSQL is usually the safer choice.** Row-level security (RLS) lets the database itself refuse to return another tenant's rows, so one missing `WHERE tenant_id = ...` in your code does not turn into a data leak. MongoDB can run a multi-tenant SaaS too, but inside a shared collection the isolation is your application's job. Choose MongoDB here when the rest of your data suits documents and you are prepared to keep the tenant filter in one well-tested layer.
+
+### Tenancy models in each database
+
+| Model | PostgreSQL | MongoDB |
+| --- | --- | --- |
+| Shared tables, tenant ID on every row | `tenant_id` column plus RLS policies the database enforces | `tenantId` field, indexes that start with it, filter added by your data-access layer |
+| One schema or database per tenant | Schema per tenant; every migration runs once per schema | Database per tenant, with the same collections in each |
+| Dedicated server per tenant | Separate instance, usually for enterprise or data-residency deals | Dedicated cluster, for the same reasons |
+
+Most SaaS products start on the shared model because it is the cheapest to run and to migrate. The other two buy stricter isolation and simpler per-tenant restores, at the cost of more databases to run.
+
+### Row-level security in PostgreSQL
 
 ```sql
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
@@ -207,9 +220,29 @@ CREATE POLICY tenant_isolation ON projects
 SELECT set_config('app.tenant_id', '0190f3c2-7b1a-7c3e-9a51-2f6d8e4b1a20', true);
 ```
 
-With RLS on and no matching policy, access is denied by default. Table owners and superusers bypass RLS unless you use `FORCE ROW LEVEL SECURITY`, so connect your app as a separate role ([PostgreSQL docs](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)).
+With RLS on and no matching policy, access is denied by default. Table owners and superusers bypass RLS unless you use `FORCE ROW LEVEL SECURITY`, so connect your app as a separate role ([PostgreSQL docs](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)). The `true` in `set_config` keeps the tenant setting local to the current transaction ([PostgreSQL docs](https://www.postgresql.org/docs/current/functions-admin.html#FUNCTIONS-ADMIN-SET)). Run each request's queries inside one transaction, so the setting cannot carry over to the next request when a pooler such as PgBouncer hands the same connection to someone else.
 
-MongoDB's access control works at the database and collection level, so isolation inside a shared collection lives in your application: a `tenantId` on every document, indexes that start with it, and one data-access layer that adds the filter to every query. Database-per-tenant isolates more strictly, at the cost of more databases and connections to manage. Our guide to [building a multi-tenant SaaS](/blog/how-to-build-a-multi-tenant-saas) compares these models.
+### Tenant isolation in MongoDB
+
+MongoDB's access control works at the database and collection level, so isolation inside a shared collection lives in your application: a `tenantId` on every document, indexes that start with it, and one data-access layer that adds the filter to every query.
+
+```js
+db.projects.createIndex({ tenantId: 1, updatedAt: -1 });
+
+// Every read and write goes through one layer that adds tenantId
+db.projects.find({ tenantId, status: "active" }).sort({ updatedAt: -1 });
+```
+
+Database-per-tenant isolates more strictly, at the cost of more databases and connections to manage.
+
+### What decides it in practice
+
+- **Deleting a tenant.** When a customer leaves or sends a GDPR erasure request, PostgreSQL can remove their rows in one transaction, with `ON DELETE CASCADE` following the foreign keys. MongoDB has no foreign keys, so you run `deleteMany({ tenantId })` on every collection that holds tenant data.
+- **Restoring one tenant.** Backups restore a whole database in both. On the shared model, recovering one customer means restoring to a temporary database and copying their rows back. With a database per tenant, it is a single restore.
+- **Noisy neighbours.** On the shared model, one heavy tenant slows everyone down. Indexes that start with the tenant ID help in both databases; moving a large tenant to its own database is the fallback.
+- **Data residency.** Customers in the EU may require their data to stay in the EU. In PostgreSQL that usually means a separate database in an EU region. MongoDB Atlas can also pin documents to a region with [Global Clusters](https://www.mongodb.com/docs/atlas/global-clusters/). Decide how you route tenants to regions before the first EU deal, not after.
+
+Our founder spent September to November 2026 on a K-12 tutoring service built on TypeScript, Postgres row-level security and Stripe, which is now live. Our own [multi-tenant SaaS MVP](/work/multi-tenant-saas-mvp) runs on Next.js, NestJS and PostgreSQL, with tenant isolation in place from the first release. Our guide to [building a multi-tenant SaaS](/blog/how-to-build-a-multi-tenant-saas) compares the tenancy models in more depth.
 
 ## Licensing and hosting costs
 
@@ -285,6 +318,10 @@ No. Single-document writes are atomic, and MongoDB has supported multi-document 
 ### Can I use both in one product?
 
 Yes. A common split is PostgreSQL for accounts, billing and other relational data, with MongoDB for a document-heavy area such as content or activity feeds. The cost is operational: two databases to host, back up and secure, with no joins or transactions across them. First check whether a jsonb column would do the job.
+
+### Is PostgreSQL or MongoDB better for a multi-tenant SaaS?
+
+PostgreSQL, for most products. Its row-level security makes the database refuse cross-tenant reads, so a missed filter in your code cannot leak another customer's data. MongoDB works when your data suits documents, but tenant isolation in a shared collection depends on your application adding the tenant filter to every query.
 
 ### Does Supabase or Prisma change the decision?
 

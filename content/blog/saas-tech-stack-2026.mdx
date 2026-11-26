@@ -2,7 +2,7 @@
 title: "The SaaS tech stack we use in 2026, and why"
 description: "Our SaaS tech stack layer by layer: Next.js, Node or FastAPI, PostgreSQL, managed auth, Stripe, Vercel, AWS and observability, with reasons and alternatives."
 date: "2026-03-28"
-updated: "2026-11-13"
+updated: "2026-11-26"
 author: "bilal-khursheed"
 category: "SaaS"
 tags: ["saas", "tech stack", "nextjs", "postgresql"]
@@ -32,7 +32,7 @@ At the time of writing (November 2026):
 
 - **Next.js 16.4**, released in October 2026, ships with React 19.3 and recommends Cache Components for every new app; the [Next.js 16.4 release notes](https://nextjs.org/blog/next-16-4) say this model becomes the default in Next.js 17. Next.js also moved to a formal schedule of security releases in 2026, so plan time to apply them.
 - **Node.js v26, v24 and v22** are the LTS lines, and the [Node.js release page](https://nodejs.org/en/about/previous-releases) advises production applications to run only Active LTS or Maintenance LTS releases. Start new projects on the newest LTS your hosting platform supports.
-- **PostgreSQL 18** is the latest major version, released in September 2025 and, per the [PostgreSQL versioning policy](https://www.postgresql.org/support/versioning/), supported until November 2030. Each major version gets five years of support.
+- **PostgreSQL 19** is the latest major version, [released on 19 November 2026](https://www.postgresql.org/about/news/postgresql-19-released-3449/) and, per the [PostgreSQL versioning policy](https://www.postgresql.org/support/versioning/), supported until November 2031. Each major version gets five years of support. If your managed provider does not offer 19 yet, PostgreSQL 18 (supported until November 2030) is a sound place to start.
 
 Pin versions in the repository, upgrade on a schedule rather than in a panic, and include dependency updates in the post-launch plan; our guide to [hypercare and post-launch support](/blog/hypercare-post-launch-support) covers how that is usually budgeted.
 
