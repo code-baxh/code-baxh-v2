@@ -45,6 +45,8 @@ export function organizationSchema() {
     "@type": "Organization",
     "@id": ORG_ID,
     name: site.name,
+    // How people also write the name ("Code Baxh" on LinkedIn and Upwork); helps brand searches match.
+    alternateName: "Code Baxh",
     legalName: site.legal.entityName,
     url: site.url,
     // Square app icon (the CB mark): Google needs a logo of at least 112×112, so the wide
@@ -109,6 +111,7 @@ export function websiteSchema() {
     "@type": "WebSite",
     "@id": WEBSITE_ID,
     name: site.name,
+    alternateName: "Code Baxh",
     url: site.url,
     description: site.description,
     inLanguage: "en-GB",
