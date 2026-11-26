@@ -186,6 +186,9 @@ export function AiReadinessAssessment() {
                           value={o.value}
                           checked={on}
                           onChange={() => answer(q.id, o.value)}
+                          // A click made before hydration leaves the native radio checked, and a checked
+                          // radio fires no change event, so handle the click too (setting it twice is harmless).
+                          onClick={() => answer(q.id, o.value)}
                           className="sr-only"
                         />
                         {on ? <Check aria-hidden className="size-4" strokeWidth={3} /> : null}
