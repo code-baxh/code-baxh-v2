@@ -78,8 +78,12 @@ export function GET() {
       `URL: ${abs(`/blog/${p.slug}`)}`,
       `Author: ${author?.name ?? site.name}. Published ${p.date}, updated ${p.updated}.`,
       "",
-      // Demote the article's own headings one level so they nest under its ### title.
-      p.body.trim().replace(/^(#{2,5}) /gm, "#$1 "),
+      // Demote the article's own headings one level so they nest under its ### title,
+      // and drop interactive MDX components such as <AiReadinessAssessment />, which have no text form.
+      p.body
+        .trim()
+        .replace(/^(#{2,5}) /gm, "#$1 ")
+        .replace(/^<[A-Z][A-Za-z]*\s*\/>\s*$\n?/gm, ""),
       "",
     );
   }

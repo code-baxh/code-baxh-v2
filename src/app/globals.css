@@ -325,6 +325,8 @@ details > summary::-webkit-details-marker {
 }
 
 /* ---------- Long-form content (blog posts, legal pages) ---------- */
+/* Interactive components inside a post wrap themselves in .not-prose to opt out.
+   :not(:where()) adds no specificity, so these rules weigh exactly what they did before. */
 .prose {
   color: var(--fg);
   font-size: 1.0625rem;
@@ -334,49 +336,49 @@ details > summary::-webkit-details-marker {
 .prose > * + * {
   margin-top: 1.25em;
 }
-.prose h2 {
+.prose h2:not(:where(.not-prose *)) {
   font-size: 1.75rem;
   font-weight: 600;
   margin-top: 2.2em;
   scroll-margin-top: 6rem;
 }
-.prose h3 {
+.prose h3:not(:where(.not-prose *)) {
   font-size: 1.25rem;
   font-weight: 600;
   margin-top: 1.8em;
   scroll-margin-top: 6rem;
 }
-.prose p,
-.prose li {
+.prose p:not(:where(.not-prose *)),
+.prose li:not(:where(.not-prose *)) {
   color: color-mix(in srgb, var(--fg) 86%, var(--muted));
 }
-.prose a {
+.prose a:not(:where(.not-prose *)) {
   color: var(--accent-text);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.prose ul {
+.prose ul:not(:where(.not-prose *)) {
   list-style: disc;
   padding-left: 1.3em;
 }
-.prose ol {
+.prose ol:not(:where(.not-prose *)) {
   list-style: decimal;
   padding-left: 1.3em;
 }
-.prose li + li {
+.prose li + li:not(:where(.not-prose *)) {
   margin-top: 0.4em;
 }
-.prose strong {
+.prose strong:not(:where(.not-prose *)) {
   color: var(--fg);
   font-weight: 600;
 }
-.prose blockquote {
+.prose blockquote:not(:where(.not-prose *)) {
   border-left: 3px solid var(--accent);
   background: var(--surface);
   border-radius: 0 0.75rem 0.75rem 0;
   padding: 1rem 1.25rem;
 }
-.prose code {
+.prose code:not(:where(.not-prose *)) {
   font-family: var(--font-mono);
   font-size: 0.875em;
   background: var(--surface-2);
@@ -384,7 +386,7 @@ details > summary::-webkit-details-marker {
   border-radius: 0.375rem;
   padding: 0.1em 0.35em;
 }
-.prose pre {
+.prose pre:not(:where(.not-prose *)) {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 0.9rem;
@@ -393,30 +395,30 @@ details > summary::-webkit-details-marker {
   font-size: 0.875rem;
   line-height: 1.6;
 }
-.prose pre code {
+.prose pre code:not(:where(.not-prose *)) {
   background: none;
   border: 0;
   padding: 0;
 }
-.prose table {
+.prose table:not(:where(.not-prose *)) {
   display: block;
   width: 100%;
   overflow-x: auto;
   border-collapse: collapse;
   font-size: 0.95rem;
 }
-.prose th,
-.prose td {
+.prose th:not(:where(.not-prose *)),
+.prose td:not(:where(.not-prose *)) {
   border: 1px solid var(--line);
   padding: 0.6rem 0.8rem;
   text-align: left;
   vertical-align: top;
 }
-.prose th {
+.prose th:not(:where(.not-prose *)) {
   background: var(--surface-2);
   font-weight: 600;
 }
-.prose hr {
+.prose hr:not(:where(.not-prose *)) {
   border-color: var(--line);
   margin: 2.5em 0;
 }

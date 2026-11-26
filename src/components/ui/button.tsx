@@ -11,16 +11,23 @@ const variants = {
   ghost: "text-fg hover:text-accent-text px-3",
 } as const;
 
+type Variant = keyof typeof variants;
+
 type Props = {
   href: string;
-  variant?: keyof typeof variants;
+  variant?: Variant;
   className?: string;
   children: React.ReactNode;
 };
 
+/** Button styles for a plain <button>, so actions match the links styled by ButtonLink. */
+export function buttonClass(variant: Variant = "primary", className?: string) {
+  return cn(base, variants[variant], className);
+}
+
 export function ButtonLink({ href, variant = "primary", className, children }: Props) {
   return (
-    <Link href={href} className={cn(base, variants[variant], className)}>
+    <Link href={href} className={buttonClass(variant, className)}>
       {children}
     </Link>
   );
