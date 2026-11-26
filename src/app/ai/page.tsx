@@ -33,6 +33,9 @@ export default function AiPage() {
         image="aiAgents"
       >
         <ButtonLink href="/start-a-project">Request an AI readiness review</ButtonLink>
+        <ButtonLink href="/blog/ai-readiness-assessment#take-the-free-ai-readiness-assessment" variant="secondary">
+          Free self-assessment
+        </ButtonLink>
       </PageHero>
 
       <Section>
