@@ -4,7 +4,7 @@ const CODEBAXH_LED = "Designed and built by the CodeBaxh team.";
 const FOUNDER_ENGINEER =
   "Our founder worked on this product as a full-stack engineer. It is not a CodeBaxh-led build.";
 
-export const caseStudies: CaseStudy[] = [
+const allCaseStudies: CaseStudy[] = [
   {
     slug: "gis-zoning-saas",
     clientName: "Zoneomics",
@@ -861,5 +861,14 @@ export const caseStudies: CaseStudy[] = [
     services: ["web-development", "api-backend-development"],
   },
 ];
+
+/**
+ * A withheld client name is blanked here, before anything can render it or serialise it.
+ * Hiding it in the card alone is not enough: /work passes whole case studies to a client
+ * component, so every field ends up in the page's HTML payload, where crawlers and AI tools read it.
+ */
+export const caseStudies: CaseStudy[] = allCaseStudies.map((c) =>
+  c.clientNamePermission ? c : { ...c, clientName: "" },
+);
 
 export const featuredCaseStudies = caseStudies.filter((c) => c.featured);
