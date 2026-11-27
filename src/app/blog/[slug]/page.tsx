@@ -15,6 +15,10 @@ import { team } from "@/content/team";
 import { categorySlug, coverFor, coversFor, formatDate, getAllPosts, getPost, relatedPosts, toMeta } from "@/lib/blog";
 import { articleSchema, faqSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
+import { AiReadinessAssessment } from "@/components/tools/ai-readiness-assessment";
+
+/** Components a post can use in its MDX, e.g. <AiReadinessAssessment />. */
+const mdxComponents = { AiReadinessAssessment };
 
 export function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }));
@@ -95,6 +99,7 @@ export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
             <div className="prose">
               <MDXRemote
                 source={post.body}
+                components={mdxComponents}
                 options={{ mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeSlug] } }}
               />
             </div>
